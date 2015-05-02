@@ -21,7 +21,7 @@ union any_blake2_state {
 	}
 
 #define BLAKE_FN_CAST(fn) \
-	(int (*)(void*, const unsigned char*, long unsigned int))fn
+	reinterpret_cast<int (*)(void*, const unsigned char*, long unsigned int)>(fn)
 
 using namespace node;
 using namespace v8;
@@ -58,7 +58,6 @@ public:
 			return NanThrowError("Constructor must be called with new");
 		}
 
-		// Invoked as constructor.
 		obj = new BLAKE2Hash();
 		obj->Wrap(args.This());
 		if(args.Length() < 1) {
@@ -69,22 +68,22 @@ public:
 		}
 		std::string algo = std::string(*(String::Utf8Value(args[0]->ToString())));
 		if(algo == "blake2b") {
-			blake2b_init((blake2b_state*)&obj->state, BLAKE2B_OUTBYTES);
+			blake2b_init(reinterpret_cast<blake2b_state*>(&obj->state), BLAKE2B_OUTBYTES);
 			obj->outbytes = 512 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2b_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2b_final);
 		} else if(algo == "blake2bp") {
-			blake2bp_init((blake2bp_state*)&obj->state, BLAKE2B_OUTBYTES);
+			blake2bp_init(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES);
 			obj->outbytes = 512 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2bp_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2bp_final);
 		} else if(algo == "blake2s") {
-			blake2s_init((blake2s_state*)&obj->state, BLAKE2S_OUTBYTES);
+			blake2s_init(reinterpret_cast<blake2s_state*>(&obj->state), BLAKE2S_OUTBYTES);
 			obj->outbytes = 256 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2s_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2s_final);
 		} else if(algo == "blake2sp") {
-			blake2sp_init((blake2sp_state*)&obj->state, BLAKE2S_OUTBYTES);
+			blake2sp_init(reinterpret_cast<blake2sp_state*>(&obj->state), BLAKE2S_OUTBYTES);
 			obj->outbytes = 256 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2sp_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2sp_final);
