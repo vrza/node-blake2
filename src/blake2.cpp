@@ -16,7 +16,7 @@
 using namespace node;
 using namespace v8;
 
-class BLAKE2bHash: public ObjectWrap {
+class BLAKE2Hash: public ObjectWrap {
 private:
 	bool initialised_;
 
@@ -28,38 +28,46 @@ public:
 		NanScope();
 		Local<FunctionTemplate> t = NanNew<FunctionTemplate>(New);
 		t->InstanceTemplate()->SetInternalFieldCount(1);
-		t->SetClassName(NanNew<String>("BLAKE2bHash"));
+		t->SetClassName(NanNew<String>("BLAKE2Hash"));
 
 		NODE_SET_PROTOTYPE_METHOD(t, "update", Update);
 		NODE_SET_PROTOTYPE_METHOD(t, "digest", Digest);
 
 		NanAssignPersistent(constructor, t->GetFunction());
-		target->Set(NanNew<String>("BLAKE2bHash"), t->GetFunction());
+		target->Set(NanNew<String>("BLAKE2Hash"), t->GetFunction());
 	}
 
 	static
 	NAN_METHOD(New) {
 		NanScope();
-		BLAKE2bHash *obj;
+		BLAKE2Hash *obj;
 
-		if (args.IsConstructCall()) {
-			// Invoked as constructor.
-			obj = new BLAKE2bHash();
-			obj->Wrap(args.This());
-			obj->initialised_ = true;
-			blake2b_init(&obj->state, BLAKE2B_OUTBYTES);
-			NanReturnValue(args.This());
-		} else {
-			// Invoked as a plain function.
-			Local<Function> cons = NanNew<Function>(constructor);
-			NanReturnValue(cons->NewInstance());
+		if (!args.IsConstructCall()) {
+			return NanThrowError("Constructor must be called with new");
 		}
+
+		// Invoked as constructor.
+		obj = new BLAKE2Hash();
+		obj->Wrap(args.This());
+		if(args.Length() < 1) {
+			return NanThrowError(Exception::TypeError(NanNew<String>("Expected a string argument with algorithm name")));
+		}
+		if(!args[0]->IsString()) {
+			return NanThrowError(Exception::TypeError(NanNew<String>("Algorithm name must be a string")));
+		}
+		std::string algo = std::string(*(String::Utf8Value(args[0]->ToString())));
+		if(algo != "blake2b") {
+			return NanThrowError("Algorithm must be blake2b");
+		}
+		obj->initialised_ = true;
+		blake2b_init(&obj->state, BLAKE2B_OUTBYTES);
+		NanReturnValue(args.This());
 	}
 
 	static
 	NAN_METHOD(Update) {
 		NanScope();
-		BLAKE2bHash *obj = ObjectWrap::Unwrap<BLAKE2bHash>(args.This());
+		BLAKE2Hash *obj = ObjectWrap::Unwrap<BLAKE2Hash>(args.This());
 
 		THROW_AND_RETURN_IF_NOT_STRING_OR_BUFFER(args[0]);
 
@@ -96,7 +104,7 @@ public:
 	NAN_METHOD(Digest) {
 		NanScope();
 		v8::Isolate* isolate = v8::Isolate::GetCurrent();
-		BLAKE2bHash *obj = ObjectWrap::Unwrap<BLAKE2bHash>(args.This());
+		BLAKE2Hash *obj = ObjectWrap::Unwrap<BLAKE2Hash>(args.This());
 		unsigned char digest[512 / 8];
 
 		if(!obj->initialised_) {
@@ -136,11 +144,11 @@ private:
 	static Persistent<Function> constructor;
 };
 
-Persistent<Function> BLAKE2bHash::constructor;
+Persistent<Function> BLAKE2Hash::constructor;
 
 static void
 init(Handle<Object> target) {
-	BLAKE2bHash::Initialize(target);
+	BLAKE2Hash::Initialize(target);
 }
 
 NODE_MODULE(blake2, init)
