@@ -17,7 +17,7 @@ using namespace node;
 using namespace v8;
 
 class BLAKE2Hash: public ObjectWrap {
-private:
+protected:
 	bool initialised_;
 
 public:
