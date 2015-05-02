@@ -9,7 +9,7 @@
 #include "blake2.h"
 
 #define MAX_DIGEST_SIZE 64
-#define ASSERT_IS_STRING_OR_BUFFER(val) \
+#define THROW_AND_RETURN_IF_NOT_STRING_OR_BUFFER(val) \
 	if (!val->IsString() && !Buffer::HasInstance(val)) { \
 		return NanThrowError(Exception::TypeError(NanNew<String>("Not a string or buffer"))); \
 	}
@@ -60,7 +60,7 @@ public:
 		NanScope();
 		BLAKE2bHash *obj = ObjectWrap::Unwrap<BLAKE2bHash>(args.This());
 
-		ASSERT_IS_STRING_OR_BUFFER(args[0]);
+		THROW_AND_RETURN_IF_NOT_STRING_OR_BUFFER(args[0]);
 		enum encoding enc = ParseEncoding(args[1]);
 		ssize_t len = DecodeBytes(args[0], enc);
 
