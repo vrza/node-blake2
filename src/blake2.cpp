@@ -9,16 +9,19 @@
 #include "blake2.h"
 
 union any_blake2_state {
-	blake2b_state my_blake2b_state;
-	blake2bp_state my_blake2bp_state;
-	blake2s_state my_blake2s_state;
-	blake2sp_state my_blake2sp_state;
+	blake2b_state casted_blake2b_state;
+	blake2bp_state casted_blake2bp_state;
+	blake2s_state casted_blake2s_state;
+	blake2sp_state casted_blake2sp_state;
 };
 
 #define THROW_AND_RETURN_IF_NOT_STRING_OR_BUFFER(val) \
 	if (!val->IsString() && !Buffer::HasInstance(val)) { \
 		return NanThrowError(Exception::TypeError(NanNew<String>("Not a string or buffer"))); \
 	}
+
+#define BLAKE_FN_CAST(fn) \
+	(int (*)(void*, const unsigned char*, long unsigned int))fn
 
 using namespace node;
 using namespace v8;
@@ -66,26 +69,25 @@ public:
 		}
 		std::string algo = std::string(*(String::Utf8Value(args[0]->ToString())));
 		if(algo == "blake2b") {
-			// TODO instead of .my_; just cast?
-			blake2b_init(&obj->state.my_blake2b_state, BLAKE2B_OUTBYTES);
+			blake2b_init((blake2b_state*)&obj->state, BLAKE2B_OUTBYTES);
 			obj->outbytes = 512 / 8;
-			obj->any_blake2_update = (int (*)(void*, const unsigned char*, long unsigned int))blake2b_update;
-			obj->any_blake2_final = (int (*)(void*, const unsigned char*, long unsigned int))blake2b_final;
+			obj->any_blake2_update = BLAKE_FN_CAST(blake2b_update);
+			obj->any_blake2_final = BLAKE_FN_CAST(blake2b_final);
 		} else if(algo == "blake2bp") {
-			blake2bp_init(&obj->state.my_blake2bp_state, BLAKE2B_OUTBYTES);
+			blake2bp_init((blake2bp_state*)&obj->state, BLAKE2B_OUTBYTES);
 			obj->outbytes = 512 / 8;
-			obj->any_blake2_update = (int (*)(void*, const unsigned char*, long unsigned int))blake2bp_update;
-			obj->any_blake2_final = (int (*)(void*, const unsigned char*, long unsigned int))blake2bp_final;
+			obj->any_blake2_update = BLAKE_FN_CAST(blake2bp_update);
+			obj->any_blake2_final = BLAKE_FN_CAST(blake2bp_final);
 		} else if(algo == "blake2s") {
-			blake2s_init(&obj->state.my_blake2s_state, BLAKE2S_OUTBYTES);
+			blake2s_init((blake2s_state*)&obj->state, BLAKE2S_OUTBYTES);
 			obj->outbytes = 256 / 8;
-			obj->any_blake2_update = (int (*)(void*, const unsigned char*, long unsigned int))blake2s_update;
-			obj->any_blake2_final = (int (*)(void*, const unsigned char*, long unsigned int))blake2s_final;
+			obj->any_blake2_update = BLAKE_FN_CAST(blake2s_update);
+			obj->any_blake2_final = BLAKE_FN_CAST(blake2s_final);
 		} else if(algo == "blake2sp") {
-			blake2sp_init(&obj->state.my_blake2sp_state, BLAKE2S_OUTBYTES);
+			blake2sp_init((blake2sp_state*)&obj->state, BLAKE2S_OUTBYTES);
 			obj->outbytes = 256 / 8;
-			obj->any_blake2_update = (int (*)(void*, const unsigned char*, long unsigned int))blake2sp_update;
-			obj->any_blake2_final = (int (*)(void*, const unsigned char*, long unsigned int))blake2sp_final;
+			obj->any_blake2_update = BLAKE_FN_CAST(blake2sp_update);
+			obj->any_blake2_final = BLAKE_FN_CAST(blake2sp_final);
 		} else {
 			return NanThrowError("Algorithm must be blake2b, blake2s, blake2bp, or blake2sp");
 		}
