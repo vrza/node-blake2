@@ -8,7 +8,6 @@
 
 #include "blake2.h"
 
-#define MAX_DIGEST_SIZE 64
 #define THROW_AND_RETURN_IF_NOT_STRING_OR_BUFFER(val) \
 	if (!val->IsString() && !Buffer::HasInstance(val)) { \
 		return NanThrowError(Exception::TypeError(NanNew<String>("Not a string or buffer"))); \
@@ -16,8 +15,6 @@
 
 using namespace node;
 using namespace v8;
-
-static void toHex(const char *data_buf, size_t size, char *output);
 
 class BLAKE2bHash: public ObjectWrap {
 private:
@@ -100,7 +97,7 @@ public:
 		NanScope();
 		v8::Isolate* isolate = v8::Isolate::GetCurrent();
 		BLAKE2bHash *obj = ObjectWrap::Unwrap<BLAKE2bHash>(args.This());
-		unsigned char digest[MAX_DIGEST_SIZE];
+		unsigned char digest[512 / 8];
 
 		if(!obj->initialised_) {
 			Local<Value> exception = Exception::Error(NanNew<String>("Not initialized"));
@@ -140,23 +137,6 @@ private:
 };
 
 Persistent<Function> BLAKE2bHash::constructor;
-
-static const char hex_chars[] = {
-	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-	'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-	'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-	'u', 'v', 'w', 'x', 'y', 'z'
-};
-
-static void
-toHex(const char *data_buf, size_t size, char *output) {
-	size_t i;
-
-	for (i = 0; i < size; i++) {
-		output[i * 2] = hex_chars[(unsigned char) data_buf[i] / 16];
-		output[i * 2 + 1] = hex_chars[(unsigned char) data_buf[i] % 16];
-	}
-}
 
 static void
 init(Handle<Object> target) {
