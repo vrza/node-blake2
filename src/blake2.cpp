@@ -73,12 +73,12 @@ public:
 			Local<Object> buffer_obj = args[0]->ToObject();
 			const char *buffer_data = Buffer::Data(buffer_obj);
 			size_t buffer_length = Buffer::Length(buffer_obj);
-			blake2b_update(&obj->state, (const unsigned char *) buffer_data, buffer_length);
+			blake2b_update(&obj->state, (uint8_t *) buffer_data, buffer_length);
 		} else {
 			char *buf = new char[len];
 			ssize_t written = DecodeWrite(buf, len, args[0], enc);
 			assert(written == len);
-			blake2b_update(&obj->state, (const unsigned char *) buf, len);
+			blake2b_update(&obj->state, (uint8_t *) buf, len);
 			delete[] buf;
 		}
 
