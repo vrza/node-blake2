@@ -66,7 +66,7 @@ public:
 		if(!args[0]->IsString()) {
 			return NanThrowError(Exception::TypeError(NanNew<String>("Algorithm name must be a string")));
 		}
-		std::string algo = std::string(*(String::Utf8Value(args[0]->ToString())));
+		std::string algo = std::string(*String::Utf8Value(args[0]->ToString()));
 		if(algo == "blake2b") {
 			blake2b_init(reinterpret_cast<blake2b_state*>(&obj->state), BLAKE2B_OUTBYTES);
 			obj->outbytes = 512 / 8;
