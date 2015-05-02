@@ -21,7 +21,7 @@ union any_blake2_state {
 	}
 
 #define BLAKE_FN_CAST(fn) \
-	reinterpret_cast<int (*)(void*, const unsigned char*, long unsigned int)>(fn)
+	reinterpret_cast<int (*)(void *, const unsigned char *, long unsigned int)>(fn)
 
 using namespace node;
 using namespace v8;
@@ -29,8 +29,8 @@ using namespace v8;
 class BLAKE2Hash: public ObjectWrap {
 protected:
 	bool initialised_;
-	int (*any_blake2_update)(void*, const uint8_t *, uint64_t);
-	int (*any_blake2_final)(void*, const uint8_t *, uint64_t);
+	int (*any_blake2_update)(void*, const uint8_t*, uint64_t);
+	int (*any_blake2_final)(void*, const uint8_t*, uint64_t);
 	int outbytes;
 	any_blake2_state state;
 
@@ -118,12 +118,20 @@ public:
 			Local<Object> buffer_obj = args[0]->ToObject();
 			const char *buffer_data = Buffer::Data(buffer_obj);
 			size_t buffer_length = Buffer::Length(buffer_obj);
-			obj->any_blake2_update((void*)&obj->state, (uint8_t *) buffer_data, buffer_length);
+			obj->any_blake2_update(
+				reinterpret_cast<void*>(&obj->state),
+				reinterpret_cast<const uint8_t*>(buffer_data),
+				buffer_length
+			);
 		} else {
 			char *buf = new char[len];
 			ssize_t written = DecodeWrite(buf, len, args[0], enc);
 			assert(written == len);
-			obj->any_blake2_update((void*)&obj->state, (uint8_t *) buf, len);
+			obj->any_blake2_update(
+				reinterpret_cast<void*>(&obj->state),
+				reinterpret_cast<const uint8_t*>(buf),
+				len
+			);
 			delete[] buf;
 		}
 
@@ -143,7 +151,7 @@ public:
 		}
 
 		obj->initialised_ = false;
-		obj->any_blake2_final((void*)&obj->state, digest, obj->outbytes);
+		obj->any_blake2_final(reinterpret_cast<void*>(&obj->state), digest, obj->outbytes);
 
 		Local<Value> outString;
 
