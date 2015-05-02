@@ -20,6 +20,9 @@ using namespace v8;
 static void toHex(const char *data_buf, size_t size, char *output);
 
 class BLAKE2bHash: public ObjectWrap {
+private:
+	bool initialised_;
+
 public:
 	blake2b_state state;
 
@@ -46,6 +49,7 @@ public:
 			// Invoked as constructor.
 			obj = new BLAKE2bHash();
 			obj->Wrap(args.This());
+			obj->initialised_ = true;
 			blake2b_init(&obj->state, BLAKE2B_OUTBYTES);
 			NanReturnValue(args.This());
 		} else {
@@ -91,6 +95,12 @@ public:
 		BLAKE2bHash *obj = ObjectWrap::Unwrap<BLAKE2bHash>(args.This());
 		unsigned char digest[MAX_DIGEST_SIZE];
 
+		if(!obj->initialised_) {
+			Local<Value> exception = Exception::Error(NanNew<String>("Not initialized"));
+			return NanThrowError(exception);
+		}
+
+		obj->initialised_ = false;
 		blake2b_final(&obj->state, digest, BLAKE2B_OUTBYTES);
 
 		Local<Value> outString;
