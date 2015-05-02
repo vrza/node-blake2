@@ -16,7 +16,6 @@
 
 using namespace node;
 using namespace v8;
-using namespace Node_SHA3;
 
 static void toHex(const char *data_buf, size_t size, char *output);
 
@@ -42,7 +41,6 @@ public:
 	NAN_METHOD(New) {
 		NanScope();
 		BLAKE2bHash *obj;
-		int32_t hashlen;
 
 		if (args.IsConstructCall()) {
 			// Invoked as constructor.
@@ -52,9 +50,8 @@ public:
 			NanReturnValue(args.This());
 		} else {
 			// Invoked as a plain function.
-			const int argc = 1;
 			Local<Function> cons = NanNew<Function>(constructor);
-			NanReturnValue(cons->NewInstance(argc, argv));
+			NanReturnValue(cons->NewInstance());
 		}
 	}
 
@@ -76,12 +73,12 @@ public:
 			Local<Object> buffer_obj = args[0]->ToObject();
 			const char *buffer_data = Buffer::Data(buffer_obj);
 			size_t buffer_length = Buffer::Length(buffer_obj);
-			blake2b_update(&obj->state, (const BitSequence *) buffer_data, buffer_length * 8);
+			blake2b_update(&obj->state, (const unsigned char *) buffer_data, buffer_length);
 		} else {
 			char *buf = new char[len];
 			ssize_t written = DecodeWrite(buf, len, args[0], enc);
 			assert(written == len);
-			blake2b_update(&obj->state, (const BitSequence *) buf, len * 8);
+			blake2b_update(&obj->state, (const unsigned char *) buf, len);
 			delete[] buf;
 		}
 
@@ -92,11 +89,9 @@ public:
 	NAN_METHOD(Digest) {
 		NanScope();
 		BLAKE2bHash *obj = ObjectWrap::Unwrap<BLAKE2bHash>(args.This());
-		blake2b_state state2;
 		unsigned char digest[MAX_DIGEST_SIZE];
 
-		memcpy(&state2, &obj->state, sizeof(blake2b_state));
-		blake2b_final(&state2, digest, BLAKE2B_OUTBYTES);
+		blake2b_final(&obj->state, digest, BLAKE2B_OUTBYTES);
 
 		Local<Value> outString;
 		enum encoding enc = ParseEncoding(args[0], BINARY);
