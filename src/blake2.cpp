@@ -8,6 +8,13 @@
 
 #include "blake2.h"
 
+union any_blake2_state {
+	blake2b_state my_blake2b_state;
+	blake2bp_state my_blake2bp_state;
+	blake2s_state my_blake2s_state;
+	blake2sp_state my_blake2sp_state;
+};
+
 #define THROW_AND_RETURN_IF_NOT_STRING_OR_BUFFER(val) \
 	if (!val->IsString() && !Buffer::HasInstance(val)) { \
 		return NanThrowError(Exception::TypeError(NanNew<String>("Not a string or buffer"))); \
@@ -19,10 +26,12 @@ using namespace v8;
 class BLAKE2Hash: public ObjectWrap {
 protected:
 	bool initialised_;
+	int (*any_blake2_update)(void*, const uint8_t *, uint64_t);
+	int (*any_blake2_final)(void*, const uint8_t *, uint64_t);
+	int outbytes;
+	any_blake2_state state;
 
 public:
-	blake2b_state state;
-
 	static void
 	Initialize(Handle<Object> target) {
 		NanScope();
@@ -56,11 +65,31 @@ public:
 			return NanThrowError(Exception::TypeError(NanNew<String>("Algorithm name must be a string")));
 		}
 		std::string algo = std::string(*(String::Utf8Value(args[0]->ToString())));
-		if(algo != "blake2b") {
-			return NanThrowError("Algorithm must be blake2b");
+		if(algo == "blake2b") {
+			// TODO instead of .my_; just cast?
+			blake2b_init(&obj->state.my_blake2b_state, BLAKE2B_OUTBYTES);
+			obj->outbytes = 512 / 8;
+			obj->any_blake2_update = (int (*)(void*, const unsigned char*, long unsigned int))blake2b_update;
+			obj->any_blake2_final = (int (*)(void*, const unsigned char*, long unsigned int))blake2b_final;
+		} else if(algo == "blake2bp") {
+			blake2bp_init(&obj->state.my_blake2bp_state, BLAKE2B_OUTBYTES);
+			obj->outbytes = 512 / 8;
+			obj->any_blake2_update = (int (*)(void*, const unsigned char*, long unsigned int))blake2bp_update;
+			obj->any_blake2_final = (int (*)(void*, const unsigned char*, long unsigned int))blake2bp_final;
+		} else if(algo == "blake2s") {
+			blake2s_init(&obj->state.my_blake2s_state, BLAKE2S_OUTBYTES);
+			obj->outbytes = 256 / 8;
+			obj->any_blake2_update = (int (*)(void*, const unsigned char*, long unsigned int))blake2s_update;
+			obj->any_blake2_final = (int (*)(void*, const unsigned char*, long unsigned int))blake2s_final;
+		} else if(algo == "blake2sp") {
+			blake2sp_init(&obj->state.my_blake2sp_state, BLAKE2S_OUTBYTES);
+			obj->outbytes = 256 / 8;
+			obj->any_blake2_update = (int (*)(void*, const unsigned char*, long unsigned int))blake2sp_update;
+			obj->any_blake2_final = (int (*)(void*, const unsigned char*, long unsigned int))blake2sp_final;
+		} else {
+			return NanThrowError("Algorithm must be blake2b, blake2s, blake2bp, or blake2sp");
 		}
 		obj->initialised_ = true;
-		blake2b_init(&obj->state, BLAKE2B_OUTBYTES);
 		NanReturnValue(args.This());
 	}
 
@@ -88,12 +117,12 @@ public:
 			Local<Object> buffer_obj = args[0]->ToObject();
 			const char *buffer_data = Buffer::Data(buffer_obj);
 			size_t buffer_length = Buffer::Length(buffer_obj);
-			blake2b_update(&obj->state, (uint8_t *) buffer_data, buffer_length);
+			obj->any_blake2_update((void*)&obj->state, (uint8_t *) buffer_data, buffer_length);
 		} else {
 			char *buf = new char[len];
 			ssize_t written = DecodeWrite(buf, len, args[0], enc);
 			assert(written == len);
-			blake2b_update(&obj->state, (uint8_t *) buf, len);
+			obj->any_blake2_update((void*)&obj->state, (uint8_t *) buf, len);
 			delete[] buf;
 		}
 
@@ -113,7 +142,7 @@ public:
 		}
 
 		obj->initialised_ = false;
-		blake2b_final(&obj->state, digest, BLAKE2B_OUTBYTES);
+		obj->any_blake2_final((void*)&obj->state, digest, obj->outbytes);
 
 		Local<Value> outString;
 
@@ -133,7 +162,7 @@ public:
 		Local<Value> rc = Encode(
 			isolate,
 			reinterpret_cast<const char*>(digest),
-			512 / 8,
+			obj->outbytes,
 			encoding
 		);
 

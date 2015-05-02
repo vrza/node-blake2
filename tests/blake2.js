@@ -8,10 +8,19 @@ const BLAKE2B_EMPTY_DIGEST_HEX = '786a02f742015903c6c6fd852552d272912f4740e15847
 const BLAKE2B_EMPTY_DIGEST_BASE64 = new Buffer(BLAKE2B_EMPTY_DIGEST_HEX, 'hex').toString('base64');
 const BLAKE2B_EMPTY_DIGEST_BINARY = new Buffer(BLAKE2B_EMPTY_DIGEST_HEX, 'hex').toString('binary');
 
+const BLAKE2S_EMPTY_DIGEST_HEX = '69217a3079908094e11121d042354a7c1f55b6482ca1a51e1b250dfd1ed0eef9';
+const BLAKE2S_EMPTY_DIGEST_BASE64 = new Buffer(BLAKE2S_EMPTY_DIGEST_HEX, 'hex').toString('base64');
+const BLAKE2S_EMPTY_DIGEST_BINARY = new Buffer(BLAKE2S_EMPTY_DIGEST_HEX, 'hex').toString('binary');
+
 describe('BLAKE2bHash', function() {
-	it('should return correct digest after 0 updates', function() {
+	it('should return correct digest for blake2b after 0 updates', function() {
 		const hash = new blake2.BLAKE2Hash('blake2b');
 		assert.equal(hash.digest('hex'), BLAKE2B_EMPTY_DIGEST_HEX);
+	});
+
+	it('should return correct digest for blake2s after 0 updates', function() {
+		const hash = new blake2.BLAKE2Hash('blake2s');
+		assert.equal(hash.digest('hex'), BLAKE2S_EMPTY_DIGEST_HEX);
 	});
 
 	it('should return a Buffer when digest() is called without args', function() {
@@ -91,6 +100,6 @@ describe('BLAKE2bHash', function() {
 	it('should throw Error if called with unsupported algorithm name', function() {
 		assert.throws(function() {
 			new blake2.BLAKE2Hash('blah');
-		}, "must be blake2b");
+		}, "must be");
 	});
 });
