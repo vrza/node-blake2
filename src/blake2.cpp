@@ -65,6 +65,12 @@ public:
 		BLAKE2bHash *obj = ObjectWrap::Unwrap<BLAKE2bHash>(args.This());
 
 		THROW_AND_RETURN_IF_NOT_STRING_OR_BUFFER(args[0]);
+
+		if(!obj->initialised_) {
+			Local<Value> exception = Exception::Error(NanNew<String>("Not initialized"));
+			return NanThrowError(exception);
+		}
+
 		enum encoding enc = ParseEncoding(args[1]);
 		ssize_t len = DecodeBytes(args[0], enc);
 
@@ -92,6 +98,7 @@ public:
 	static
 	NAN_METHOD(Digest) {
 		NanScope();
+		v8::Isolate* isolate = v8::Isolate::GetCurrent();
 		BLAKE2bHash *obj = ObjectWrap::Unwrap<BLAKE2bHash>(args.This());
 		unsigned char digest[MAX_DIGEST_SIZE];
 
@@ -104,20 +111,28 @@ public:
 		blake2b_final(&obj->state, digest, BLAKE2B_OUTBYTES);
 
 		Local<Value> outString;
-		enum encoding enc = ParseEncoding(args[0], BINARY);
-		if (enc == HEX) {
-			// Hex encoding
-			char hexdigest[MAX_DIGEST_SIZE * 2];
-			toHex((const char *) digest, 512 / 8, hexdigest);
-			outString = Encode(hexdigest, 512 / 4, BINARY);
-		} else if (enc == BINARY /* || enc == BUFFER */) {
-			outString = Encode(digest, 512 / 8, enc);
-		} else {
-			Local<Value> exception = Exception::Error(NanNew<String>("Unsupported output encoding"));
-			return NanThrowError(exception);
+
+		enum encoding encoding = BUFFER;
+		if (args.Length() >= 1) {
+			// TODO: make compatible with pre-iojs nodes
+			// https://github.com/iojs/nan/issues/189
+			encoding = ParseEncoding(
+				isolate,
+				args[0]->ToString(isolate),
+				BUFFER
+			);
 		}
 
-		NanReturnValue(outString);
+		// TODO: make compatible with pre-iojs nodes
+		// Need to convert node::Encoding to Nan::Encoding?
+		Local<Value> rc = Encode(
+			isolate,
+			reinterpret_cast<const char*>(digest),
+			512 / 8,
+			encoding
+		);
+
+		NanReturnValue(rc);
 	}
 
 private:
