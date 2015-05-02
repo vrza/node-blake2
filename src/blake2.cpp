@@ -52,13 +52,12 @@ public:
 	static
 	NAN_METHOD(New) {
 		NanScope();
-		Hash *obj;
 
 		if (!args.IsConstructCall()) {
 			return NanThrowError("Constructor must be called with new");
 		}
 
-		obj = new Hash();
+		Hash *obj = new Hash();
 		obj->Wrap(args.This());
 		if(args.Length() < 1) {
 			return NanThrowError(Exception::TypeError(NanNew<String>("Expected a string argument with algorithm name")));
