@@ -26,7 +26,7 @@ union any_blake2_state {
 using namespace node;
 using namespace v8;
 
-class BLAKE2Hash: public ObjectWrap {
+class Hash: public ObjectWrap {
 protected:
 	bool initialised_;
 	int (*any_blake2_update)(void*, const uint8_t*, uint64_t);
@@ -40,25 +40,25 @@ public:
 		NanScope();
 		Local<FunctionTemplate> t = NanNew<FunctionTemplate>(New);
 		t->InstanceTemplate()->SetInternalFieldCount(1);
-		t->SetClassName(NanNew<String>("BLAKE2Hash"));
+		t->SetClassName(NanNew<String>("Hash"));
 
 		NODE_SET_PROTOTYPE_METHOD(t, "update", Update);
 		NODE_SET_PROTOTYPE_METHOD(t, "digest", Digest);
 
 		NanAssignPersistent(constructor, t->GetFunction());
-		target->Set(NanNew<String>("BLAKE2Hash"), t->GetFunction());
+		target->Set(NanNew<String>("Hash"), t->GetFunction());
 	}
 
 	static
 	NAN_METHOD(New) {
 		NanScope();
-		BLAKE2Hash *obj;
+		Hash *obj;
 
 		if (!args.IsConstructCall()) {
 			return NanThrowError("Constructor must be called with new");
 		}
 
-		obj = new BLAKE2Hash();
+		obj = new Hash();
 		obj->Wrap(args.This());
 		if(args.Length() < 1) {
 			return NanThrowError(Exception::TypeError(NanNew<String>("Expected a string argument with algorithm name")));
@@ -97,7 +97,7 @@ public:
 	static
 	NAN_METHOD(Update) {
 		NanScope();
-		BLAKE2Hash *obj = ObjectWrap::Unwrap<BLAKE2Hash>(args.This());
+		Hash *obj = ObjectWrap::Unwrap<Hash>(args.This());
 
 		THROW_AND_RETURN_IF_NOT_STRING_OR_BUFFER(args[0]);
 
@@ -142,7 +142,7 @@ public:
 	NAN_METHOD(Digest) {
 		NanScope();
 		v8::Isolate* isolate = v8::Isolate::GetCurrent();
-		BLAKE2Hash *obj = ObjectWrap::Unwrap<BLAKE2Hash>(args.This());
+		Hash *obj = ObjectWrap::Unwrap<Hash>(args.This());
 		unsigned char digest[512 / 8];
 
 		if(!obj->initialised_) {
@@ -182,11 +182,11 @@ private:
 	static Persistent<Function> constructor;
 };
 
-Persistent<Function> BLAKE2Hash::constructor;
+Persistent<Function> Hash::constructor;
 
 static void
 init(Handle<Object> target) {
-	BLAKE2Hash::Initialize(target);
+	Hash::Initialize(target);
 }
 
 NODE_MODULE(blake2, init)

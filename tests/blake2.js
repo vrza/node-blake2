@@ -1,6 +1,7 @@
 "use strict";
 
-const blake2 = require('../build/Release/blake2');
+const blake2 = require('../index');
+const binding = require('../build/Release/blake2');
 const assert = require('assert');
 const fs = require('fs');
 
@@ -14,32 +15,32 @@ const BLAKE2S_EMPTY_DIGEST_BINARY = new Buffer(BLAKE2S_EMPTY_DIGEST_HEX, 'hex').
 
 describe('BLAKE2bHash', function() {
 	it('should return correct digest for blake2b after 0 updates', function() {
-		const hash = new blake2.BLAKE2Hash('blake2b');
+		const hash = new blake2.Hash('blake2b');
 		assert.equal(hash.digest('hex'), BLAKE2B_EMPTY_DIGEST_HEX);
 	});
 
 	it('should return correct digest for blake2s after 0 updates', function() {
-		const hash = new blake2.BLAKE2Hash('blake2s');
+		const hash = new blake2.Hash('blake2s');
 		assert.equal(hash.digest('hex'), BLAKE2S_EMPTY_DIGEST_HEX);
 	});
 
 	it('should return a Buffer when digest() is called without args', function() {
-		const hash = new blake2.BLAKE2Hash('blake2b');
+		const hash = new blake2.Hash('blake2b');
 		assert.deepEqual(hash.digest(), new Buffer(BLAKE2B_EMPTY_DIGEST_HEX, 'hex'));
 	});
 
 	it('should return a base64 string when digest("base64") is called', function() {
-		const hash = new blake2.BLAKE2Hash('blake2b');
+		const hash = new blake2.Hash('blake2b');
 		assert.equal(hash.digest('base64'), BLAKE2B_EMPTY_DIGEST_BASE64);
 	});
 
 	it('should return a binary string when digest("binary") is called', function() {
-		const hash = new blake2.BLAKE2Hash('blake2b');
+		const hash = new blake2.Hash('blake2b');
 		assert.equal(hash.digest('binary'), BLAKE2B_EMPTY_DIGEST_BINARY);
 	});
 
 	it('throws Error if digest() is called a second or third time', function() {
-		const hash = new blake2.BLAKE2Hash('blake2b');
+		const hash = new blake2.Hash('blake2b');
 		assert.equal(hash.digest('hex'), BLAKE2B_EMPTY_DIGEST_HEX);
 		assert.throws(function() {
 			hash.digest();
@@ -50,7 +51,7 @@ describe('BLAKE2bHash', function() {
 	});
 
 	it('throws Error if update(...) is called a second or third time', function() {
-		const hash = new blake2.BLAKE2Hash('blake2b');
+		const hash = new blake2.Hash('blake2b');
 		assert.equal(hash.digest('hex'), BLAKE2B_EMPTY_DIGEST_HEX);
 		assert.throws(function() {
 			hash.update('hi');
@@ -66,40 +67,42 @@ describe('BLAKE2bHash', function() {
 		fs.closeSync(f);
 
 		const stream = fs.createReadStream('temp1mb');
-		const hash = new blake2.BLAKE2Hash('blake2b');
+		const hash = new blake2.Hash('blake2b');
 		hash.setEncoding('hex');
 
 		stream.on('end', function() {
 			hash.end();
-			let digest = hash.read();
-			console.log(digest);
+			const digest = hash.read();
+			assert.equal(digest, 'a834b19291e54808ba8367ca60e6abd9c744138541284b12bb6caa532fae419b063c26022121148fef68a7d8dc0fa83eb2f00454138c1c54753f7148f6911e0d');
 			done();
 		});
 
 		stream.pipe(hash);
 	});
 
-	it('should throw Error if called without new', function() {
-		assert.throws(function() {
-			blake2.BLAKE2Hash('blake2b');
-		}, "must be called with new");
-	});
-
 	it('should throw Error if called without algorithm name', function() {
 		assert.throws(function() {
-			new blake2.BLAKE2Hash();
+			new blake2.Hash();
 		}, "Expected");
 	});
 
 	it('should throw Error if called with non-string algorithm name', function() {
 		assert.throws(function() {
-			new blake2.BLAKE2Hash(3);
+			new blake2.Hash(3);
 		}, "must be a string");
 	});
 
 	it('should throw Error if called with unsupported algorithm name', function() {
 		assert.throws(function() {
-			new blake2.BLAKE2Hash('blah');
+			new blake2.Hash('blah');
 		}, "must be");
+	});
+});
+
+describe('binding', function() {
+	it('should throw Error if called without new', function() {
+		assert.throws(function() {
+			binding.Hash('blake2b');
+		}, "must be called with new");
 	});
 });
