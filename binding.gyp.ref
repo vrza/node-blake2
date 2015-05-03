@@ -1,0 +1,32 @@
+{
+	"targets": [
+		{
+			"target_name": "blake2",
+			"sources": [
+				 "src/blake2.cpp"
+				,"src/BLAKE2/ref/blake2b-ref.c"
+				,"src/BLAKE2/ref/blake2bp-ref.c"
+				,"src/BLAKE2/ref/blake2s-ref.c"
+				,"src/BLAKE2/ref/blake2sp-ref.c"
+			],
+			"include_dirs": [
+				 "<!(node -e \"require('nan')\")"
+				,"src/BLAKE2/ref"
+			],
+			"cflags_c": [
+				 "-std=c99"
+				,"-Wstrict-aliasing"
+				,"-Wextra"
+			],
+			"cflags_cc": [
+				 "-Wstrict-aliasing"
+				,"-Wextra"
+			],
+			"msvs_settings": {
+				"VCCLCompilerTool": {
+					"AdditionalOptions": ["/arch:AVX2"]
+				}
+			}
+		}
+	]
+}
