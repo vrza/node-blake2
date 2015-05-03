@@ -21,7 +21,7 @@ union any_blake2_state {
 	}
 
 #define BLAKE_FN_CAST(fn) \
-	reinterpret_cast<int (*)(void *, const unsigned char *, long unsigned int)>(fn)
+	reinterpret_cast<int (*)(void*, const uint8_t*, uint64_t)>(fn)
 
 using namespace node;
 using namespace v8;
