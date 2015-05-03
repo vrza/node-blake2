@@ -25,7 +25,7 @@
 
 #define PARALLELISM_DEGREE 4
 
-static inline int blake2bp_init_leaf( blake2b_state *S, uint8_t outlen, uint8_t keylen, uint64_t offset )
+static __inline int blake2bp_init_leaf( blake2b_state *S, uint8_t outlen, uint8_t keylen, uint64_t offset )
 {
   blake2b_param P[1];
   P->digest_length = outlen;
@@ -42,7 +42,7 @@ static inline int blake2bp_init_leaf( blake2b_state *S, uint8_t outlen, uint8_t 
   return blake2b_init_param( S, P );
 }
 
-static inline int blake2bp_init_root( blake2b_state *S, uint8_t outlen, uint8_t keylen )
+static __inline int blake2bp_init_root( blake2b_state *S, uint8_t outlen, uint8_t keylen )
 {
   blake2b_param P[1];
   P->digest_length = outlen;
