@@ -1,7 +1,7 @@
 {
   "name": "blake2",
   "version": "0.0.1",
-  "description": "",
+  "description": "All four BLAKE2 variants for io.js, with stream support",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --harmony tests/*.js"
