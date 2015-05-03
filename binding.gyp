@@ -21,7 +21,12 @@
 			"cflags_cc": [
 				 "-Wstrict-aliasing"
 				,"-Wextra"
-			]
+			],
+			"msvs_settings": {
+				"VCCLCompilerTool": {
+					"AdditionalOptions": ["/arch:AVX2"]
+				}
+			}
 		}
 	]
 }
