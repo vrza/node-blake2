@@ -38,20 +38,20 @@ static const uint8_t blake2s_sigma[10][16] =
   { 10,  2,  8,  4,  7,  6,  1,  5, 15, 11,  9, 14,  3, 12, 13 , 0 } ,
 };
 
-static inline int blake2s_set_lastnode( blake2s_state *S )
+static __inline int blake2s_set_lastnode( blake2s_state *S )
 {
   S->f[1] = ~0U;
   return 0;
 }
 
-static inline int blake2s_clear_lastnode( blake2s_state *S )
+static __inline int blake2s_clear_lastnode( blake2s_state *S )
 {
   S->f[1] = 0U;
   return 0;
 }
 
 /* Some helper functions, not necessarily useful */
-static inline int blake2s_set_lastblock( blake2s_state *S )
+static __inline int blake2s_set_lastblock( blake2s_state *S )
 {
   if( S->last_node ) blake2s_set_lastnode( S );
 
@@ -59,7 +59,7 @@ static inline int blake2s_set_lastblock( blake2s_state *S )
   return 0;
 }
 
-static inline int blake2s_clear_lastblock( blake2s_state *S )
+static __inline int blake2s_clear_lastblock( blake2s_state *S )
 {
   if( S->last_node ) blake2s_clear_lastnode( S );
 
@@ -67,7 +67,7 @@ static inline int blake2s_clear_lastblock( blake2s_state *S )
   return 0;
 }
 
-static inline int blake2s_increment_counter( blake2s_state *S, const uint32_t inc )
+static __inline int blake2s_increment_counter( blake2s_state *S, const uint32_t inc )
 {
   S->t[0] += inc;
   S->t[1] += ( S->t[0] < inc );
@@ -75,61 +75,61 @@ static inline int blake2s_increment_counter( blake2s_state *S, const uint32_t in
 }
 
 // Parameter-related functions
-static inline int blake2s_param_set_digest_length( blake2s_param *P, const uint8_t digest_length )
+static __inline int blake2s_param_set_digest_length( blake2s_param *P, const uint8_t digest_length )
 {
   P->digest_length = digest_length;
   return 0;
 }
 
-static inline int blake2s_param_set_fanout( blake2s_param *P, const uint8_t fanout )
+static __inline int blake2s_param_set_fanout( blake2s_param *P, const uint8_t fanout )
 {
   P->fanout = fanout;
   return 0;
 }
 
-static inline int blake2s_param_set_max_depth( blake2s_param *P, const uint8_t depth )
+static __inline int blake2s_param_set_max_depth( blake2s_param *P, const uint8_t depth )
 {
   P->depth = depth;
   return 0;
 }
 
-static inline int blake2s_param_set_leaf_length( blake2s_param *P, const uint32_t leaf_length )
+static __inline int blake2s_param_set_leaf_length( blake2s_param *P, const uint32_t leaf_length )
 {
   store32( &P->leaf_length, leaf_length );
   return 0;
 }
 
-static inline int blake2s_param_set_node_offset( blake2s_param *P, const uint64_t node_offset )
+static __inline int blake2s_param_set_node_offset( blake2s_param *P, const uint64_t node_offset )
 {
   store48( P->node_offset, node_offset );
   return 0;
 }
 
-static inline int blake2s_param_set_node_depth( blake2s_param *P, const uint8_t node_depth )
+static __inline int blake2s_param_set_node_depth( blake2s_param *P, const uint8_t node_depth )
 {
   P->node_depth = node_depth;
   return 0;
 }
 
-static inline int blake2s_param_set_inner_length( blake2s_param *P, const uint8_t inner_length )
+static __inline int blake2s_param_set_inner_length( blake2s_param *P, const uint8_t inner_length )
 {
   P->inner_length = inner_length;
   return 0;
 }
 
-static inline int blake2s_param_set_salt( blake2s_param *P, const uint8_t salt[BLAKE2S_SALTBYTES] )
+static __inline int blake2s_param_set_salt( blake2s_param *P, const uint8_t salt[BLAKE2S_SALTBYTES] )
 {
   memcpy( P->salt, salt, BLAKE2S_SALTBYTES );
   return 0;
 }
 
-static inline int blake2s_param_set_personal( blake2s_param *P, const uint8_t personal[BLAKE2S_PERSONALBYTES] )
+static __inline int blake2s_param_set_personal( blake2s_param *P, const uint8_t personal[BLAKE2S_PERSONALBYTES] )
 {
   memcpy( P->personal, personal, BLAKE2S_PERSONALBYTES );
   return 0;
 }
 
-static inline int blake2s_init0( blake2s_state *S )
+static __inline int blake2s_init0( blake2s_state *S )
 {
   memset( S, 0, sizeof( blake2s_state ) );
 
