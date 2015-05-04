@@ -13,9 +13,12 @@ const BLAKE2S_EMPTY_DIGEST_HEX = '69217a3079908094e11121d042354a7c1f55b6482ca1a5
 const BLAKE2S_EMPTY_DIGEST_BASE64 = new Buffer(BLAKE2S_EMPTY_DIGEST_HEX, 'hex').toString('base64');
 const BLAKE2S_EMPTY_DIGEST_BINARY = new Buffer(BLAKE2S_EMPTY_DIGEST_HEX, 'hex').toString('binary');
 
+/**
+ * Parse the test vectors from a BLAKE2 test vector file
+ */
 function* getTestVectors(file) {
 	let content = fs.readFileSync(file, 'ascii').replace(/^\n+/, "");
-	// The BLAKE2 test vector files strangely end with "ok"
+	// The official BLAKE2 test vector files strangely end with "ok"
 	assert(content.endsWith("ok\n"));
 	content = content.replace(/ok\n$/, "");
 	let parts = content.split('\n\n');
