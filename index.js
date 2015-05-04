@@ -42,8 +42,9 @@ util.inherits(LazyTransform, stream.Transform);
 
 exports.createHash = exports.Hash = Hash;
 function Hash(algorithm, options) {
-	if (!(this instanceof Hash))
+	if(!(this instanceof Hash)) {
 		return new Hash(algorithm, options);
+	}
 	this._handle = new binding.Hash(algorithm);
 	LazyTransform.call(this, options);
 }
@@ -61,8 +62,9 @@ Hash.prototype._flush = function(callback) {
 
 Hash.prototype.update = function(data, encoding) {
 	encoding = encoding || exports.DEFAULT_ENCODING;
-	if (encoding === 'buffer' && typeof data === 'string')
+	if(encoding === 'buffer' && typeof data === 'string') {
 		encoding = 'binary';
+	}
 	this._handle.update(data, encoding);
 	return this;
 };
@@ -77,7 +79,7 @@ Hash.prototype.digest = function(outputEncoding) {
 exports.createHmac = exports.Hmac = Hmac;
 
 function Hmac(algorithm, key, options) {
-	if (!(this instanceof Hmac)) {
+	if(!(this instanceof Hmac)) {
 		return new Hmac(algorithm, key, options);
 	}
 	if(!util.isBuffer(key)) {
