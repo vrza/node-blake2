@@ -82,26 +82,7 @@ function Hmac(algorithm, key, options) {
 	if(!(this instanceof Hmac)) {
 		return new Hmac(algorithm, key, options);
 	}
-	if(!util.isBuffer(key)) {
-		throw new TypeError("key must be a Buffer");
-	}
-	this._handle = new binding.Hash(algorithm);
-	// We replicate the logic of blake2*_init_key here
-	let keybytes, blockbytes;
-	if(algorithm == "blake2b" || algorithm == "blake2bp") {
-		blockbytes = 128; /* BLAKE2B_BLOCKBYTES */
-		keybytes = 64; /* BLAKE2B_KEYBYTES */
-	} else {
-		blockbytes = 64; /* BLAKE2S_BLOCKBYTES */
-		keybytes = 32; /* BLAKE2S_KEYBYTES */
-	}
-	if(key.length > keybytes) {
-		throw new Error("key must be <= " + keybytes + " bytes for " + algorithm);
-	}
-	let keybuffer = new Buffer(blockbytes).fill(0);
-	key.copy(keybuffer);
-	console.log(keybuffer);
-	this._handle.update(keybuffer);
+	this._handle = new binding.Hash(algorithm, key);
 	LazyTransform.call(this, options);
 }
 util.inherits(Hmac, LazyTransform);

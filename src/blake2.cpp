@@ -65,24 +65,49 @@ public:
 		if(!args[0]->IsString()) {
 			return NanThrowError(Exception::TypeError(NanNew<String>("Algorithm name must be a string")));
 		}
+		const char *key_data = nullptr;
+		size_t key_length;
+		if(args.Length() >= 2) {
+			if(!Buffer::HasInstance(args[1])) {
+				return NanThrowError(Exception::TypeError(NanNew<String>("If key argument is given, it must be a Buffer")));
+			}
+			key_data = Buffer::Data(args[1]);
+			key_length = Buffer::Length(args[1]);
+		}
 		std::string algo = std::string(*String::Utf8Value(args[0]->ToString()));
 		if(algo == "blake2b") {
-			blake2b_init(reinterpret_cast<blake2b_state*>(&obj->state), BLAKE2B_OUTBYTES);
+			if(!key_data) {
+				blake2b_init(reinterpret_cast<blake2b_state*>(&obj->state), BLAKE2B_OUTBYTES);
+			} else {
+				blake2b_init_key(reinterpret_cast<blake2b_state*>(&obj->state), BLAKE2B_OUTBYTES, key_data, key_length);
+			}
 			obj->outbytes = 512 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2b_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2b_final);
 		} else if(algo == "blake2bp") {
-			blake2bp_init(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES);
+			if(!key_data) {
+				blake2bp_init(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES);
+			} else {
+				blake2bp_init_key(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES, key_data, key_length);
+			}
 			obj->outbytes = 512 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2bp_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2bp_final);
 		} else if(algo == "blake2s") {
-			blake2s_init(reinterpret_cast<blake2s_state*>(&obj->state), BLAKE2S_OUTBYTES);
+			if(!key_data) {
+				blake2s_init(reinterpret_cast<blake2s_state*>(&obj->state), BLAKE2S_OUTBYTES);
+			} else {
+				blake2s_init_key(reinterpret_cast<blake2s_state*>(&obj->state), BLAKE2S_OUTBYTES, key_data, key_length);
+			}
 			obj->outbytes = 256 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2s_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2s_final);
 		} else if(algo == "blake2sp") {
-			blake2sp_init(reinterpret_cast<blake2sp_state*>(&obj->state), BLAKE2S_OUTBYTES);
+			if(!key_data) {
+				blake2sp_init(reinterpret_cast<blake2sp_state*>(&obj->state), BLAKE2S_OUTBYTES);
+			} else {
+				blake2sp_init_key(reinterpret_cast<blake2sp_state*>(&obj->state), BLAKE2S_OUTBYTES, key_data, key_length);
+			}
 			obj->outbytes = 256 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2sp_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2sp_final);

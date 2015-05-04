@@ -30,7 +30,7 @@ function* getTestVectors(file) {
 	}
 }
 
-describe('BLAKE2bHash', function() {
+describe('blake2', function() {
 	it('should return correct digest for blake2b after 0 updates', function() {
 		const hash = new blake2.Hash('blake2b');
 		assert.equal(hash.digest('hex'), BLAKE2B_EMPTY_DIGEST_HEX);
@@ -118,8 +118,37 @@ describe('BLAKE2bHash', function() {
 	it('should return the correct result for all blake2b test vectors', function() {
 		const vectors = getTestVectors(__dirname + '/test-vectors/blake2b-test.txt');
 		for(let v of vectors) {
-			console.log(v);
 			let hmac = blake2.createHmac('blake2b', v.key);
+			hmac.update(v.input);
+			let digest = hmac.digest();
+			assert.deepEqual(digest, v.hash);
+		}
+	});
+
+	it('should return the correct result for all blake2bp test vectors', function() {
+		const vectors = getTestVectors(__dirname + '/test-vectors/blake2bp-test.txt');
+		for(let v of vectors) {
+			let hmac = blake2.createHmac('blake2bp', v.key);
+			hmac.update(v.input);
+			let digest = hmac.digest();
+			assert.deepEqual(digest, v.hash);
+		}
+	});
+
+	it('should return the correct result for all blake2s test vectors', function() {
+		const vectors = getTestVectors(__dirname + '/test-vectors/blake2s-test.txt');
+		for(let v of vectors) {
+			let hmac = blake2.createHmac('blake2s', v.key);
+			hmac.update(v.input);
+			let digest = hmac.digest();
+			assert.deepEqual(digest, v.hash);
+		}
+	});
+
+	it('should return the correct result for all blake2sp test vectors', function() {
+		const vectors = getTestVectors(__dirname + '/test-vectors/blake2sp-test.txt');
+		for(let v of vectors) {
+			let hmac = blake2.createHmac('blake2sp', v.key);
 			hmac.update(v.input);
 			let digest = hmac.digest();
 			assert.deepEqual(digest, v.hash);
