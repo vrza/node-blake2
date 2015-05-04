@@ -13,6 +13,23 @@ const BLAKE2S_EMPTY_DIGEST_HEX = '69217a3079908094e11121d042354a7c1f55b6482ca1a5
 const BLAKE2S_EMPTY_DIGEST_BASE64 = new Buffer(BLAKE2S_EMPTY_DIGEST_HEX, 'hex').toString('base64');
 const BLAKE2S_EMPTY_DIGEST_BINARY = new Buffer(BLAKE2S_EMPTY_DIGEST_HEX, 'hex').toString('binary');
 
+function* getTestVectors(file) {
+	let content = fs.readFileSync(file, 'ascii').replace(/^\n+/, "");
+	// The BLAKE2 test vector files strangely end with "ok"
+	assert(content.endsWith("ok\n"));
+	content = content.replace(/ok\n$/, "");
+	let parts = content.split('\n\n');
+	for(let part of parts) {
+		let lines = part.split('\n');
+		let input = new Buffer(lines[0].replace(/^in:\s+/, ""), "hex");
+		let key = new Buffer(lines[1].replace(/^key:\s+/, ""), "hex");
+		assert(key.length == 64 || key.length == 32, key.length);
+		let hash = new Buffer(lines[2].replace(/^hash:\s+/, ""), "hex");
+		assert(key.length == 64 || key.length == 32, key.length);
+		yield {input, key, hash};
+	}
+}
+
 describe('BLAKE2bHash', function() {
 	it('should return correct digest for blake2b after 0 updates', function() {
 		const hash = new blake2.Hash('blake2b');
@@ -96,6 +113,17 @@ describe('BLAKE2bHash', function() {
 		assert.throws(function() {
 			new blake2.Hash('blah');
 		}, "must be");
+	});
+
+	it('should return the correct result for all blake2b test vectors', function() {
+		const vectors = getTestVectors(__dirname + '/test-vectors/blake2b-test.txt');
+		for(let v of vectors) {
+			console.log(v);
+			let hmac = blake2.createHmac('blake2b', v.key);
+			hmac.update(v.input);
+			let digest = hmac.digest();
+			assert.deepEqual(digest, v.hash);
+		}
 	});
 });
 
