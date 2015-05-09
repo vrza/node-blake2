@@ -59,11 +59,8 @@ public:
 
 		Hash *obj = new Hash();
 		obj->Wrap(args.This());
-		if(args.Length() < 1) {
-			return NanThrowError(Exception::TypeError(NanNew<String>("Expected a string argument with algorithm name")));
-		}
-		if(!args[0]->IsString()) {
-			return NanThrowError(Exception::TypeError(NanNew<String>("Algorithm name must be a string")));
+		if(args.Length() < 1 || !args[0]->IsString()) {
+			return NanThrowError(Exception::TypeError(NanNew<String>("First argument must be a string with algorithm name")));
 		}
 		const char *key_data = nullptr;
 		size_t key_length;
@@ -77,48 +74,64 @@ public:
 		std::string algo = std::string(*String::Utf8Value(args[0]->ToString()));
 		if(algo == "blake2b") {
 			if(!key_data) {
-				blake2b_init(reinterpret_cast<blake2b_state*>(&obj->state), BLAKE2B_OUTBYTES);
+				if(blake2b_init(reinterpret_cast<blake2b_state*>(&obj->state), BLAKE2B_OUTBYTES) != 0) {
+					return NanThrowError("blake2b_init failure");
+				}
 			} else {
 				if(key_length > BLAKE2B_KEYBYTES) {
 					return NanThrowError("Key must be 64 bytes or smaller");
 				}
-				blake2b_init_key(reinterpret_cast<blake2b_state*>(&obj->state), BLAKE2B_OUTBYTES, key_data, key_length);
+				if(blake2b_init_key(reinterpret_cast<blake2b_state*>(&obj->state), BLAKE2B_OUTBYTES, key_data, key_length) != 0) {
+					return NanThrowError("blake2b_init_key failure");
+				}
 			}
 			obj->outbytes = 512 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2b_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2b_final);
 		} else if(algo == "blake2bp") {
 			if(!key_data) {
-				blake2bp_init(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES);
+				if(blake2bp_init(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES) != 0) {
+					return NanThrowError("blake2bp_init failure");
+				}
 			} else {
 				if(key_length > BLAKE2B_KEYBYTES) {
 					return NanThrowError("Key must be 64 bytes or smaller");
 				}
-				blake2bp_init_key(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES, key_data, key_length);
+				if(blake2bp_init_key(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES, key_data, key_length) != 0) {
+					return NanThrowError("blake2bp_init_key failure");
+				}
 			}
 			obj->outbytes = 512 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2bp_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2bp_final);
 		} else if(algo == "blake2s") {
 			if(!key_data) {
-				blake2s_init(reinterpret_cast<blake2s_state*>(&obj->state), BLAKE2S_OUTBYTES);
+				if(blake2s_init(reinterpret_cast<blake2s_state*>(&obj->state), BLAKE2S_OUTBYTES) != 0) {
+					return NanThrowError("blake2bs_init failure");
+				}
 			} else {
 				if(key_length > BLAKE2S_KEYBYTES) {
 					return NanThrowError("Key must be 32 bytes or smaller");
 				}
-				blake2s_init_key(reinterpret_cast<blake2s_state*>(&obj->state), BLAKE2S_OUTBYTES, key_data, key_length);
+				if(blake2s_init_key(reinterpret_cast<blake2s_state*>(&obj->state), BLAKE2S_OUTBYTES, key_data, key_length) != 0) {
+					return NanThrowError("blake2s_init_key failure");
+				}
 			}
 			obj->outbytes = 256 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2s_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2s_final);
 		} else if(algo == "blake2sp") {
 			if(!key_data) {
-				blake2sp_init(reinterpret_cast<blake2sp_state*>(&obj->state), BLAKE2S_OUTBYTES);
+				if(blake2sp_init(reinterpret_cast<blake2sp_state*>(&obj->state), BLAKE2S_OUTBYTES) != 0) {
+					return NanThrowError("blake2sp_init failure");
+				}
 			} else {
 				if(key_length > BLAKE2S_KEYBYTES) {
 					return NanThrowError("Key must be 32 bytes or smaller");
 				}
-				blake2sp_init_key(reinterpret_cast<blake2sp_state*>(&obj->state), BLAKE2S_OUTBYTES, key_data, key_length);
+				if(blake2sp_init_key(reinterpret_cast<blake2sp_state*>(&obj->state), BLAKE2S_OUTBYTES, key_data, key_length) != 0) {
+					return NanThrowError("blake2sp_init_key failure");
+				}
 			}
 			obj->outbytes = 256 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2sp_update);

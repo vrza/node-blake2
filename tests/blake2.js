@@ -68,23 +68,15 @@ describe('blake2', function() {
 	it('throws Error if digest() is called a second or third time', function() {
 		const hash = new blake2.Hash('blake2b');
 		assert.equal(hash.digest('hex'), BLAKE2B_EMPTY_DIGEST_HEX);
-		assert.throws(function() {
-			hash.digest();
-		}, "Not initialized");
-		assert.throws(function() {
-			hash.digest();
-		}, "Not initialized");
+		assert.throws(function() { hash.digest(); }, /Not initialized/);
+		assert.throws(function() { hash.digest(); }, /Not initialized/);
 	});
 
 	it('throws Error if update(...) is called after digest()', function() {
 		const hash = new blake2.Hash('blake2b');
 		assert.equal(hash.digest('hex'), BLAKE2B_EMPTY_DIGEST_HEX);
-		assert.throws(function() {
-			hash.update('hi');
-		}, "Not initialized");
-		assert.throws(function() {
-			hash.update(new Buffer('hi'));
-		}, "Not initialized");
+		assert.throws(function() { hash.update('hi'); }, /Not initialized/);
+		assert.throws(function() { hash.update('hi'); }, /Not initialized/);
 	});
 
 	it('should work with .pipe()', function(done) {
@@ -108,31 +100,29 @@ describe('blake2', function() {
 	});
 
 	it('should throw Error if called without algorithm name', function() {
-		assert.throws(function() { new blake2.Hash(); }, "Expected");
-		assert.throws(function() { new blake2.Hmac(); }, "Expected");
+		assert.throws(function() { new blake2.Hash(); }, /must be a string/);
+		assert.throws(function() { new blake2.Hmac(); }, /must be a string/);
 	});
 
 	it('should throw Error if called with non-string algorithm name', function() {
-		assert.throws(function() { new blake2.Hash(3); }, "must be a string");
-		assert.throws(function() { new blake2.Hmac(3); }, "must be a string");
+		assert.throws(function() { new blake2.Hash(3); }, /must be a string/);
+		assert.throws(function() { new blake2.Hmac(3); }, /must be a string/);
 	});
 
 	it('should throw Error if called with unsupported algorithm name', function() {
-		assert.throws(function() { new blake2.Hash('blah'); }, "must be");
-		assert.throws(function() { new blake2.Hmac('blah'); }, "must be");
+		assert.throws(function() { new blake2.Hash('blah'); }, /must be/);
+		assert.throws(function() { new blake2.Hmac('blah'); }, /must be/);
 	});
 
 	it('should throw Error if called with String key', function() {
-		assert.throws(function() {
-			new blake2.Hmac('blake2b', 'key');
-		}, "must be");
+		assert.throws(function() { new blake2.Hmac('blake2b', 'key'); }, /must be/);
 	});
 
 	describe('blake2b', function() {
 		it('should throw Error if called with too-long key', function() {
 			assert.throws(function() {
 				new blake2.Hmac('blake2b', new Buffer('x'.repeat(64 + 1), "ascii"));
-			}, "must be 64 bytes or smaller");
+			}, /must be 64 bytes or smaller/);
 		});
 	});
 
@@ -140,7 +130,7 @@ describe('blake2', function() {
 		it('should throw Error if called with too-long key', function() {
 			assert.throws(function() {
 				new blake2.Hmac('blake2bp', new Buffer('x'.repeat(64 + 1), "ascii"));
-			}, "must be 64 bytes or smaller");
+			}, /must be 64 bytes or smaller/);
 		});
 	});
 
@@ -148,7 +138,7 @@ describe('blake2', function() {
 		it('should throw Error if called with too-long key', function() {
 			assert.throws(function() {
 				new blake2.Hmac('blake2s', new Buffer('x'.repeat(32 + 1), "ascii"));
-			}, "must be 32 bytes or smaller");
+			}, /must be 32 bytes or smaller/);
 		});
 	});
 
@@ -156,7 +146,7 @@ describe('blake2', function() {
 		it('should throw Error if called with too-long key', function() {
 			assert.throws(function() {
 				new blake2.Hmac('blake2sp', new Buffer('x'.repeat(32 + 1), "ascii"));
-			}, "must be 32 bytes or smaller");
+			}, /must be 32 bytes or smaller/);
 		});
 	});
 
@@ -189,6 +179,6 @@ describe('binding', function() {
 	it('should throw Error if called without "new"', function() {
 		assert.throws(function() {
 			binding.Hash('blake2b');
-		}, "must be called with new");
+		}, /must be called with new/);
 	});
 });
