@@ -106,21 +106,18 @@ describe('blake2', function() {
 	});
 
 	it('should throw Error if called without algorithm name', function() {
-		assert.throws(function() {
-			new blake2.Hash();
-		}, "Expected");
+		assert.throws(function() { new blake2.Hash(); }, "Expected");
+		assert.throws(function() { new blake2.Hmac(); }, "Expected");
 	});
 
 	it('should throw Error if called with non-string algorithm name', function() {
-		assert.throws(function() {
-			new blake2.Hash(3);
-		}, "must be a string");
+		assert.throws(function() { new blake2.Hash(3); }, "must be a string");
+		assert.throws(function() { new blake2.Hmac(3); }, "must be a string");
 	});
 
 	it('should throw Error if called with unsupported algorithm name', function() {
-		assert.throws(function() {
-			new blake2.Hash('blah');
-		}, "must be");
+		assert.throws(function() { new blake2.Hash('blah'); }, "must be");
+		assert.throws(function() { new blake2.Hmac('blah'); }, "must be");
 	});
 
 	it('should throw Error if called with String key', function() {
