@@ -79,6 +79,9 @@ public:
 			if(!key_data) {
 				blake2b_init(reinterpret_cast<blake2b_state*>(&obj->state), BLAKE2B_OUTBYTES);
 			} else {
+				if(key_length > BLAKE2B_KEYBYTES) {
+					return NanThrowError("Key must be 64 bytes or smaller");
+				}
 				blake2b_init_key(reinterpret_cast<blake2b_state*>(&obj->state), BLAKE2B_OUTBYTES, key_data, key_length);
 			}
 			obj->outbytes = 512 / 8;
@@ -88,6 +91,9 @@ public:
 			if(!key_data) {
 				blake2bp_init(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES);
 			} else {
+				if(key_length > BLAKE2B_KEYBYTES) {
+					return NanThrowError("Key must be 64 bytes or smaller");
+				}
 				blake2bp_init_key(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES, key_data, key_length);
 			}
 			obj->outbytes = 512 / 8;
@@ -97,6 +103,9 @@ public:
 			if(!key_data) {
 				blake2s_init(reinterpret_cast<blake2s_state*>(&obj->state), BLAKE2S_OUTBYTES);
 			} else {
+				if(key_length > BLAKE2S_KEYBYTES) {
+					return NanThrowError("Key must be 32 bytes or smaller");
+				}
 				blake2s_init_key(reinterpret_cast<blake2s_state*>(&obj->state), BLAKE2S_OUTBYTES, key_data, key_length);
 			}
 			obj->outbytes = 256 / 8;
@@ -106,6 +115,9 @@ public:
 			if(!key_data) {
 				blake2sp_init(reinterpret_cast<blake2sp_state*>(&obj->state), BLAKE2S_OUTBYTES);
 			} else {
+				if(key_length > BLAKE2S_KEYBYTES) {
+					return NanThrowError("Key must be 32 bytes or smaller");
+				}
 				blake2sp_init_key(reinterpret_cast<blake2sp_state*>(&obj->state), BLAKE2S_OUTBYTES, key_data, key_length);
 			}
 			obj->outbytes = 256 / 8;
