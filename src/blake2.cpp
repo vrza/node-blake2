@@ -200,7 +200,9 @@ public:
 		}
 
 		obj->initialised_ = false;
-		obj->any_blake2_final(reinterpret_cast<void*>(&obj->state), digest, obj->outbytes);
+		if(obj->any_blake2_final(reinterpret_cast<void*>(&obj->state), digest, obj->outbytes) != 0) {
+			return NanThrowError("blake2*_final failure");
+		}
 
 		Local<Value> outString;
 
