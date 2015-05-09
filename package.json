@@ -1,6 +1,6 @@
 {
   "name": "blake2",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "All four BLAKE2 variants for io.js, with stream support",
   "main": "index.js",
   "scripts": {
