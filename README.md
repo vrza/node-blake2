@@ -57,6 +57,10 @@ h.update(new Buffer("test"));
 console.log(h.digest("hex"));
 ```
 
+With streams:
+
+This should work exactly like it does with [`crypto.Hash`](https://iojs.org/api/crypto.html#crypto_crypto_createhash_algorithm).  See [b2sum.js](https://github.com/ludios/node-blake2/blob/master/b2sum.js).
+
 
 Known issues
 ---
