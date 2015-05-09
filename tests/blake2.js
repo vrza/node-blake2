@@ -4,6 +4,7 @@ const blake2 = require('../index');
 const binding = require('../build/Release/blake2');
 const assert = require('assert');
 const fs = require('fs');
+const os = require('os');
 
 const BLAKE2B_EMPTY_DIGEST_HEX = '786a02f742015903c6c6fd852552d272912f4740e15847618a86e217f71f5419d25e1031afee585313896444934eb04b903a685b1448b755d56f701afe9be2ce';
 const BLAKE2B_EMPTY_DIGEST_BASE64 = new Buffer(BLAKE2B_EMPTY_DIGEST_HEX, 'hex').toString('base64');
@@ -87,11 +88,12 @@ describe('blake2', function() {
 	});
 
 	it('should work with .pipe()', function(done) {
-		const f = fs.openSync('temp1mb', 'w');
+		const tempfname = `${os.tmpdir()}/temp1mb`;
+		const f = fs.openSync(tempfname, 'w');
 		fs.writeSync(f, '\x00'.repeat(1024*1024));
 		fs.closeSync(f);
 
-		const stream = fs.createReadStream('temp1mb');
+		const stream = fs.createReadStream(tempfname);
 		const hash = new blake2.Hash('blake2b');
 		hash.setEncoding('hex');
 
