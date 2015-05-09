@@ -48,7 +48,7 @@ public:
 	NAN_METHOD(New) {
 		NanScope();
 
-		if (!args.IsConstructCall()) {
+		if(!args.IsConstructCall()) {
 			return NanThrowError("Constructor must be called with new");
 		}
 
