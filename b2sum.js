@@ -15,9 +15,9 @@ hash.setEncoding('hex');
 const stream = process.stdin;
 
 stream.on('end', function() {
-        hash.end();
-        const digest = hash.read();
-        console.log(digest);
+	hash.end();
+	const digest = hash.read();
+	console.log(digest);
 });
 
 stream.pipe(hash);
