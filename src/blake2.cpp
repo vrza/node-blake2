@@ -167,7 +167,6 @@ public:
 	static
 	NAN_METHOD(Digest) {
 		NanScope();
-		v8::Isolate* isolate = v8::Isolate::GetCurrent();
 		Hash *obj = ObjectWrap::Unwrap<Hash>(args.This());
 		unsigned char digest[512 / 8];
 
@@ -181,26 +180,10 @@ public:
 			return NanThrowError("blake2*_final failure");
 		}
 
-		Local<Value> outString;
-
-		enum encoding encoding = BUFFER;
-		if (args.Length() >= 1) {
-			// TODO: make compatible with pre-iojs nodes
-			// https://github.com/iojs/nan/issues/189
-			encoding = ParseEncoding(
-				isolate,
-				args[0]->ToString(isolate),
-				BUFFER
-			);
-		}
-
-		// TODO: make compatible with pre-iojs nodes
-		// Need to convert node::Encoding to Nan::Encoding?
-		Local<Value> rc = Encode(
-			isolate,
+		Local<Value> rc = NanEncode(
 			reinterpret_cast<const char*>(digest),
 			obj->outbytes,
-			encoding
+			Nan::BUFFER
 		);
 
 		NanReturnValue(rc);

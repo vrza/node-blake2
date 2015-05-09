@@ -60,18 +60,17 @@ Hash.prototype._flush = function(callback) {
 	callback();
 };
 
-Hash.prototype.update = function(data, encoding) {
-	encoding = encoding || exports.DEFAULT_ENCODING;
-	if(encoding === 'buffer' && typeof data === 'string') {
-		encoding = 'binary';
-	}
-	this._handle.update(data, encoding);
+Hash.prototype.update = function(buf) {
+	this._handle.update(buf);
 	return this;
 };
 
 Hash.prototype.digest = function(outputEncoding) {
-	outputEncoding = outputEncoding || exports.DEFAULT_ENCODING;
-	return this._handle.digest(outputEncoding);
+	const buf = this._handle.digest();
+	if(outputEncoding) {
+		return buf.toString(outputEncoding);
+	}
+	return buf;
 };
 
 
