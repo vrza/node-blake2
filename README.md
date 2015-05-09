@@ -15,13 +15,10 @@ npm install blake2
 
 or from the GitHub repo:
 
-First, find the `node-gyp` bin in your io.js install and add it to your PATH.  Then,
-
 ```
 git clone https://github.com/ludios/node-blake2
 cd node-blake2
-npm install
-node-gyp clean configure build --verbose
+npm install --verbose
 ```
 
 

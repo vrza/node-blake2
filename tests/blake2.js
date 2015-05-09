@@ -75,8 +75,16 @@ describe('blake2', function() {
 	it('throws Error if update(...) is called after digest()', function() {
 		const hash = new blake2.Hash('blake2b');
 		assert.equal(hash.digest('hex'), BLAKE2B_EMPTY_DIGEST_HEX);
-		assert.throws(function() { hash.update('hi'); }, /Not initialized/);
-		assert.throws(function() { hash.update('hi'); }, /Not initialized/);
+		assert.throws(function() { hash.update(new Buffer('hi')); }, /Not initialized/);
+		assert.throws(function() { hash.update(new Buffer('hi')); }, /Not initialized/);
+	});
+
+	it('throws Error if update(...) is called with a non-Buffer', function() {
+		const hash = new blake2.Hash('blake2b');
+		assert.throws(function() { hash.update('hi'); }, /need a Buffer/);
+		assert.throws(function() { hash.update(3); }, /need a Buffer/);
+		assert.throws(function() { hash.update(null); }, /need a Buffer/);
+		assert.throws(function() { hash.update(); }, /need a Buffer/);
 	});
 
 	it('should work with .pipe()', function(done) {

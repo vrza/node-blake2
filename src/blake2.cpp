@@ -15,11 +15,6 @@ union any_blake2_state {
 	blake2sp_state casted_blake2sp_state;
 };
 
-#define THROW_AND_RETURN_IF_NOT_STRING_OR_BUFFER(val) \
-	if (!val->IsString() && !Buffer::HasInstance(val)) { \
-		return NanThrowError(Exception::TypeError(NanNew<String>("Not a string or buffer"))); \
-	}
-
 #define BLAKE_FN_CAST(fn) \
 	reinterpret_cast<int (*)(void*, const uint8_t*, uint64_t)>(fn)
 
@@ -148,41 +143,23 @@ public:
 		NanScope();
 		Hash *obj = ObjectWrap::Unwrap<Hash>(args.This());
 
-		THROW_AND_RETURN_IF_NOT_STRING_OR_BUFFER(args[0]);
-
 		if(!obj->initialised_) {
 			Local<Value> exception = Exception::Error(NanNew<String>("Not initialized"));
 			return NanThrowError(exception);
 		}
 
-		enum encoding enc = ParseEncoding(args[1]);
-		ssize_t len = DecodeBytes(args[0], enc);
-
-		if (len < 0) {
-			Local<Value> exception = Exception::Error(NanNew<String>("Bad argument"));
-			return NanThrowError(exception);
+		if(args.Length() < 1 || !Buffer::HasInstance(args[0])) {
+			return NanThrowError(Exception::TypeError(NanNew<String>("Bad argument; need a Buffer")));
 		}
 
-		if (Buffer::HasInstance(args[0])) {
-			Local<Object> buffer_obj = args[0]->ToObject();
-			const char *buffer_data = Buffer::Data(buffer_obj);
-			size_t buffer_length = Buffer::Length(buffer_obj);
-			obj->any_blake2_update(
-				reinterpret_cast<void*>(&obj->state),
-				reinterpret_cast<const uint8_t*>(buffer_data),
-				buffer_length
-			);
-		} else {
-			char *buf = new char[len];
-			ssize_t written = DecodeWrite(buf, len, args[0], enc);
-			assert(written == len);
-			obj->any_blake2_update(
-				reinterpret_cast<void*>(&obj->state),
-				reinterpret_cast<const uint8_t*>(buf),
-				len
-			);
-			delete[] buf;
-		}
+		Local<Object> buffer_obj = args[0]->ToObject();
+		const char *buffer_data = Buffer::Data(buffer_obj);
+		size_t buffer_length = Buffer::Length(buffer_obj);
+		obj->any_blake2_update(
+			reinterpret_cast<void*>(&obj->state),
+			reinterpret_cast<const uint8_t*>(buffer_data),
+			buffer_length
+		);
 
 		NanReturnValue(args.This());
 	}
