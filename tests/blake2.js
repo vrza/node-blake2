@@ -75,7 +75,7 @@ describe('blake2', function() {
 		}, "Not initialized");
 	});
 
-	it('throws Error if update(...) is called a second or third time', function() {
+	it('throws Error if update(...) is called after digest()', function() {
 		const hash = new blake2.Hash('blake2b');
 		assert.equal(hash.digest('hex'), BLAKE2B_EMPTY_DIGEST_HEX);
 		assert.throws(function() {
