@@ -2,8 +2,8 @@ node-blake2
 ===
 
 Why BLAKE2 for hashing?  Because "BLAKE2 outperforms MD5, SHA-1, SHA-2,
-and SHA-3 on recent Intel CPUs." and has "no known security issues, whereas
-SHA-1, MD5, and SHA-512 are susceptible to length-extension" https://blake2.net/
+and SHA-3 on recent Intel CPUs" and has "no known security issues, whereas
+SHA-1, MD5, and SHA-512 are susceptible to length-extension". https://blake2.net/
 
 node-blake2 provides a [stream](https://iojs.org/api/stream.html)-compatible
 blake2b, blake2bp, blake2s, and blake2sp `Hash` and `Hmac` for [io.js](https://iojs.org/).
@@ -20,11 +20,13 @@ Install
 
 On Windows, first install [Python 2.7.9](https://www.python.org/downloads/release/python-279/) so that node-gyp works.
 
+Run:
+
 ```
-npm install blake2
+npm install blake2 --save
 ```
 
-or from the GitHub repo:
+or to install from the GitHub repo:
 
 ```
 git clone https://github.com/ludios/node-blake2
