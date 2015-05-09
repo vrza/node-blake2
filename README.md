@@ -2,15 +2,16 @@ node-blake2
 ===
 
 Why BLAKE2 for hashing?  Because "BLAKE2 outperforms MD5, SHA-1, SHA-2,
-and SHA-3 on recent Intel CPUs." https://blake2.net/
+and SHA-3 on recent Intel CPUs." and has "no known security issues, whereas
+SHA-1, MD5, and SHA-512 are susceptible to length-extension" https://blake2.net/
 
-node-blake2 provides a stream-compatible blake2b, blake2bp, blake2s,
-and blake2sp `Hash` and `Hmac` for [io.js](https://iojs.org/).
+node-blake2 provides a [stream](https://iojs.org/api/stream.html)-compatible
+blake2b, blake2bp, blake2s, and blake2sp `Hash` and `Hmac` for [io.js](https://iojs.org/).
 
 node-blake2 was tested to work on
 -	Ubuntu 14.04 (g++ 4.8.2)
 -	Ubuntu 15.04 (g++ 4.9.2)
--	Windows 8.1 (VS2013)
+-	Windows 8.1 x64 (VS2013)
 -	OS X 10.10 (Apple LLVM 6.1.0)
 
 
