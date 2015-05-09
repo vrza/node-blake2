@@ -200,4 +200,4 @@ init(Handle<Object> target) {
 	Hash::Initialize(target);
 }
 
-NODE_MODULE(blake2, init)
+NODE_MODULE(binding, init)

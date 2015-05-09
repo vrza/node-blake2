@@ -1,7 +1,7 @@
 "use strict";
 
 const blake2 = require('../index');
-const binding = require('../build/Release/blake2');
+const binding = require('../build/Release/binding');
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');

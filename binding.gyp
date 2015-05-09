@@ -1,9 +1,9 @@
 {
 	"targets": [
 		{
-			"target_name": "blake2",
+			"target_name": "binding",
 			"sources": [
-				 "src/blake2.cpp"
+				 "src/binding.cpp"
 				,"src/BLAKE2/sse/blake2b.c"
 				,"src/BLAKE2/sse/blake2bp.c"
 				,"src/BLAKE2/sse/blake2s.c"

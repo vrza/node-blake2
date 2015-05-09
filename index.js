@@ -7,7 +7,7 @@
 
 const util = require('util');
 const stream = require('stream');
-const binding = require('./build/Release/blake2');
+const binding = require('./build/Release/binding');
 
 function LazyTransform(options) {
 	this._options = options;
