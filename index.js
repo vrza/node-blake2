@@ -1,8 +1,8 @@
 "use strict";
 
 /**
- * This file contains a copy of LazyTransform and Hash from
- * io.js/lib/crypto.js
+ * This file contains a slightly-modified copy of LazyTransform and Hash
+ * from io.js/lib/crypto.js
  */
 
 const util = require('util');
