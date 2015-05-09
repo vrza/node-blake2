@@ -17,11 +17,25 @@
 				 "-std=c99"
 				,"-Wstrict-aliasing"
 				,"-Wextra"
+				,"-Wno-unused-function"
+				,"-Wno-unused-const-variable"
 			],
 			"cflags_cc": [
 				 "-Wstrict-aliasing"
 				,"-Wextra"
+				,"-Wno-unused-function"
+				,"-Wno-unused-const-variable"
+				,"-Wno-unused-parameter"
 			],
+			'xcode_settings': {
+				'OTHER_CFLAGS': [
+					 "-Wstrict-aliasing"
+					,"-Wextra"
+					,"-Wno-unused-function"
+					,"-Wno-unused-const-variable"
+					,"-Wno-unused-parameter"
+				]
+			},
 			"msvs_settings": {
 				"VCCLCompilerTool": {
 					"AdditionalOptions": ["/arch:AVX"]
