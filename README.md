@@ -7,12 +7,17 @@ and SHA-3 on recent Intel CPUs." https://blake2.net/
 node-blake2 provides a stream-compatible blake2b, blake2bp, blake2s,
 and blake2sp `Hash` and `Hmac` for [io.js](https://iojs.org/).
 
-node-blake2 was tested to work on Ubuntu 14.04 (g++ 4.8.2),
-Windows 8.1 (VS2013), and OS X 10.10 (Apple LLVM 6.1.0).
+node-blake2 was tested to work on
+Ubuntu 14.04 (g++ 4.8.2),
+Ubuntu 15.04 (g++ 4.9.2),
+Windows 8.1 (VS2013),
+and OS X 10.10 (Apple LLVM 6.1.0).
 
 
 Install
 ---
+
+On Windows, first install [Python 2.7.9](https://www.python.org/downloads/release/python-279/) so that node-gyp works.
 
 ```
 npm install blake2
