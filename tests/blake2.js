@@ -187,7 +187,7 @@ describe('blake2', function() {
 });
 
 describe('binding', function() {
-	it('should throw Error if called without new', function() {
+	it('should throw Error if called without "new"', function() {
 		assert.throws(function() {
 			binding.Hash('blake2b');
 		}, "must be called with new");
