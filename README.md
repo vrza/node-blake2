@@ -27,7 +27,9 @@ npm install --verbose
 Examples
 ---
 
-`blake2.createHash` and `blake2.createHmac` work just like node's [`crypto.createHash`](https://iojs.org/api/crypto.html#crypto_crypto_createhash_algorithm) and [`crypto.createHmac`](https://iojs.org/api/crypto.html#crypto_crypto_createhmac_algorithm_key), except:
+`blake2.createHash` and `blake2.createHmac` work just like node's
+
+[`crypto.createHash`](https://iojs.org/api/crypto.html#crypto_crypto_createhash_algorithm) and [`crypto.createHmac`](https://iojs.org/api/crypto.html#crypto_crypto_createhmac_algorithm_key), except:
 
 - `blake2.create{Hash,Hmac}` supports only algorithms `blake2b`, `blake2bp`, `blake2s`, and `blake2sp`.
 - Keys passed to `blake2.createHmac` must be a `Buffer`.
