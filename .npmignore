@@ -1,5 +1,5 @@
 /build
-/.npmignore
+/.*
 /*.tgz
 /src/BLAKE2/b2sum
 /src/BLAKE2/csharp
