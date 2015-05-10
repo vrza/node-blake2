@@ -1,6 +1,9 @@
 node-blake2
 ===
 
+[![NPM version][npm-image]][npm-url]
+[![Build status][travis-image]][travis-url]
+
 Why BLAKE2 for hashing?  Because "BLAKE2 outperforms MD5, SHA-1, SHA-2,
 and SHA-3 on recent Intel CPUs" and has "no known security issues, whereas
 SHA-1, MD5, and SHA-512 are susceptible to length-extension".
@@ -78,3 +81,8 @@ Known issues
 		https://github.com/BLAKE2/BLAKE2/issues/9
 -	On Windows, node-blake2 requires AVX instructions due to some SSE2 build
 	problems.  This shouldn't be too hard to fix.
+
+[npm-image]: https://img.shields.io/npm/v/blake2.svg
+[npm-url]: https://npmjs.org/package/blake2
+[travis-image]: https://img.shields.io/travis/ludios/node-blake2.svg
+[travis-url]: https://travis-ci.org/ludios/node-blake2
