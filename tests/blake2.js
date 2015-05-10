@@ -40,27 +40,27 @@ function* getTestVectors(file) {
 }
 
 describe('blake2', function() {
-	it('should return correct digest for blake2b after 0 updates', function() {
+	it('returns correct digest for blake2b after 0 updates', function() {
 		const hash = new blake2.Hash('blake2b');
 		assert.equal(hash.digest('hex'), BLAKE2B_EMPTY_DIGEST_HEX);
 	});
 
-	it('should return correct digest for blake2s after 0 updates', function() {
+	it('returns correct digest for blake2s after 0 updates', function() {
 		const hash = new blake2.Hash('blake2s');
 		assert.equal(hash.digest('hex'), BLAKE2S_EMPTY_DIGEST_HEX);
 	});
 
-	it('should return a Buffer when digest() is called without args', function() {
+	it('returns a Buffer when digest() is called without args', function() {
 		const hash = new blake2.Hash('blake2b');
 		assert.deepEqual(hash.digest(), new Buffer(BLAKE2B_EMPTY_DIGEST_HEX, 'hex'));
 	});
 
-	it('should return a base64 string when digest("base64") is called', function() {
+	it('returns a base64 string when digest("base64") is called', function() {
 		const hash = new blake2.Hash('blake2b');
 		assert.equal(hash.digest('base64'), BLAKE2B_EMPTY_DIGEST_BASE64);
 	});
 
-	it('should return a binary string when digest("binary") is called', function() {
+	it('returns a binary string when digest("binary") is called', function() {
 		const hash = new blake2.Hash('blake2b');
 		assert.equal(hash.digest('binary'), BLAKE2B_EMPTY_DIGEST_BINARY);
 	});
@@ -87,7 +87,7 @@ describe('blake2', function() {
 		assert.throws(function() { hash.update(); }, /need a Buffer/);
 	});
 
-	it('should work with .pipe()', function(done) {
+	it('works with .pipe()', function(done) {
 		const tempfname = `${os.tmpdir()}/temp1mb`;
 		const f = fs.openSync(tempfname, 'w');
 		fs.writeSync(f, '\x00'.repeat(1024*1024));
@@ -107,27 +107,27 @@ describe('blake2', function() {
 		stream.pipe(hash);
 	});
 
-	it('should throw Error if called without algorithm name', function() {
+	it('throws Error if called without algorithm name', function() {
 		assert.throws(function() { new blake2.Hash(); }, /must be a string/);
 		assert.throws(function() { new blake2.Hmac(); }, /must be a string/);
 	});
 
-	it('should throw Error if called with non-string algorithm name', function() {
+	it('throws Error if called with non-string algorithm name', function() {
 		assert.throws(function() { new blake2.Hash(3); }, /must be a string/);
 		assert.throws(function() { new blake2.Hmac(3); }, /must be a string/);
 	});
 
-	it('should throw Error if called with unsupported algorithm name', function() {
+	it('throws Error if called with unsupported algorithm name', function() {
 		assert.throws(function() { new blake2.Hash('blah'); }, /must be/);
 		assert.throws(function() { new blake2.Hmac('blah'); }, /must be/);
 	});
 
-	it('should throw Error if called with String key', function() {
+	it('throws Error if called with String key', function() {
 		assert.throws(function() { new blake2.Hmac('blake2b', 'key'); }, /must be/);
 	});
 
 	describe('blake2b', function() {
-		it('should throw Error if called with too-long key', function() {
+		it('throws Error if called with too-long key', function() {
 			assert.throws(function() {
 				new blake2.Hmac('blake2b', new Buffer('x'.repeat(64 + 1), "ascii"));
 			}, /must be 64 bytes or smaller/);
@@ -135,7 +135,7 @@ describe('blake2', function() {
 	});
 
 	describe('blake2bp', function() {
-		it('should throw Error if called with too-long key', function() {
+		it('throws Error if called with too-long key', function() {
 			assert.throws(function() {
 				new blake2.Hmac('blake2bp', new Buffer('x'.repeat(64 + 1), "ascii"));
 			}, /must be 64 bytes or smaller/);
@@ -143,7 +143,7 @@ describe('blake2', function() {
 	});
 
 	describe('blake2s', function() {
-		it('should throw Error if called with too-long key', function() {
+		it('throws Error if called with too-long key', function() {
 			assert.throws(function() {
 				new blake2.Hmac('blake2s', new Buffer('x'.repeat(32 + 1), "ascii"));
 			}, /must be 32 bytes or smaller/);
@@ -151,14 +151,14 @@ describe('blake2', function() {
 	});
 
 	describe('blake2sp', function() {
-		it('should throw Error if called with too-long key', function() {
+		it('throws Error if called with too-long key', function() {
 			assert.throws(function() {
 				new blake2.Hmac('blake2sp', new Buffer('x'.repeat(32 + 1), "ascii"));
 			}, /must be 32 bytes or smaller/);
 		});
 	});
 
-	it('should return the correct result for all keyed test vectors', function() {
+	it('returns the correct result for all keyed test vectors', function() {
 		for(let algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
 			const vectors = getTestVectors(`${__dirname}/test-vectors/keyed/${algo}-test.txt`);
 			for(let v of vectors) {
@@ -170,7 +170,7 @@ describe('blake2', function() {
 		}
 	});
 
-	it('should return the correct result for all unkeyed test vectors', function() {
+	it('returns the correct result for all unkeyed test vectors', function() {
 		for(let algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
 			const vectors = getTestVectors(`${__dirname}/test-vectors/unkeyed/${algo}-test.txt`);
 			for(let v of vectors) {
@@ -184,7 +184,7 @@ describe('blake2', function() {
 });
 
 describe('binding', function() {
-	it('should throw Error if called without "new"', function() {
+	it('throws Error if called without "new"', function() {
 		assert.throws(function() {
 			binding.Hash('blake2b');
 		}, /must be called with new/);
