@@ -1,13 +1,13 @@
 {
   "name": "blake2",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "All four BLAKE2 variants (blake2b, blake2bp, blake2s, blake2sp) for io.js with stream support",
   "homepage": "https://github.com/ludios/node-blake2",
   "issues": "https://github.com/ludios/node-blake2/issues",
   "keywords": ["crypto", "hash", "hashing", "hmac", "blake2", "blake2b", "blake2bp", "blake2s", "blake2sp"],
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --harmony tests/*.js"
+    "test": "./node_modules/.bin/mocha tests/*.js"
   },
   "dependencies": {
     "nan": "^1.8.4"
