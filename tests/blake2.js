@@ -57,13 +57,13 @@ describe('blake2', function() {
 	});
 
 	it('returns a base64 string when digest("base64") is called', function() {
-		const hash = new blake2.Hash('blake2b');
-		assert.equal(hash.digest('base64'), BLAKE2B_EMPTY_DIGEST_BASE64);
+		assert.equal(new blake2.Hash('blake2b').digest('base64'), BLAKE2B_EMPTY_DIGEST_BASE64);
+		assert.equal(new blake2.Hash('blake2s').digest('base64'), BLAKE2S_EMPTY_DIGEST_BASE64);
 	});
 
 	it('returns a binary string when digest("binary") is called', function() {
-		const hash = new blake2.Hash('blake2b');
-		assert.equal(hash.digest('binary'), BLAKE2B_EMPTY_DIGEST_BINARY);
+		assert.equal(new blake2.Hash('blake2b').digest('binary'), BLAKE2B_EMPTY_DIGEST_BINARY);
+		assert.equal(new blake2.Hash('blake2s').digest('binary'), BLAKE2S_EMPTY_DIGEST_BINARY);
 	});
 
 	it('throws Error if digest() is called a second or third time', function() {
@@ -187,7 +187,9 @@ describe('blake2', function() {
 describe('binding', function() {
 	it('throws Error if called without "new"', function() {
 		assert.throws(function() {
+			/* eslint-disable new-cap */
 			binding.Hash('blake2b');
+			/* eslint-enable new-cap */
 		}, /must be called with new/);
 	});
 });
