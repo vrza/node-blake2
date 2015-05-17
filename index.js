@@ -6,14 +6,15 @@
 "use strong";
 "use strict";
 
-const util = require('util');
 const stream = require('stream');
 const binding = require('./build/Release/binding');
 
-function LazyTransform(options) {
-	this._options = options;
+class LazyTransform extends stream.Transform {
+	constructor(options) {
+		super();
+		this._options = options;
+	}
 }
-util.inherits(LazyTransform, stream.Transform);
 
 [
 	'_readableState',
@@ -41,15 +42,12 @@ util.inherits(LazyTransform, stream.Transform);
 });
 
 
-exports.createHash = exports.Hash = Hash;
-function Hash(algorithm, options) {
-	if(!(this instanceof Hash)) {
-		return new Hash(algorithm, options);
+class Hash extends LazyTransform {
+	constructor(algorithm, options) {
+		super(options);
+		this._handle = new binding.Hash(algorithm);
 	}
-	this._handle = new binding.Hash(algorithm);
-	LazyTransform.call(this, options);
 }
-util.inherits(Hash, LazyTransform);
 
 Hash.prototype._transform = function(chunk, encoding, callback) {
 	this._handle.update(chunk, encoding);
@@ -74,20 +72,25 @@ Hash.prototype.digest = function(outputEncoding) {
 	return buf;
 };
 
+exports.Hash = Hash;
+exports.createHash = function(algorithm, options) {
+	return new Hash(algorithm, options);
+};
 
 
-exports.createHmac = exports.Hmac = Hmac;
-
-function Hmac(algorithm, key, options) {
-	if(!(this instanceof Hmac)) {
-		return new Hmac(algorithm, key, options);
+class Hmac extends LazyTransform {
+	constructor(algorithm, key, options) {
+		super(options);
+		this._handle = new binding.Hash(algorithm, key);
 	}
-	this._handle = new binding.Hash(algorithm, key);
-	LazyTransform.call(this, options);
 }
-util.inherits(Hmac, LazyTransform);
 
 Hmac.prototype.update = Hash.prototype.update;
 Hmac.prototype.digest = Hash.prototype.digest;
 Hmac.prototype._flush = Hash.prototype._flush;
 Hmac.prototype._transform = Hash.prototype._transform;
+
+exports.Hmac = Hmac;
+exports.createHmac = function(algorithm, key, options) {
+	return new Hmac(algorithm, key, options);
+};
