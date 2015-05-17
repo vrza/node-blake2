@@ -1,3 +1,4 @@
+"use strong";
 "use strict";
 
 const blake2 = require('../index');
@@ -27,14 +28,14 @@ function* getTestVectors(file) {
 		let lines = part.split('\n');
 		let input = new Buffer(lines[0].replace(/^in:\s+/, ""), "hex");
 		let key, hash;
-		if(lines.length == 3) {
+		if(lines.length === 3) {
 			key = new Buffer(lines[1].replace(/^key:\s+/, ""), "hex");
-			assert(key.length == 64 || key.length == 32, key.length);
+			assert(key.length === 64 || key.length === 32, key.length);
 			hash = new Buffer(lines[2].replace(/^hash:\s+/, ""), "hex");
 		} else {
 			hash = new Buffer(lines[1].replace(/^hash:\s+/, ""), "hex");
 		}
-		assert(hash.length == 64 || hash.length == 32, hash.length);
+		assert(hash.length === 64 || hash.length === 32, hash.length);
 		yield {input, key, hash};
 	}
 }

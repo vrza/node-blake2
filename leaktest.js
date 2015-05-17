@@ -1,11 +1,12 @@
 #!/usr/bin/env iojs
 
-"use strict";
-
 /**
  * Creates Hashes and Hmacs in an infinite loop; use `ps u | grep leaktest`
  * to verify lack of memory leaks
  */
+
+"use strong";
+"use strict";
 
 const blake2 = require('./index');
 

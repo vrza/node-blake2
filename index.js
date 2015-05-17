@@ -1,9 +1,10 @@
-"use strict";
-
 /**
  * This file contains a slightly-modified copy of LazyTransform and Hash
  * from io.js/lib/crypto.js
  */
+
+"use strong";
+"use strict";
 
 const util = require('util');
 const stream = require('stream');
