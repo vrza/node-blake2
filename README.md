@@ -40,8 +40,9 @@ npm install ludios/node-blake2 --save
 Examples
 ---
 
-`blake2.createHash` works just like node's
+`blake2.createHash` works like node's
 [`crypto.createHash`](https://iojs.org/api/crypto.html#crypto_crypto_createhash_algorithm).
+
 `blake2.createKeyedHash` takes a key argument like
 [`crypto.createHmac`](https://iojs.org/api/crypto.html#crypto_crypto_createhmac_algorithm_key),
 but it is not an HMAC, although it can be used for the same purpose.
