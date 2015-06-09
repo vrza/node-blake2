@@ -1,6 +1,6 @@
 {
   "name": "blake2",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "All four BLAKE2 variants (blake2b, blake2bp, blake2s, blake2sp) for io.js with stream support",
   "homepage": "https://github.com/ludios/node-blake2",
   "issues": "https://github.com/ludios/node-blake2/issues",
