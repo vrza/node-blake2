@@ -14,6 +14,7 @@ blake2b, blake2bp, blake2s, and blake2sp `Hash` and `KeyedHash` for [io.js](http
 
 node-blake2 was tested to work on
 -	Ubuntu 14.04 (g++ 4.8.2)
+-	Ubuntu 14.04 (clang++ 3.6.2-svn238746-1~exp1)
 -	Ubuntu 15.04 (g++ 4.9.2)
 -	Windows 8.1 x64 (VS2013)
 -	OS X 10.10 (Apple LLVM 6.1.0)
