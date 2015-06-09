@@ -53,7 +53,7 @@ Important notes:
 -	`blake2.create{Hash,KeyedHash}` support algorithms `blake2b`, `blake2bp`,
 	`blake2s`, and `blake2sp`.
 -	Data passed to `.update` on `blake2.{Hash,KeyedHash}` must be a `Buffer`.
--	Keys passed to `blake2.createKeyedHash(algo, key)` must be a `Buffer`.
+-	Key passed to `blake2.createKeyedHash(algo, key)` must be a `Buffer`.
 
 Unkeyed BLAKE2b:
 
