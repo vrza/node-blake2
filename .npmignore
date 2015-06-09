@@ -1,5 +1,7 @@
 /build
-/.*
+/.travis.yml
+/.npmignore
+/.gitignore
 /*.tgz
 /src/BLAKE2/b2sum
 /src/BLAKE2/csharp
