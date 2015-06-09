@@ -17,13 +17,13 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha tests/*.js && ./node_modules/.bin/eslint .",
-    "test-strong-mode": "iojs --strong_mode ./node_modules/.bin/_mocha tests/*.js"
+    "test-strong-mode": "iojs --strong-mode ./node_modules/.bin/_mocha tests/*.js"
   },
   "dependencies": {
     "nan": "^1.8.4"
   },
   "devDependencies": {
-    "eslint": "^0.22.1",
+    "eslint": "^0.21.1",
     "mocha": "^2.2.5"
   },
   "author": "Ivan Kozik",
