@@ -41,20 +41,6 @@ npm install ludios/node-blake2 --save
 Examples
 ---
 
-`blake2.createHash` works like node's
-[`crypto.createHash`](https://iojs.org/api/crypto.html#crypto_crypto_createhash_algorithm).
-
-`blake2.createKeyedHash` takes a key argument like
-[`crypto.createHmac`](https://iojs.org/api/crypto.html#crypto_crypto_createhmac_algorithm_key),
-but it is not an HMAC, although it can be used for the same purpose.
-
-Important notes:
-
--	`blake2.create{Hash,KeyedHash}` support algorithms `blake2b`, `blake2bp`,
-	`blake2s`, and `blake2sp`.
--	Data passed to `.update` on `blake2.{Hash,KeyedHash}` must be a `Buffer`.
--	Key passed to `blake2.createKeyedHash(algo, key)` must be a `Buffer`.
-
 Unkeyed BLAKE2b:
 
 ```js
@@ -72,6 +58,20 @@ var h = blake2.createKeyedHash('blake2b', new Buffer('key - up to 64 bytes for b
 h.update(new Buffer("test"));
 console.log(h.digest("hex"));
 ```
+
+`blake2.createHash` works like node's
+[`crypto.createHash`](https://iojs.org/api/crypto.html#crypto_crypto_createhash_algorithm).
+
+`blake2.createKeyedHash` takes a key argument like
+[`crypto.createHmac`](https://iojs.org/api/crypto.html#crypto_crypto_createhmac_algorithm_key).
+Although it is not an HMAC, a keyed hash serves the same purpose.
+
+Important notes:
+
+-	`blake2.create{Hash,KeyedHash}` support algorithms `blake2b`, `blake2bp`,
+	`blake2s`, and `blake2sp`.
+-	Data passed to `.update` on `blake2.{Hash,KeyedHash}` must be a `Buffer`.
+-	Keys passed to `blake2.createKeyedHash(algo, key)` must be a `Buffer`.
 
 With streams:
 
