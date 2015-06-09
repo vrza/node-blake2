@@ -78,19 +78,19 @@ exports.createHash = function(algorithm, options) {
 };
 
 
-class Hmac extends LazyTransform {
+class KeyedHash extends LazyTransform {
 	constructor(algorithm, key, options) {
 		super(options);
 		this._handle = new binding.Hash(algorithm, key);
 	}
 }
 
-Hmac.prototype.update = Hash.prototype.update;
-Hmac.prototype.digest = Hash.prototype.digest;
-Hmac.prototype._flush = Hash.prototype._flush;
-Hmac.prototype._transform = Hash.prototype._transform;
+KeyedHash.prototype.update = Hash.prototype.update;
+KeyedHash.prototype.digest = Hash.prototype.digest;
+KeyedHash.prototype._flush = Hash.prototype._flush;
+KeyedHash.prototype._transform = Hash.prototype._transform;
 
-exports.Hmac = Hmac;
-exports.createHmac = function(algorithm, key, options) {
-	return new Hmac(algorithm, key, options);
+exports.KeyedHash = KeyedHash;
+exports.createKeyedHash = function(algorithm, key, options) {
+	return new KeyedHash(algorithm, key, options);
 };

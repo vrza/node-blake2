@@ -24,7 +24,7 @@ function* getTestVectors(file) {
 	assert(content.endsWith("ok\n"));
 	content = content.replace(/ok\n$/, "");
 	let parts = content.split('\n\n');
-	for(let part of parts) {
+	for(const part of parts) {
 		let lines = part.split('\n');
 		let input = new Buffer(lines[0].replace(/^in:\s+/, ""), "hex");
 		let key, hash;
@@ -110,27 +110,27 @@ describe('blake2', function() {
 
 	it('throws Error if called without algorithm name', function() {
 		assert.throws(function() { new blake2.Hash(); }, /must be a string/);
-		assert.throws(function() { new blake2.Hmac(); }, /must be a string/);
+		assert.throws(function() { new blake2.KeyedHash(); }, /must be a string/);
 	});
 
 	it('throws Error if called with non-string algorithm name', function() {
 		assert.throws(function() { new blake2.Hash(3); }, /must be a string/);
-		assert.throws(function() { new blake2.Hmac(3); }, /must be a string/);
+		assert.throws(function() { new blake2.KeyedHash(3); }, /must be a string/);
 	});
 
 	it('throws Error if called with unsupported algorithm name', function() {
 		assert.throws(function() { new blake2.Hash('blah'); }, /must be/);
-		assert.throws(function() { new blake2.Hmac('blah'); }, /must be/);
+		assert.throws(function() { new blake2.KeyedHash('blah'); }, /must be/);
 	});
 
 	it('throws Error if called with String key', function() {
-		assert.throws(function() { new blake2.Hmac('blake2b', 'key'); }, /must be/);
+		assert.throws(function() { new blake2.KeyedHash('blake2b', 'key'); }, /must be/);
 	});
 
 	describe('blake2b', function() {
 		it('throws Error if called with too-long key', function() {
 			assert.throws(function() {
-				new blake2.Hmac('blake2b', new Buffer('x'.repeat(64 + 1), "ascii"));
+				new blake2.KeyedHash('blake2b', new Buffer('x'.repeat(64 + 1), "ascii"));
 			}, /must be 64 bytes or smaller/);
 		});
 	});
@@ -138,7 +138,7 @@ describe('blake2', function() {
 	describe('blake2bp', function() {
 		it('throws Error if called with too-long key', function() {
 			assert.throws(function() {
-				new blake2.Hmac('blake2bp', new Buffer('x'.repeat(64 + 1), "ascii"));
+				new blake2.KeyedHash('blake2bp', new Buffer('x'.repeat(64 + 1), "ascii"));
 			}, /must be 64 bytes or smaller/);
 		});
 	});
@@ -146,7 +146,7 @@ describe('blake2', function() {
 	describe('blake2s', function() {
 		it('throws Error if called with too-long key', function() {
 			assert.throws(function() {
-				new blake2.Hmac('blake2s', new Buffer('x'.repeat(32 + 1), "ascii"));
+				new blake2.KeyedHash('blake2s', new Buffer('x'.repeat(32 + 1), "ascii"));
 			}, /must be 32 bytes or smaller/);
 		});
 	});
@@ -154,27 +154,27 @@ describe('blake2', function() {
 	describe('blake2sp', function() {
 		it('throws Error if called with too-long key', function() {
 			assert.throws(function() {
-				new blake2.Hmac('blake2sp', new Buffer('x'.repeat(32 + 1), "ascii"));
+				new blake2.KeyedHash('blake2sp', new Buffer('x'.repeat(32 + 1), "ascii"));
 			}, /must be 32 bytes or smaller/);
 		});
 	});
 
 	it('returns the correct result for all keyed test vectors', function() {
-		for(let algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
+		for(const algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
 			const vectors = getTestVectors(`${__dirname}/test-vectors/keyed/${algo}-test.txt`);
-			for(let v of vectors) {
-				let hmac = blake2.createHmac(algo, v.key);
-				hmac.update(v.input);
-				let digest = hmac.digest();
+			for(const v of vectors) {
+				let hash = blake2.createKeyedHash(algo, v.key);
+				hash.update(v.input);
+				let digest = hash.digest();
 				assert.deepEqual(digest, v.hash);
 			}
 		}
 	});
 
 	it('returns the correct result for all unkeyed test vectors', function() {
-		for(let algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
+		for(const algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
 			const vectors = getTestVectors(`${__dirname}/test-vectors/unkeyed/${algo}-test.txt`);
-			for(let v of vectors) {
+			for(const v of vectors) {
 				let hash = blake2.createHash(algo);
 				hash.update(v.input);
 				let digest = hash.digest();

@@ -1,7 +1,7 @@
 #!/usr/bin/env iojs
 
 /**
- * Creates Hashes and Hmacs in an infinite loop; use `ps u | grep leaktest`
+ * Creates Hashes and KeyedHashes in an infinite loop; use `ps u | grep leaktest`
  * to verify lack of memory leaks
  */
 
@@ -25,9 +25,9 @@ while(1) {
 		input = new Buffer(input.substr(0, 16));
 	}
 
-	let hmac = new blake2.Hmac(randomElement(algos), new Buffer(String(Math.random())));
-	hmac.update(input);
-	input = hmac.digest(randomElement(encodings));
+	hash = new blake2.KeyedHash(randomElement(algos), new Buffer(String(Math.random())));
+	hash.update(input);
+	input = hash.digest(randomElement(encodings));
 	if(typeof input === 'string') {
 		input = new Buffer(input.substr(0, 16));
 	}
