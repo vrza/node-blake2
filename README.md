@@ -50,6 +50,9 @@ h.update(new Buffer("test"));
 console.log(h.digest("hex"));
 ```
 
+`blake2.createHash` works like node's
+[`crypto.createHash`](https://iojs.org/api/crypto.html#crypto_crypto_createhash_algorithm).
+
 ### Keyed BLAKE2b
 
 ```js
@@ -58,9 +61,6 @@ var h = blake2.createKeyedHash('blake2b', new Buffer('key - up to 64 bytes for b
 h.update(new Buffer("test"));
 console.log(h.digest("hex"));
 ```
-
-`blake2.createHash` works like node's
-[`crypto.createHash`](https://iojs.org/api/crypto.html#crypto_crypto_createhash_algorithm).
 
 `blake2.createKeyedHash` takes a key argument like
 [`crypto.createHmac`](https://iojs.org/api/crypto.html#crypto_crypto_createhmac_algorithm_key).
