@@ -1,5 +1,5 @@
 /**
- * This file contains a slightly-modified copy of LazyTransform and Hash
+ * This file contains a modified copy of LazyTransform and Hash
  * from io.js/lib/crypto.js
  */
 
@@ -70,6 +70,12 @@ class Hash extends LazyTransform {
 		}
 		return buf;
 	}
+
+	copy() {
+		const h = new this.constructor("bypass");
+		h._handle = this._handle.copy();
+		return h;
+	}
 }
 
 function createHash(algorithm, options) {
@@ -86,6 +92,7 @@ class KeyedHash extends LazyTransform {
 
 KeyedHash.prototype.update = Hash.prototype.update;
 KeyedHash.prototype.digest = Hash.prototype.digest;
+KeyedHash.prototype.copy = Hash.prototype.copy;
 KeyedHash.prototype._flush = Hash.prototype._flush;
 KeyedHash.prototype._transform = Hash.prototype._transform;
 

@@ -182,6 +182,50 @@ describe('blake2', function() {
 			}
 		}
 	});
+
+	it('returns correct results when keyed hashes are copied', function() {
+		for(const algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
+			const vectors = getTestVectors(`${__dirname}/test-vectors/keyed/${algo}-test.txt`);
+			for(const v of vectors) {
+				let hash = blake2.createKeyedHash(algo, v.key);
+				let hashCopy = hash.copy();
+				assert(hashCopy instanceof blake2.KeyedHash, ".copy() should return a KeyedHash");
+				hashCopy.update(v.input);
+
+				// hashCopy is unaffected by these updates
+				hash.update(new Buffer("noise"));
+				hash.update(new Buffer("noise"));
+
+				const hashCopyCopy = hashCopy.copy();
+				assert(hashCopyCopy instanceof blake2.KeyedHash, ".copy() should return a KeyedHash");
+
+				assert.deepEqual(hashCopy.digest(), v.hash);
+				assert.deepEqual(hashCopyCopy.digest(), v.hash);
+			}
+		}
+	});
+
+	it('returns correct results when unkeyed hashes are copied', function() {
+		for(const algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
+			const vectors = getTestVectors(`${__dirname}/test-vectors/unkeyed/${algo}-test.txt`);
+			for(const v of vectors) {
+				let hash = blake2.createHash(algo);
+				let hashCopy = hash.copy();
+				assert(hashCopy instanceof blake2.Hash, ".copy() should return a Hash");
+				hashCopy.update(v.input);
+
+				// hashCopy is unaffected by these updates
+				hash.update(new Buffer("noise"));
+				hash.update(new Buffer("noise"));
+
+				const hashCopyCopy = hashCopy.copy();
+				assert(hashCopyCopy instanceof blake2.Hash, ".copy() should return a Hash");
+
+				assert.deepEqual(hashCopy.digest(), v.hash);
+				assert.deepEqual(hashCopyCopy.digest(), v.hash);
+			}
+		}
+	});
 });
 
 describe('binding', function() {

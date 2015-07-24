@@ -23,7 +23,7 @@ using namespace v8;
 
 class Hash: public ObjectWrap {
 protected:
-	bool initialised_;
+	bool initialized_;
 	int (*any_blake2_update)(void*, const uint8_t*, uint64_t);
 	int (*any_blake2_final)(void*, const uint8_t*, uint64_t);
 	int outbytes;
@@ -33,12 +33,14 @@ public:
 	static void
 	Initialize(Handle<Object> target) {
 		NanScope();
+
 		Local<FunctionTemplate> t = NanNew<FunctionTemplate>(New);
 		t->InstanceTemplate()->SetInternalFieldCount(1);
 		t->SetClassName(NanNew<String>("Hash"));
 
 		NODE_SET_PROTOTYPE_METHOD(t, "update", Update);
 		NODE_SET_PROTOTYPE_METHOD(t, "digest", Digest);
+		NODE_SET_PROTOTYPE_METHOD(t, "copy", Copy);
 
 		NanAssignPersistent(constructor, t->GetFunction());
 		target->Set(NanNew<String>("Hash"), t->GetFunction());
@@ -57,17 +59,21 @@ public:
 		if(args.Length() < 1 || !args[0]->IsString()) {
 			return NanThrowError(Exception::TypeError(NanNew<String>("First argument must be a string with algorithm name")));
 		}
+		std::string algo = std::string(*String::Utf8Value(args[0]->ToString()));
+
 		const char *key_data = nullptr;
 		size_t key_length;
-		if(args.Length() >= 2) {
+		if(algo != "bypass" && args.Length() >= 2) {
 			if(!Buffer::HasInstance(args[1])) {
 				return NanThrowError(Exception::TypeError(NanNew<String>("If key argument is given, it must be a Buffer")));
 			}
 			key_data = Buffer::Data(args[1]);
 			key_length = Buffer::Length(args[1]);
 		}
-		std::string algo = std::string(*String::Utf8Value(args[0]->ToString()));
-		if(algo == "blake2b") {
+
+		if(algo == "bypass") {
+			// Initialize nothing - .copy() will set up all the state
+		} else if(algo == "blake2b") {
 			if(!key_data) {
 				if(blake2b_init(reinterpret_cast<blake2b_state*>(&obj->state), BLAKE2B_OUTBYTES) != 0) {
 					return NanThrowError("blake2b_init failure");
@@ -83,6 +89,7 @@ public:
 			obj->outbytes = 512 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2b_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2b_final);
+			obj->initialized_ = true;
 		} else if(algo == "blake2bp") {
 			if(!key_data) {
 				if(blake2bp_init(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES) != 0) {
@@ -99,6 +106,7 @@ public:
 			obj->outbytes = 512 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2bp_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2bp_final);
+			obj->initialized_ = true;
 		} else if(algo == "blake2s") {
 			if(!key_data) {
 				if(blake2s_init(reinterpret_cast<blake2s_state*>(&obj->state), BLAKE2S_OUTBYTES) != 0) {
@@ -115,6 +123,7 @@ public:
 			obj->outbytes = 256 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2s_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2s_final);
+			obj->initialized_ = true;
 		} else if(algo == "blake2sp") {
 			if(!key_data) {
 				if(blake2sp_init(reinterpret_cast<blake2sp_state*>(&obj->state), BLAKE2S_OUTBYTES) != 0) {
@@ -131,19 +140,20 @@ public:
 			obj->outbytes = 256 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2sp_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2sp_final);
+			obj->initialized_ = true;
 		} else {
 			return NanThrowError("Algorithm must be blake2b, blake2s, blake2bp, or blake2sp");
 		}
-		obj->initialised_ = true;
 		NanReturnValue(args.This());
 	}
 
 	static
 	NAN_METHOD(Update) {
 		NanScope();
+
 		Hash *obj = ObjectWrap::Unwrap<Hash>(args.This());
 
-		if(!obj->initialised_) {
+		if(!obj->initialized_) {
 			Local<Value> exception = Exception::Error(NanNew<String>("Not initialized"));
 			return NanThrowError(exception);
 		}
@@ -167,15 +177,16 @@ public:
 	static
 	NAN_METHOD(Digest) {
 		NanScope();
+
 		Hash *obj = ObjectWrap::Unwrap<Hash>(args.This());
 		unsigned char digest[512 / 8];
 
-		if(!obj->initialised_) {
+		if(!obj->initialized_) {
 			Local<Value> exception = Exception::Error(NanNew<String>("Not initialized"));
 			return NanThrowError(exception);
 		}
 
-		obj->initialised_ = false;
+		obj->initialized_ = false;
 		if(obj->any_blake2_final(reinterpret_cast<void*>(&obj->state), digest, obj->outbytes) != 0) {
 			return NanThrowError("blake2*_final failure");
 		}
@@ -187,6 +198,33 @@ public:
 		);
 
 		NanReturnValue(rc);
+	}
+
+	static
+	NAN_METHOD(Copy) {
+		NanScope();
+
+		Hash *src = ObjectWrap::Unwrap<Hash>(args.This());
+
+		const unsigned argc = 1;
+		Local<Value> argv[argc] = { NanNew<String>("bypass") };
+
+		Local<Function> construct = NanNew<Function>(constructor);
+		Handle<Object> inst = construct->NewInstance(argc, argv);
+		// Construction may fail
+		if(inst.IsEmpty()) {
+			return;
+		}
+		Hash *dest = new Hash();
+		dest->Wrap(inst);
+
+		dest->initialized_ = src->initialized_;
+		dest->any_blake2_update = src->any_blake2_update;
+		dest->any_blake2_final = src->any_blake2_final;
+		dest->outbytes = src->outbytes;
+		dest->state = src->state;
+
+		NanReturnValue(inst);
 	}
 
 private:
