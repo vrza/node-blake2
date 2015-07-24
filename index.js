@@ -1,5 +1,5 @@
 /**
- * This file contains a slightly-modified copy of LazyTransform and Hash
+ * This file contains a modified copy of LazyTransform and Hash
  * from io.js/lib/crypto.js
  */
 
