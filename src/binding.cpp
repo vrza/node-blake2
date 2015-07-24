@@ -23,7 +23,7 @@ using namespace v8;
 
 class Hash: public ObjectWrap {
 protected:
-	bool initialised_;
+	bool initialized_;
 	int (*any_blake2_update)(void*, const uint8_t*, uint64_t);
 	int (*any_blake2_final)(void*, const uint8_t*, uint64_t);
 	int outbytes;
@@ -33,12 +33,14 @@ public:
 	static void
 	Initialize(Handle<Object> target) {
 		NanScope();
+
 		Local<FunctionTemplate> t = NanNew<FunctionTemplate>(New);
 		t->InstanceTemplate()->SetInternalFieldCount(1);
 		t->SetClassName(NanNew<String>("Hash"));
 
 		NODE_SET_PROTOTYPE_METHOD(t, "update", Update);
 		NODE_SET_PROTOTYPE_METHOD(t, "digest", Digest);
+		NODE_SET_PROTOTYPE_METHOD(t, "copy", Copy);
 
 		NanAssignPersistent(constructor, t->GetFunction());
 		target->Set(NanNew<String>("Hash"), t->GetFunction());
@@ -134,16 +136,17 @@ public:
 		} else {
 			return NanThrowError("Algorithm must be blake2b, blake2s, blake2bp, or blake2sp");
 		}
-		obj->initialised_ = true;
+		obj->initialized_ = true;
 		NanReturnValue(args.This());
 	}
 
 	static
 	NAN_METHOD(Update) {
 		NanScope();
+
 		Hash *obj = ObjectWrap::Unwrap<Hash>(args.This());
 
-		if(!obj->initialised_) {
+		if(!obj->initialized_) {
 			Local<Value> exception = Exception::Error(NanNew<String>("Not initialized"));
 			return NanThrowError(exception);
 		}
@@ -167,15 +170,16 @@ public:
 	static
 	NAN_METHOD(Digest) {
 		NanScope();
+
 		Hash *obj = ObjectWrap::Unwrap<Hash>(args.This());
 		unsigned char digest[512 / 8];
 
-		if(!obj->initialised_) {
+		if(!obj->initialized_) {
 			Local<Value> exception = Exception::Error(NanNew<String>("Not initialized"));
 			return NanThrowError(exception);
 		}
 
-		obj->initialised_ = false;
+		obj->initialized_ = false;
 		if(obj->any_blake2_final(reinterpret_cast<void*>(&obj->state), digest, obj->outbytes) != 0) {
 			return NanThrowError("blake2*_final failure");
 		}
@@ -187,6 +191,26 @@ public:
 		);
 
 		NanReturnValue(rc);
+	}
+
+	static
+	NAN_METHOD(Copy) {
+		NanScope();
+
+		Hash *src = ObjectWrap::Unwrap<Hash>(args.This());
+
+		Local<Function> construct = NanNew<Function>(constructor);
+		Handle<Object> inst = construct->NewInstance();
+		Hash *dest = new Hash();
+		dest->Wrap(inst);
+
+		dest->initialized_ = src->initialized_;
+		dest->any_blake2_update = src->any_blake2_update;
+		dest->any_blake2_final = src->any_blake2_final;
+		dest->outbytes = src->outbytes;
+		dest->state = src->state;
+
+		NanReturnValue(inst);
 	}
 
 private:

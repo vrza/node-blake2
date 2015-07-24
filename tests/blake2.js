@@ -182,6 +182,31 @@ describe('blake2', function() {
 			}
 		}
 	});
+
+	it('returns correct results when unkeyed hashes are copied', function() {
+		for(const algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
+			const vectors = getTestVectors(`${__dirname}/test-vectors/unkeyed/${algo}-test.txt`);
+			for(const v of vectors) {
+				let hash = blake2.createHash(algo);
+				let hashCopy = hash.copy();
+				hashCopy.update(v.input);
+
+				// hashCopy is unaffected by these updates
+				hash.update(new Buffer("noise"));
+				hash.update(new Buffer("noise"));
+
+				assert.deepEqual(hashCopy.digest(), v.hash);
+				let hashCopyCopy = hashCopy.copy();
+
+				// hashCopyCopy is unaffected by this update
+				hashCopy.update(new Buffer("noise"));
+
+				assert.deepEqual(hashCopyCopy.digest(), v.hash);
+			}
+		}
+	});
+
+	// TODO: test copy of keyed hashes
 });
 
 describe('binding', function() {

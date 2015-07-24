@@ -70,6 +70,10 @@ class Hash extends LazyTransform {
 		}
 		return buf;
 	}
+
+	copy() {
+		return this._handle.copy();
+	}
 }
 
 function createHash(algorithm, options) {
@@ -86,6 +90,7 @@ class KeyedHash extends LazyTransform {
 
 KeyedHash.prototype.update = Hash.prototype.update;
 KeyedHash.prototype.digest = Hash.prototype.digest;
+KeyedHash.prototype.copy = Hash.prototype.copy;
 KeyedHash.prototype._flush = Hash.prototype._flush;
 KeyedHash.prototype._transform = Hash.prototype._transform;
 
