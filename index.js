@@ -47,35 +47,34 @@ class Hash extends LazyTransform {
 		super(options);
 		this._handle = new binding.Hash(algorithm);
 	}
+
+	_transform(chunk, encoding, callback) {
+		this._handle.update(chunk, encoding);
+		callback();
+	}
+
+	_flush(callback) {
+		this.push(this._handle.digest());
+		callback();
+	}
+
+	update(buf) {
+		this._handle.update(buf);
+		return this;
+	}
+
+	digest(outputEncoding) {
+		const buf = this._handle.digest();
+		if(outputEncoding) {
+			return buf.toString(outputEncoding);
+		}
+		return buf;
+	}
 }
 
-Hash.prototype._transform = function(chunk, encoding, callback) {
-	this._handle.update(chunk, encoding);
-	callback();
-};
-
-Hash.prototype._flush = function(callback) {
-	this.push(this._handle.digest());
-	callback();
-};
-
-Hash.prototype.update = function(buf) {
-	this._handle.update(buf);
-	return this;
-};
-
-Hash.prototype.digest = function(outputEncoding) {
-	const buf = this._handle.digest();
-	if(outputEncoding) {
-		return buf.toString(outputEncoding);
-	}
-	return buf;
-};
-
-exports.Hash = Hash;
-exports.createHash = function(algorithm, options) {
+function createHash(algorithm, options) {
 	return new Hash(algorithm, options);
-};
+}
 
 
 class KeyedHash extends LazyTransform {
@@ -90,7 +89,8 @@ KeyedHash.prototype.digest = Hash.prototype.digest;
 KeyedHash.prototype._flush = Hash.prototype._flush;
 KeyedHash.prototype._transform = Hash.prototype._transform;
 
-exports.KeyedHash = KeyedHash;
-exports.createKeyedHash = function(algorithm, key, options) {
+function createKeyedHash(algorithm, key, options) {
 	return new KeyedHash(algorithm, key, options);
-};
+}
+
+module.exports = {Hash, createHash, KeyedHash, createKeyedHash};
