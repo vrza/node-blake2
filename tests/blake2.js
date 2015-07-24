@@ -195,12 +195,9 @@ describe('blake2', function() {
 				hash.update(new Buffer("noise"));
 				hash.update(new Buffer("noise"));
 
+				const hashCopyCopy = hashCopy.copy();
+
 				assert.deepEqual(hashCopy.digest(), v.hash);
-				let hashCopyCopy = hashCopy.copy();
-
-				// hashCopyCopy is unaffected by this update
-				hashCopy.update(new Buffer("noise"));
-
 				assert.deepEqual(hashCopyCopy.digest(), v.hash);
 			}
 		}

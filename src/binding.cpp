@@ -69,7 +69,9 @@ public:
 			key_length = Buffer::Length(args[1]);
 		}
 		std::string algo = std::string(*String::Utf8Value(args[0]->ToString()));
-		if(algo == "blake2b") {
+		if(algo == "bypass") {
+			// Initialize nothing - .copy() will set up all the state
+		} else if(algo == "blake2b") {
 			if(!key_data) {
 				if(blake2b_init(reinterpret_cast<blake2b_state*>(&obj->state), BLAKE2B_OUTBYTES) != 0) {
 					return NanThrowError("blake2b_init failure");
@@ -199,8 +201,15 @@ public:
 
 		Hash *src = ObjectWrap::Unwrap<Hash>(args.This());
 
+		const unsigned argc = 1;
+		Local<Value> argv[argc] = { NanNew<String>("bypass") };
+
 		Local<Function> construct = NanNew<Function>(constructor);
-		Handle<Object> inst = construct->NewInstance();
+		Handle<Object> inst = construct->NewInstance(argc, argv);
+		// Construction may fail
+		if(inst.IsEmpty()) {
+			return;
+		}
 		Hash *dest = new Hash();
 		dest->Wrap(inst);
 
