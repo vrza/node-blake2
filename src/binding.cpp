@@ -87,6 +87,7 @@ public:
 			obj->outbytes = 512 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2b_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2b_final);
+			obj->initialized_ = true;
 		} else if(algo == "blake2bp") {
 			if(!key_data) {
 				if(blake2bp_init(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES) != 0) {
@@ -103,6 +104,7 @@ public:
 			obj->outbytes = 512 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2bp_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2bp_final);
+			obj->initialized_ = true;
 		} else if(algo == "blake2s") {
 			if(!key_data) {
 				if(blake2s_init(reinterpret_cast<blake2s_state*>(&obj->state), BLAKE2S_OUTBYTES) != 0) {
@@ -119,6 +121,7 @@ public:
 			obj->outbytes = 256 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2s_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2s_final);
+			obj->initialized_ = true;
 		} else if(algo == "blake2sp") {
 			if(!key_data) {
 				if(blake2sp_init(reinterpret_cast<blake2sp_state*>(&obj->state), BLAKE2S_OUTBYTES) != 0) {
@@ -135,10 +138,10 @@ public:
 			obj->outbytes = 256 / 8;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2sp_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2sp_final);
+			obj->initialized_ = true;
 		} else {
 			return NanThrowError("Algorithm must be blake2b, blake2s, blake2bp, or blake2sp");
 		}
-		obj->initialized_ = true;
 		NanReturnValue(args.This());
 	}
 
