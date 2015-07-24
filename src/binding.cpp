@@ -211,7 +211,8 @@ public:
 
 		Local<Function> construct = NanNew<Function>(constructor);
 		Handle<Object> inst = construct->NewInstance(argc, argv);
-		// Construction may fail
+		// Construction may fail with a JS exception, in which case we just need
+		// to return.
 		if(inst.IsEmpty()) {
 			return;
 		}
