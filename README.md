@@ -41,7 +41,7 @@ npm install ludios/node-blake2 --save
 Examples
 ---
 
-Unkeyed BLAKE2b:
+### Unkeyed BLAKE2b
 
 ```js
 var blake2 = require('blake2');
@@ -50,7 +50,7 @@ h.update(new Buffer("test"));
 console.log(h.digest("hex"));
 ```
 
-Keyed BLAKE2b:
+### Keyed BLAKE2b
 
 ```js
 var blake2 = require('blake2');
@@ -66,16 +66,36 @@ console.log(h.digest("hex"));
 [`crypto.createHmac`](https://iojs.org/api/crypto.html#crypto_crypto_createhmac_algorithm_key).
 Although it is not an HMAC, a keyed hash serves the same purpose.
 
-Important notes:
+### Important notes
 
 -	`blake2.create{Hash,KeyedHash}` support algorithms `blake2b`, `blake2bp`,
 	`blake2s`, and `blake2sp`.
 -	Data passed to `.update` on `blake2.{Hash,KeyedHash}` must be a `Buffer`.
 -	Keys passed to `blake2.createKeyedHash(algo, key)` must be a `Buffer`.
+-	Just as with `crypto.Hash`, `.digest()` can only be called once.
 
-With streams:
+### With streams
 
-This should work exactly like it does with [`crypto.Hash`](https://iojs.org/api/crypto.html#crypto_crypto_createhash_algorithm).  See [b2sum.js](https://github.com/ludios/node-blake2/blob/master/b2sum.js).
+This works exactly like it does with [`crypto.Hash`](https://iojs.org/api/crypto.html#crypto_crypto_createhash_algorithm).  See [b2sum.js](https://github.com/ludios/node-blake2/blob/master/b2sum.js).
+
+### Copying a hash object
+
+You can call `.copy()` on a `Hash` or `KeyedHash`, which will return a new object with all of the internal BLAKE2 state copied from the source object.
+
+```js
+var blake2 = require('blake2');
+var h = blake2.createHash('blake2b');
+h.update(new Buffer("test"));
+
+// Call .copy() before .digest(), because .digest() finalizes internal state
+var j = h.copy();
+
+// h is unaffected by updates to j
+j.update(new Buffer("more"));
+
+console.log(h.digest());
+console.log(j.digest());
+```
 
 
 Known issues
