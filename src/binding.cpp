@@ -59,16 +59,18 @@ public:
 		if(args.Length() < 1 || !args[0]->IsString()) {
 			return NanThrowError(Exception::TypeError(NanNew<String>("First argument must be a string with algorithm name")));
 		}
+		std::string algo = std::string(*String::Utf8Value(args[0]->ToString()));
+
 		const char *key_data = nullptr;
 		size_t key_length;
-		if(args.Length() >= 2) {
+		if(algo != "bypass" && args.Length() >= 2) {
 			if(!Buffer::HasInstance(args[1])) {
 				return NanThrowError(Exception::TypeError(NanNew<String>("If key argument is given, it must be a Buffer")));
 			}
 			key_data = Buffer::Data(args[1]);
 			key_length = Buffer::Length(args[1]);
 		}
-		std::string algo = std::string(*String::Utf8Value(args[0]->ToString()));
+
 		if(algo == "bypass") {
 			// Initialize nothing - .copy() will set up all the state
 		} else if(algo == "blake2b") {

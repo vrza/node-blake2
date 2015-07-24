@@ -72,7 +72,9 @@ class Hash extends LazyTransform {
 	}
 
 	copy() {
-		return this._handle.copy();
+		const h = new this.constructor("bypass");
+		h._handle = this._handle.copy();
+		return h;
 	}
 }
 
