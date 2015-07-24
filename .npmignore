@@ -3,6 +3,7 @@
 /.npmignore
 /.gitignore
 /*.tgz
+/*.sh
 /src/BLAKE2/b2sum
 /src/BLAKE2/csharp
 /src/BLAKE2/bench
