@@ -18,9 +18,6 @@ union any_blake2_state {
 #define BLAKE_FN_CAST(fn) \
 	reinterpret_cast<int (*)(void*, const uint8_t*, uint64_t)>(fn)
 
-using namespace node;
-using namespace v8;
-
 static Nan::Persistent<v8::FunctionTemplate> hash_constructor;
 
 class Hash: public Nan::ObjectWrap {
@@ -33,10 +30,10 @@ protected:
 
 public:
 	static void
-	Init(Local<Object> target) {
-		Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
+	Init(v8::Local<v8::Object> target) {
+		v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
 		hash_constructor.Reset(tpl);
-		tpl->SetClassName(Nan::New<String>("Hash").ToLocalChecked());
+		tpl->SetClassName(Nan::New<v8::String>("Hash").ToLocalChecked());
 		tpl->InstanceTemplate()->SetInternalFieldCount(1);
 		Nan::SetPrototypeMethod(tpl, "update", Update);
 		Nan::SetPrototypeMethod(tpl, "digest", Digest);
@@ -53,18 +50,18 @@ public:
 		Hash *obj = new Hash();
 		obj->Wrap(info.This());
 		if(info.Length() < 1 || !info[0]->IsString()) {
-			return Nan::ThrowError(Exception::TypeError(Nan::New<String>("First argument must be a string with algorithm name").ToLocalChecked()));
+			return Nan::ThrowError(v8::Exception::TypeError(Nan::New<v8::String>("First argument must be a string with algorithm name").ToLocalChecked()));
 		}
-		std::string algo = std::string(*String::Utf8Value(info[0]->ToString()));
+		std::string algo = std::string(*v8::String::Utf8Value(info[0]->ToString()));
 
 		const char *key_data = nullptr;
 		size_t key_length;
 		if(algo != "bypass" && info.Length() >= 2) {
-			if(!Buffer::HasInstance(info[1])) {
-				return Nan::ThrowError(Exception::TypeError(Nan::New<String>("If key argument is given, it must be a Buffer").ToLocalChecked()));
+			if(!node::Buffer::HasInstance(info[1])) {
+				return Nan::ThrowError(v8::Exception::TypeError(Nan::New<v8::String>("If key argument is given, it must be a Buffer").ToLocalChecked()));
 			}
-			key_data = Buffer::Data(info[1]);
-			key_length = Buffer::Length(info[1]);
+			key_data = node::Buffer::Data(info[1]);
+			key_length = node::Buffer::Length(info[1]);
 		}
 
 		if(algo == "bypass") {
@@ -148,17 +145,17 @@ public:
 		Hash *obj = Nan::ObjectWrap::Unwrap<Hash>(info.This());
 
 		if(!obj->initialized_) {
-			Local<Value> exception = Exception::Error(Nan::New<String>("Not initialized").ToLocalChecked());
+			v8::Local<v8::Value> exception = v8::Exception::Error(Nan::New<v8::String>("Not initialized").ToLocalChecked());
 			return Nan::ThrowError(exception);
 		}
 
-		if(info.Length() < 1 || !Buffer::HasInstance(info[0])) {
-			return Nan::ThrowError(Exception::TypeError(Nan::New<String>("Bad argument; need a Buffer").ToLocalChecked()));
+		if(info.Length() < 1 || !node::Buffer::HasInstance(info[0])) {
+			return Nan::ThrowError(v8::Exception::TypeError(Nan::New<v8::String>("Bad argument; need a Buffer").ToLocalChecked()));
 		}
 
-		Local<Object> buffer_obj = info[0]->ToObject();
-		const char *buffer_data = Buffer::Data(buffer_obj);
-		size_t buffer_length = Buffer::Length(buffer_obj);
+		v8::Local<v8::Object> buffer_obj = info[0]->ToObject();
+		const char *buffer_data = node::Buffer::Data(buffer_obj);
+		size_t buffer_length = node::Buffer::Length(buffer_obj);
 		obj->any_blake2_update(
 			reinterpret_cast<void*>(&obj->state),
 			reinterpret_cast<const uint8_t*>(buffer_data),
@@ -174,7 +171,7 @@ public:
 		unsigned char digest[512 / 8];
 
 		if(!obj->initialized_) {
-			Local<Value> exception = Exception::Error(Nan::New<String>("Not initialized").ToLocalChecked());
+			v8::Local<v8::Value> exception = v8::Exception::Error(Nan::New<v8::String>("Not initialized").ToLocalChecked());
 			return Nan::ThrowError(exception);
 		}
 
@@ -183,7 +180,7 @@ public:
 			return Nan::ThrowError("blake2*_final failure");
 		}
 
-		Local<Value> rc = Nan::Encode(
+		v8::Local<v8::Value> rc = Nan::Encode(
 			reinterpret_cast<const char*>(digest),
 			obj->outbytes,
 			Nan::BUFFER
@@ -197,10 +194,10 @@ public:
 		Hash *src = Nan::ObjectWrap::Unwrap<Hash>(info.This());
 
 		const unsigned argc = 1;
-		Local<Value> argv[argc] = { Nan::New<String>("bypass").ToLocalChecked() };
+		v8::Local<v8::Value> argv[argc] = { Nan::New<v8::String>("bypass").ToLocalChecked() };
 
-		Local<FunctionTemplate> construct = Nan::New<FunctionTemplate>(hash_constructor);
-		Local<Object> inst = construct->GetFunction()->NewInstance(argc, argv);
+		v8::Local<v8::FunctionTemplate> construct = Nan::New<v8::FunctionTemplate>(hash_constructor);
+		v8::Local<v8::Object> inst = construct->GetFunction()->NewInstance(argc, argv);
 		// Construction may fail with a JS exception, in which case we just need
 		// to return.
 		if(inst.IsEmpty()) {
@@ -220,7 +217,7 @@ public:
 };
 
 static void
-init(Local<Object> target) {
+init(v8::Local<v8::Object> target) {
 	Hash::Init(target);
 }
 
