@@ -21,7 +21,7 @@ union any_blake2_state {
 using namespace node;
 using namespace v8;
 
-static Nan::Persistent<v8::FunctionTemplate> constructor;
+static Nan::Persistent<v8::FunctionTemplate> hash_constructor;
 
 class Hash: public Nan::ObjectWrap {
 protected:
@@ -33,17 +33,15 @@ protected:
 
 public:
 	static void
-	Initialize(Local<Object> target) {
-		Local<FunctionTemplate> t = Nan::New<FunctionTemplate>(New);
-		t->InstanceTemplate()->SetInternalFieldCount(1);
-		t->SetClassName(Nan::New<String>("Hash").ToLocalChecked());
-
-		Nan::SetPrototypeMethod(t, "update", Update);
-		Nan::SetPrototypeMethod(t, "digest", Digest);
-		Nan::SetPrototypeMethod(t, "copy", Copy);
-
-		constructor.Reset(t);
-		Nan::Set(target, Nan::New<String>("Hash").ToLocalChecked(), t->GetFunction());
+	Init(Local<Object> target) {
+		Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
+		hash_constructor.Reset(tpl);
+		tpl->SetClassName(Nan::New<String>("Hash").ToLocalChecked());
+		tpl->InstanceTemplate()->SetInternalFieldCount(1);
+		Nan::SetPrototypeMethod(tpl, "update", Update);
+		Nan::SetPrototypeMethod(tpl, "digest", Digest);
+		Nan::SetPrototypeMethod(tpl, "copy", Copy);
+		target->Set(Nan::New("Hash").ToLocalChecked(), tpl->GetFunction());
 	}
 
 	static
@@ -201,7 +199,7 @@ public:
 		const unsigned argc = 1;
 		Local<Value> argv[argc] = { Nan::New<String>("bypass").ToLocalChecked() };
 
-		Local<FunctionTemplate> construct = Nan::New<FunctionTemplate>(constructor);
+		Local<FunctionTemplate> construct = Nan::New<FunctionTemplate>(hash_constructor);
 		Local<Object> inst = construct->GetFunction()->NewInstance(argc, argv);
 		// Construction may fail with a JS exception, in which case we just need
 		// to return.
@@ -223,7 +221,7 @@ public:
 
 static void
 init(Local<Object> target) {
-	Hash::Initialize(target);
+	Hash::Init(target);
 }
 
 NODE_MODULE(binding, init)
