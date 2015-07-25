@@ -20,7 +20,7 @@
     "test-strong-mode": "iojs --strong-mode ./node_modules/.bin/_mocha tests/*.js"
   },
   "dependencies": {
-    "nan": "^1.8.4"
+    "nan": "nodejs/nan#next"
   },
   "devDependencies": {
     "eslint": "^0.21.1",
