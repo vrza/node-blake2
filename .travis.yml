@@ -1,14 +1,17 @@
-language: node_js
-node_js:
-  - "iojs"
-  - "iojs-v2.5.0"
-  - "iojs-v2.4.0"
-  - "iojs-v2.3.4"
-  - "iojs-v2.2.1"
-  - "iojs-v2.1.0"
-  - "iojs-v2.0.2"
-  - "iojs-v2.0.1"
-  - "iojs-v2.0.0"
 os:
   - linux
   - osx
+
+language: cpp
+
+env:
+  matrix:
+  - TRAVIS_NODE_VERSION="iojs-2"
+  - TRAVIS_NODE_VERSION="iojs-3"
+  - TRAVIS_NODE_VERSION="4"
+
+install:
+  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+  - npm install
+
+script: npm test && npm run test-strong-mode
