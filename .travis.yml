@@ -4,6 +4,13 @@ os:
 
 language: cpp
 
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
+
 env:
   matrix:
   - TRAVIS_NODE_VERSION="iojs-2"
@@ -12,6 +19,8 @@ env:
 
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CXX=g++-4.8; fi
+  - $CXX --version
   - npm install
 
 script: npm test && npm run test-strong-mode
