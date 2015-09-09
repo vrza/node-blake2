@@ -9,8 +9,9 @@ and SHA-3 on recent Intel CPUs" and has "no known security issues, whereas
 SHA-1, MD5, and SHA-512 are susceptible to length-extension".
 [https://blake2.net/](https://blake2.net/)
 
-node-blake2 provides a [stream](https://iojs.org/api/stream.html)-compatible
-blake2b, blake2bp, blake2s, and blake2sp `Hash` and `KeyedHash` for [io.js](https://iojs.org/).
+node-blake2 provides a [stream](https://nodejs.org/api/stream.html)-compatible
+blake2b, blake2bp, blake2s, and blake2sp `Hash` and `KeyedHash` for io.js and
+node 4+.
 
 node-blake2 was tested to work on
 -	Ubuntu 14.04 (g++ 4.8.2)
@@ -51,7 +52,7 @@ console.log(h.digest("hex"));
 ```
 
 `blake2.createHash` works like node's
-[`crypto.createHash`](https://iojs.org/api/crypto.html#crypto_crypto_createhash_algorithm).
+[`crypto.createHash`](https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm).
 
 ### Keyed BLAKE2b
 
@@ -63,7 +64,7 @@ console.log(h.digest("hex"));
 ```
 
 `blake2.createKeyedHash` takes a key argument like
-[`crypto.createHmac`](https://iojs.org/api/crypto.html#crypto_crypto_createhmac_algorithm_key).
+[`crypto.createHmac`](https://nodejs.org/api/crypto.html#crypto_crypto_createhmac_algorithm_key).
 Although it is not an HMAC, a keyed hash serves the same purpose.
 
 ### Important notes
@@ -76,7 +77,7 @@ Although it is not an HMAC, a keyed hash serves the same purpose.
 
 ### With streams
 
-This works exactly like it does with [`crypto.Hash`](https://iojs.org/api/crypto.html#crypto_crypto_createhash_algorithm).  See [b2sum.js](https://github.com/ludios/node-blake2/blob/master/b2sum.js).
+This works exactly like it does with [`crypto.Hash`](https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm).  See [b2sum.js](https://github.com/ludios/node-blake2/blob/master/b2sum.js).
 
 ### Copying a hash object
 

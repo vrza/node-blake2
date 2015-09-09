@@ -1,4 +1,4 @@
-#!/usr/bin/env iojs
+#!/usr/bin/env node
 
 /**
  * Creates Hashes and KeyedHashes in an infinite loop; use `ps u | grep leaktest`

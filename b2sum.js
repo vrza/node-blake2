@@ -1,4 +1,4 @@
-#!/usr/bin/env iojs
+#!/usr/bin/env node
 
 /**
  * Takes an algorithm name and prints the hex digest of stdin.
