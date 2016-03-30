@@ -6,7 +6,6 @@
  * cat file | ./b2sum.js blake2b
  */
 
-"use strong";
 "use strict";
 
 const blake2 = require('./index');

@@ -3,7 +3,6 @@
  * from io.js/lib/crypto.js
  */
 
-// TODO: "use strong"; after V8 has ES6 default parameters
 "use strict";
 
 const stream = require('stream');
