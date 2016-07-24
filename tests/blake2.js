@@ -14,6 +14,11 @@ const BLAKE2S_EMPTY_DIGEST_HEX = '69217a3079908094e11121d042354a7c1f55b6482ca1a5
 const BLAKE2S_EMPTY_DIGEST_BASE64 = new Buffer(BLAKE2S_EMPTY_DIGEST_HEX, 'hex').toString('base64');
 const BLAKE2S_EMPTY_DIGEST_BINARY = new Buffer(BLAKE2S_EMPTY_DIGEST_HEX, 'hex').toString('binary');
 
+const BLAKE2B_TEST_DIGEST_16_HEX = '44a8995dd50b6657a037a7839304535b';
+const BLAKE2BP_TEST_DIGEST_16_HEX = 'ec93bfef647e0f82f040b4e81d4d7491';
+const BLAKE2S_TEST_DIGEST_16_HEX = 'e9ddd9926b9dcb382e09be39ba403d2c';
+const BLAKE2SP_TEST_DIGEST_16_HEX = 'ef8ec7f654a5c35898b7b0e4ab13c174';
+
 /**
  * Parse the test vectors from a BLAKE2 test vector file
  */
@@ -132,6 +137,26 @@ describe('blake2', function() {
 				new blake2.KeyedHash('blake2b', new Buffer('x'.repeat(64 + 1), "ascii"));
 			}, /must be 64 bytes or smaller/);
 		});
+		it('throws Error if called with a non-numeric digestLength', function() {
+			assert.throws(function() {
+				new blake2.Hash('blake2b', { digestLength: 'not a number' });
+			}, /must be a number/);
+		});
+		it('throws Error if called with a too large digestLength', function() {
+			assert.throws(function() {
+				new blake2.Hash('blake2b', { digestLength: 65 });
+			}, /must be between 1 and 64/);
+		});
+		it('throws Error if called with a too small digestLength', function() {
+			assert.throws(function() {
+				new blake2.Hash('blake2b', { digestLength: 0 });
+			}, /must be between 1 and 64/);
+		});
+		it('returns the correct hash for a 16 byte digestLength', function() {
+			const hash = new blake2.Hash('blake2b', { digestLength: 16 });
+			hash.update(new Buffer('test'));
+			assert.equal(hash.digest('hex'), BLAKE2B_TEST_DIGEST_16_HEX);
+		});
 	});
 
 	describe('blake2bp', function() {
@@ -139,6 +164,26 @@ describe('blake2', function() {
 			assert.throws(function() {
 				new blake2.KeyedHash('blake2bp', new Buffer('x'.repeat(64 + 1), "ascii"));
 			}, /must be 64 bytes or smaller/);
+		});
+		it('throws Error if called with a non-numeric digestLength', function() {
+			assert.throws(function() {
+				new blake2.Hash('blake2bp', { digestLength: 'not a number' });
+			}, /must be a number/);
+		});
+		it('throws Error if called with a too large digestLength', function() {
+			assert.throws(function() {
+				new blake2.Hash('blake2bp', { digestLength: 65 });
+			}, /must be between 1 and 64/);
+		});
+		it('throws Error if called with a too small digestLength', function() {
+			assert.throws(function() {
+				new blake2.Hash('blake2bp', { digestLength: 0 });
+			}, /must be between 1 and 64/);
+		});
+		it('returns the correct hash for a 16 byte digestLength', function() {
+			const hash = new blake2.Hash('blake2bp', { digestLength: 16 });
+			hash.update(new Buffer('test'));
+			assert.equal(hash.digest('hex'), BLAKE2BP_TEST_DIGEST_16_HEX);
 		});
 	});
 
@@ -148,6 +193,26 @@ describe('blake2', function() {
 				new blake2.KeyedHash('blake2s', new Buffer('x'.repeat(32 + 1), "ascii"));
 			}, /must be 32 bytes or smaller/);
 		});
+		it('throws Error if called with a non-numeric digestLength', function() {
+			assert.throws(function() {
+				new blake2.Hash('blake2s', { digestLength: 'not a number' });
+			}, /must be a number/);
+		});
+		it('throws Error if called with a too large digestLength', function() {
+			assert.throws(function() {
+				new blake2.Hash('blake2s', { digestLength: 33});
+			}, /must be between 1 and 32/);
+		});
+		it('throws Error if called with a too small digestLength', function() {
+			assert.throws(function() {
+				new blake2.Hash('blake2s', { digestLength: 0 });
+			}, /must be between 1 and 32/);
+		});
+		it('returns the correct hash for a 16 byte digestLength', function() {
+			const hash = new blake2.Hash('blake2s', { digestLength: 16 });
+			hash.update(new Buffer('test'));
+			assert.equal(hash.digest('hex'), BLAKE2S_TEST_DIGEST_16_HEX);
+		});
 	});
 
 	describe('blake2sp', function() {
@@ -155,6 +220,26 @@ describe('blake2', function() {
 			assert.throws(function() {
 				new blake2.KeyedHash('blake2sp', new Buffer('x'.repeat(32 + 1), "ascii"));
 			}, /must be 32 bytes or smaller/);
+		});
+		it('throws Error if called with a non-numeric digestLength', function() {
+			assert.throws(function() {
+				new blake2.Hash('blake2sp', { digestLength: 'not a number' });
+			}, /must be a number/);
+		});
+		it('throws Error if called with a too large digestLength', function() {
+			assert.throws(function() {
+				new blake2.Hash('blake2sp', { digestLength: 33});
+			}, /must be between 1 and 32/);
+		});
+		it('throws Error if called with a too small digestLength', function() {
+			assert.throws(function() {
+				new blake2.Hash('blake2sp', { digestLength: 0 });
+			}, /must be between 1 and 32/);
+		});
+		it('returns the correct hash for a 16 byte digestLength', function() {
+			const hash = new blake2.Hash('blake2sp', { digestLength: 16 });
+			hash.update(new Buffer('test'));
+			assert.equal(hash.digest('hex'), BLAKE2SP_TEST_DIGEST_16_HEX);
 		});
 	});
 

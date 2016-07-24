@@ -98,6 +98,17 @@ console.log(h.digest());
 console.log(j.digest());
 ```
 
+### Digest Length
+
+BLAKE2 can generate digests between 1 and 64 (BLAKE2b) or 32 (BLAKE2s) bytes.
+Pass `digestLength` as an option to use a non-default digest length:
+
+```js
+var blake2 = require('blake2');
+var h = blake2.createHash('blake2b', { digestLength: 16 });
+h.update(new Buffer("test"));
+h.digest(); // Returns a buffer of 16 bytes
+```
 
 Known issues
 ---

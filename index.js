@@ -44,7 +44,12 @@ class LazyTransform extends stream.Transform {
 class Hash extends LazyTransform {
 	constructor(algorithm, options) {
 		super(options);
-		this._handle = new binding.Hash(algorithm);
+
+		var digestLength = -1;
+		if (options && 'digestLength' in options) {
+			digestLength = options.digestLength;
+		}
+		this._handle = new binding.Hash(algorithm, null, digestLength);
 	}
 
 	_transform(chunk, encoding, callback) {
@@ -85,7 +90,9 @@ function createHash(algorithm, options) {
 class KeyedHash extends LazyTransform {
 	constructor(algorithm, key, options) {
 		super(options);
-		this._handle = new binding.Hash(algorithm, key);
+
+		var digestLength = (options && options['digestLength']) || -1;
+		this._handle = new binding.Hash(algorithm, key, digestLength);
 	}
 }
 
