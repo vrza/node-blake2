@@ -19,7 +19,7 @@ class LazyTransform extends stream.Transform {
 	'_readableState',
 	'_writableState',
 	'_transformState'
-].forEach(function(prop, i, props) {
+].forEach(function(prop) {
 	Object.defineProperty(LazyTransform.prototype, prop, {
 		get: function() {
 			stream.Transform.call(this, this._options);
