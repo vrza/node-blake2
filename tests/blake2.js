@@ -172,6 +172,12 @@ describe('blake2', function() {
 			hash.update(new Buffer('test'));
 			assert.equal(hash.digest('hex'), 'f7');
 		});
+		it('returns the correct hash for a 1 byte digestLength after being copied', function() {
+			const hash = new blake2.Hash('blake2b', {digestLength: 1});
+			hash.update(new Buffer('test'));
+			const hashCopy = hash.copy();
+			assert.equal(hashCopy.digest('hex'), 'f7');
+		});
 	});
 
 	describe('blake2bp', function() {
