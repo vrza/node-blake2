@@ -56,7 +56,7 @@ public:
 
 		const char *key_data = nullptr;
 		size_t key_length;
-		int digest_length;
+		int digest_length = -1;
 		if (algo != "bypass" && info.Length() >= 2) {
 			if (!info[1]->IsNull()) {
 				if (!node::Buffer::HasInstance(info[1])) {
