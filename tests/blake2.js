@@ -151,10 +151,16 @@ describe('blake2', function() {
 			assert.throws(function() {
 				new blake2.Hash('blake2b', {digestLength: 'not a number'});
 			}, /must be a number/);
+			assert.throws(function() {
+				new blake2.KeyedHash('blake2b', new Buffer('key'), {digestLength: 'not a number'});
+			}, /must be a number/);
 		});
 		it('throws Error if called with a too large digestLength', function() {
 			assert.throws(function() {
 				new blake2.Hash('blake2b', {digestLength: 65});
+			}, /must be between 1 and 64/);
+			assert.throws(function() {
+				new blake2.KeyedHash('blake2b', new Buffer('key'), {digestLength: 65});
 			}, /must be between 1 and 64/);
 		});
 		it('throws Error if called with a too small digestLength', function() {
@@ -193,10 +199,16 @@ describe('blake2', function() {
 			assert.throws(function() {
 				new blake2.Hash('blake2bp', {digestLength: 'not a number'});
 			}, /must be a number/);
+			assert.throws(function() {
+				new blake2.KeyedHash('blake2bp', new Buffer('key'), {digestLength: 'not a number'});
+			}, /must be a number/);
 		});
 		it('throws Error if called with a too large digestLength', function() {
 			assert.throws(function() {
 				new blake2.Hash('blake2bp', {digestLength: 65});
+			}, /must be between 1 and 64/);
+			assert.throws(function() {
+				new blake2.KeyedHash('blake2bp', new Buffer('key'), {digestLength: 65});
 			}, /must be between 1 and 64/);
 		});
 		it('throws Error if called with a too small digestLength', function() {
@@ -224,10 +236,16 @@ describe('blake2', function() {
 			assert.throws(function() {
 				new blake2.Hash('blake2s', {digestLength: 'not a number'});
 			}, /must be a number/);
+			assert.throws(function() {
+				new blake2.KeyedHash('blake2s', new Buffer('key'), {digestLength: 'not a number'});
+			}, /must be a number/);
 		});
 		it('throws Error if called with a too large digestLength', function() {
 			assert.throws(function() {
 				new blake2.Hash('blake2s', {digestLength: 33});
+			}, /must be between 1 and 32/);
+			assert.throws(function() {
+				new blake2.KeyedHash('blake2s', new Buffer('key'), {digestLength: 33});
 			}, /must be between 1 and 32/);
 		});
 		it('throws Error if called with a too small digestLength', function() {
@@ -255,10 +273,16 @@ describe('blake2', function() {
 			assert.throws(function() {
 				new blake2.Hash('blake2sp', {digestLength: 'not a number'});
 			}, /must be a number/);
+			assert.throws(function() {
+				new blake2.KeyedHash('blake2sp', new Buffer('key'), {digestLength: 'not a number'});
+			}, /must be a number/);
 		});
 		it('throws Error if called with a too large digestLength', function() {
 			assert.throws(function() {
 				new blake2.Hash('blake2sp', {digestLength: 33});
+			}, /must be between 1 and 32/);
+			assert.throws(function() {
+				new blake2.KeyedHash('blake2sp', new Buffer('key'), {digestLength: 33});
 			}, /must be between 1 and 32/);
 		});
 		it('throws Error if called with a too small digestLength', function() {
