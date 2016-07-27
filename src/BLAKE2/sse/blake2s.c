@@ -1,14 +1,16 @@
 /*
    BLAKE2 reference source code package - optimized C implementations
-
-   Written in 2012 by Samuel Neves <sneves@dei.uc.pt>
-
-   To the extent possible under law, the author(s) have dedicated all copyright
-   and related and neighboring rights to this software to the public domain
-   worldwide. This software is distributed without any warranty.
-
-   You should have received a copy of the CC0 Public Domain Dedication along with
-   this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+  
+   Copyright 2012, Samuel Neves <sneves@dei.uc.pt>.  You may use this under the
+   terms of the CC0, the OpenSSL Licence, or the Apache Public License 2.0, at
+   your option.  The terms of these licenses can be found at:
+  
+   - CC0 1.0 Universal : http://creativecommons.org/publicdomain/zero/1.0
+   - OpenSSL license   : https://www.openssl.org/source/license.html
+   - Apache 2.0        : http://www.apache.org/licenses/LICENSE-2.0
+  
+   More information about the BLAKE2 hash function can be found at
+   https://blake2.net.
 */
 
 #include <stdint.h>
@@ -59,35 +61,40 @@ static const uint8_t blake2s_sigma[10][16] =
 
 
 /* Some helper functions, not necessarily useful */
-static __inline int blake2s_set_lastnode( blake2s_state *S )
+BLAKE2_LOCAL_INLINE(int) blake2s_set_lastnode( blake2s_state *S )
 {
-  S->f[1] = ~0U;
+  S->f[1] = -1;
   return 0;
 }
 
-static __inline int blake2s_clear_lastnode( blake2s_state *S )
+BLAKE2_LOCAL_INLINE(int) blake2s_clear_lastnode( blake2s_state *S )
 {
-  S->f[1] = 0U;
+  S->f[1] = 0;
   return 0;
 }
 
-static __inline int blake2s_set_lastblock( blake2s_state *S )
+BLAKE2_LOCAL_INLINE(int) blake2s_is_lastblock( const blake2s_state *S )
+{
+  return S->f[0] != 0;
+}
+
+BLAKE2_LOCAL_INLINE(int) blake2s_set_lastblock( blake2s_state *S )
 {
   if( S->last_node ) blake2s_set_lastnode( S );
 
-  S->f[0] = ~0U;
+  S->f[0] = -1;
   return 0;
 }
 
-static __inline int blake2s_clear_lastblock( blake2s_state *S )
+BLAKE2_LOCAL_INLINE(int) blake2s_clear_lastblock( blake2s_state *S )
 {
   if( S->last_node ) blake2s_clear_lastnode( S );
 
-  S->f[0] = 0U;
+  S->f[0] = 0;
   return 0;
 }
 
-static __inline int blake2s_increment_counter( blake2s_state *S, const uint32_t inc )
+BLAKE2_LOCAL_INLINE(int) blake2s_increment_counter( blake2s_state *S, const uint32_t inc )
 {
   uint64_t t = ( ( uint64_t )S->t[1] << 32 ) | S->t[0];
   t += inc;
@@ -97,62 +104,62 @@ static __inline int blake2s_increment_counter( blake2s_state *S, const uint32_t 
 }
 
 
-// Parameter-related functions
-static __inline int blake2s_param_set_digest_length( blake2s_param *P, const uint8_t digest_length )
+/* Parameter-related functions */
+BLAKE2_LOCAL_INLINE(int) blake2s_param_set_digest_length( blake2s_param *P, const uint8_t digest_length )
 {
   P->digest_length = digest_length;
   return 0;
 }
 
-static __inline int blake2s_param_set_fanout( blake2s_param *P, const uint8_t fanout )
+BLAKE2_LOCAL_INLINE(int) blake2s_param_set_fanout( blake2s_param *P, const uint8_t fanout )
 {
   P->fanout = fanout;
   return 0;
 }
 
-static __inline int blake2s_param_set_max_depth( blake2s_param *P, const uint8_t depth )
+BLAKE2_LOCAL_INLINE(int) blake2s_param_set_max_depth( blake2s_param *P, const uint8_t depth )
 {
   P->depth = depth;
   return 0;
 }
 
-static __inline int blake2s_param_set_leaf_length( blake2s_param *P, const uint32_t leaf_length )
+BLAKE2_LOCAL_INLINE(int) blake2s_param_set_leaf_length( blake2s_param *P, const uint32_t leaf_length )
 {
   P->leaf_length = leaf_length;
   return 0;
 }
 
-static __inline int blake2s_param_set_node_offset( blake2s_param *P, const uint64_t node_offset )
+BLAKE2_LOCAL_INLINE(int) blake2s_param_set_node_offset( blake2s_param *P, const uint64_t node_offset )
 {
   store48( P->node_offset, node_offset );
   return 0;
 }
 
-static __inline int blake2s_param_set_node_depth( blake2s_param *P, const uint8_t node_depth )
+BLAKE2_LOCAL_INLINE(int) blake2s_param_set_node_depth( blake2s_param *P, const uint8_t node_depth )
 {
   P->node_depth = node_depth;
   return 0;
 }
 
-static __inline int blake2s_param_set_inner_length( blake2s_param *P, const uint8_t inner_length )
+BLAKE2_LOCAL_INLINE(int) blake2s_param_set_inner_length( blake2s_param *P, const uint8_t inner_length )
 {
   P->inner_length = inner_length;
   return 0;
 }
 
-static __inline int blake2s_param_set_salt( blake2s_param *P, const uint8_t salt[BLAKE2S_SALTBYTES] )
+BLAKE2_LOCAL_INLINE(int) blake2s_param_set_salt( blake2s_param *P, const uint8_t salt[BLAKE2S_SALTBYTES] )
 {
   memcpy( P->salt, salt, BLAKE2S_SALTBYTES );
   return 0;
 }
 
-static __inline int blake2s_param_set_personal( blake2s_param *P, const uint8_t personal[BLAKE2S_PERSONALBYTES] )
+BLAKE2_LOCAL_INLINE(int) blake2s_param_set_personal( blake2s_param *P, const uint8_t personal[BLAKE2S_PERSONALBYTES] )
 {
   memcpy( P->personal, personal, BLAKE2S_PERSONALBYTES );
   return 0;
 }
 
-static __inline int blake2s_init0( blake2s_state *S )
+BLAKE2_LOCAL_INLINE(int) blake2s_init0( blake2s_state *S )
 {
   memset( S, 0, sizeof( blake2s_state ) );
 
@@ -164,7 +171,7 @@ static __inline int blake2s_init0( blake2s_state *S )
 /* init2 xors IV with input parameter block */
 int blake2s_init_param( blake2s_state *S, const blake2s_param *P )
 {
-  //blake2s_init0( S );
+  /*blake2s_init0( S ); */
   const uint8_t * v = ( const uint8_t * )( blake2s_IV );
   const uint8_t * p = ( const uint8_t * )( P );
   uint8_t * h = ( uint8_t * )( S->h );
@@ -180,9 +187,6 @@ int blake2s_init_param( blake2s_state *S, const blake2s_param *P )
 /* Some sort of default parameter block initialization, for sequential blake2s */
 int blake2s_init( blake2s_state *S, const uint8_t outlen )
 {
-  /* Move interval verification here? */
-  if ( ( !outlen ) || ( outlen > BLAKE2S_OUTBYTES ) ) return -1;
-
   const blake2s_param P =
   {
     outlen,
@@ -196,17 +200,14 @@ int blake2s_init( blake2s_state *S, const uint8_t outlen )
     {0},
     {0}
   };
+  /* Move interval verification here? */
+  if ( ( !outlen ) || ( outlen > BLAKE2S_OUTBYTES ) ) return -1;
   return blake2s_init_param( S, &P );
 }
 
 
 int blake2s_init_key( blake2s_state *S, const uint8_t outlen, const void *key, const uint8_t keylen )
 {
-  /* Move interval verification here? */
-  if ( ( !outlen ) || ( outlen > BLAKE2S_OUTBYTES ) ) return -1;
-
-  if ( ( !key ) || ( !keylen ) || keylen > BLAKE2S_KEYBYTES ) return -1;
-
   const blake2s_param P =
   {
     outlen,
@@ -220,6 +221,11 @@ int blake2s_init_key( blake2s_state *S, const uint8_t outlen, const void *key, c
     {0},
     {0}
   };
+
+  /* Move interval verification here? */
+  if ( ( !outlen ) || ( outlen > BLAKE2S_OUTBYTES ) ) return -1;
+
+  if ( ( !key ) || ( !keylen ) || keylen > BLAKE2S_KEYBYTES ) return -1;
 
   if( blake2s_init_param( S, &P ) < 0 )
     return -1;
@@ -235,7 +241,7 @@ int blake2s_init_key( blake2s_state *S, const uint8_t outlen, const void *key, c
 }
 
 
-static __inline int blake2s_compress( blake2s_state *S, const uint8_t block[BLAKE2S_BLOCKBYTES] )
+BLAKE2_LOCAL_INLINE(int) blake2s_compress( blake2s_state *S, const uint8_t block[BLAKE2S_BLOCKBYTES] )
 {
   __m128i row1, row2, row3, row4;
   __m128i buf1, buf2, buf3, buf4;
@@ -302,19 +308,19 @@ int blake2s_update( blake2s_state *S, const uint8_t *in, uint64_t inlen )
 
     if( inlen > fill )
     {
-      memcpy( S->buf + left, in, fill ); // Fill buffer
+      memcpy( S->buf + left, in, fill ); /* Fill buffer */
       S->buflen += fill;
       blake2s_increment_counter( S, BLAKE2S_BLOCKBYTES );
-      blake2s_compress( S, S->buf ); // Compress
-      memcpy( S->buf, S->buf + BLAKE2S_BLOCKBYTES, BLAKE2S_BLOCKBYTES ); // Shift buffer left
+      blake2s_compress( S, S->buf ); /* Compress */
+      memcpy( S->buf, S->buf + BLAKE2S_BLOCKBYTES, BLAKE2S_BLOCKBYTES ); /* Shift buffer left */
       S->buflen -= BLAKE2S_BLOCKBYTES;
       in += fill;
       inlen -= fill;
     }
-    else // inlen <= fill
+    else /* inlen <= fill */
     {
       memcpy( S->buf + left, in, inlen );
-      S->buflen += inlen; // Be lazy, do not compress
+      S->buflen += inlen; /* Be lazy, do not compress */
       in += inlen;
       inlen -= inlen;
     }
@@ -329,6 +335,9 @@ int blake2s_final( blake2s_state *S, uint8_t *out, uint8_t outlen )
   uint8_t buffer[BLAKE2S_OUTBYTES] = {0};
 
   if( outlen > BLAKE2S_OUTBYTES )
+    return -1;
+
+  if( blake2s_is_lastblock( S ) )
     return -1;
 
   if( S->buflen > BLAKE2S_BLOCKBYTES )
@@ -357,11 +366,15 @@ int blake2s( uint8_t *out, const void *in, const void *key, const uint8_t outlen
   blake2s_state S[1];
 
   /* Verify parameters */
-  if ( NULL == in ) return -1;
+  if ( NULL == in && inlen > 0 ) return -1;
 
   if ( NULL == out ) return -1;
 
-  if ( NULL == key ) keylen = 0; /* Fail here instead if keylen != 0 and key == NULL? */
+  if ( NULL == key && keylen > 0) return -1;
+
+  if( !outlen || outlen > BLAKE2S_OUTBYTES ) return -1;
+
+  if( keylen > BLAKE2S_KEYBYTES ) return -1;
 
   if( keylen > 0 )
   {
