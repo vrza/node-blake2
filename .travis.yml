@@ -13,9 +13,6 @@ addons:
 
 env:
   matrix:
-  - TRAVIS_NODE_VERSION="iojs-2"
-  - TRAVIS_NODE_VERSION="iojs-3"
-  - TRAVIS_NODE_VERSION="4"
   - TRAVIS_NODE_VERSION="4.2"
   - TRAVIS_NODE_VERSION="5.0"
   - TRAVIS_NODE_VERSION="5.2"
@@ -24,6 +21,9 @@ env:
   - TRAVIS_NODE_VERSION="5.8"
   - TRAVIS_NODE_VERSION="5.9"
   - TRAVIS_NODE_VERSION="6.0"
+  - TRAVIS_NODE_VERSION="6.1"
+  - TRAVIS_NODE_VERSION="6.2"
+  - TRAVIS_NODE_VERSION="6.3"
 
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
