@@ -110,6 +110,9 @@ h.update(new Buffer("test"));
 h.digest(); // Returns a buffer of 16 bytes
 ```
 
+Note that BLAKE2 will generate completely different digests for shorter digest
+lengths; they are not simply a slice of the default digest.
+
 Known issues
 ---
 
