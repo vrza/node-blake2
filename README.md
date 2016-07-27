@@ -23,7 +23,7 @@ node-blake2 was tested to work on
 Install
 ---
 
-On Windows, first install [Python 2.7.9](https://www.python.org/downloads/release/python-279/) so that node-gyp works.
+On Windows, first install [Python 2.7.12](https://www.python.org/downloads/release/python-2712/) so that node-gyp works.
 
 In your project, run:
 
