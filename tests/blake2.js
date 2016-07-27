@@ -161,6 +161,9 @@ describe('blake2', function() {
 			assert.throws(function() {
 				new blake2.Hash('blake2b', {digestLength: 0});
 			}, /must be between 1 and 64/);
+			assert.throws(function() {
+				new blake2.KeyedHash('blake2b', new Buffer('key'), {digestLength: 0});
+			}, /must be between 1 and 64/);
 		});
 		it('returns the correct hash for a 16 byte digestLength', function() {
 			const hash = new blake2.Hash('blake2b', {digestLength: 16});
@@ -200,6 +203,9 @@ describe('blake2', function() {
 			assert.throws(function() {
 				new blake2.Hash('blake2bp', {digestLength: 0});
 			}, /must be between 1 and 64/);
+			assert.throws(function() {
+				new blake2.KeyedHash('blake2bp', new Buffer('key'), {digestLength: 0});
+			}, /must be between 1 and 64/);
 		});
 		it('returns the correct hash for a 16 byte digestLength', function() {
 			const hash = new blake2.Hash('blake2bp', {digestLength: 16});
@@ -228,6 +234,9 @@ describe('blake2', function() {
 			assert.throws(function() {
 				new blake2.Hash('blake2s', {digestLength: 0});
 			}, /must be between 1 and 32/);
+			assert.throws(function() {
+				new blake2.KeyedHash('blake2s', new Buffer('key'), {digestLength: 0});
+			}, /must be between 1 and 32/);
 		});
 		it('returns the correct hash for a 16 byte digestLength', function() {
 			const hash = new blake2.Hash('blake2s', {digestLength: 16});
@@ -255,6 +264,9 @@ describe('blake2', function() {
 		it('throws Error if called with a too small digestLength', function() {
 			assert.throws(function() {
 				new blake2.Hash('blake2sp', {digestLength: 0});
+			}, /must be between 1 and 32/);
+			assert.throws(function() {
+				new blake2.KeyedHash('blake2sp', new Buffer('key'), {digestLength: 0});
 			}, /must be between 1 and 32/);
 		});
 		it('returns the correct hash for a 16 byte digestLength', function() {

@@ -91,7 +91,10 @@ class KeyedHash extends LazyTransform {
 	constructor(algorithm, key, options) {
 		super(options);
 
-		const digestLength = (options && options['digestLength']) || -1;
+		let digestLength = -1;
+		if (options && 'digestLength' in options) {
+			digestLength = options.digestLength;
+		}
 		this._handle = new binding.Hash(algorithm, key, digestLength);
 	}
 }
