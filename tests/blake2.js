@@ -50,8 +50,18 @@ describe('blake2', function() {
 		assert.equal(hash.digest('hex'), BLAKE2B_EMPTY_DIGEST_HEX);
 	});
 
+	it('returns correct digest for blake2b after 0 updates, with digestLength parameter', function() {
+		const hash = new blake2.Hash('blake2b', {digestLength: 64});
+		assert.equal(hash.digest('hex'), BLAKE2B_EMPTY_DIGEST_HEX);
+	});
+
 	it('returns correct digest for blake2s after 0 updates', function() {
 		const hash = new blake2.Hash('blake2s');
+		assert.equal(hash.digest('hex'), BLAKE2S_EMPTY_DIGEST_HEX);
+	});
+
+	it('returns correct digest for blake2s after 0 updates, with digestLength parameter', function() {
+		const hash = new blake2.Hash('blake2s', {digestLength: 32});
 		assert.equal(hash.digest('hex'), BLAKE2S_EMPTY_DIGEST_HEX);
 	});
 
@@ -156,6 +166,11 @@ describe('blake2', function() {
 			const hash = new blake2.Hash('blake2b', {digestLength: 16});
 			hash.update(new Buffer('test'));
 			assert.equal(hash.digest('hex'), BLAKE2B_TEST_DIGEST_16_HEX);
+		});
+		it('returns the correct hash for a 1 byte digestLength', function() {
+			const hash = new blake2.Hash('blake2b', {digestLength: 1});
+			hash.update(new Buffer('test'));
+			assert.equal(hash.digest('hex'), 'f7');
 		});
 	});
 
