@@ -105,7 +105,7 @@ Pass `digestLength` as an option to use a non-default digest length:
 
 ```js
 var blake2 = require('blake2');
-var h = blake2.createHash('blake2b', { digestLength: 16 });
+var h = blake2.createHash('blake2b', {digestLength: 16});
 h.update(new Buffer("test"));
 h.digest(); // Returns a buffer of 16 bytes
 ```

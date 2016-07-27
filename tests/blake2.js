@@ -139,21 +139,21 @@ describe('blake2', function() {
 		});
 		it('throws Error if called with a non-numeric digestLength', function() {
 			assert.throws(function() {
-				new blake2.Hash('blake2b', { digestLength: 'not a number' });
+				new blake2.Hash('blake2b', {digestLength: 'not a number'});
 			}, /must be a number/);
 		});
 		it('throws Error if called with a too large digestLength', function() {
 			assert.throws(function() {
-				new blake2.Hash('blake2b', { digestLength: 65 });
+				new blake2.Hash('blake2b', {digestLength: 65});
 			}, /must be between 1 and 64/);
 		});
 		it('throws Error if called with a too small digestLength', function() {
 			assert.throws(function() {
-				new blake2.Hash('blake2b', { digestLength: 0 });
+				new blake2.Hash('blake2b', {digestLength: 0});
 			}, /must be between 1 and 64/);
 		});
 		it('returns the correct hash for a 16 byte digestLength', function() {
-			const hash = new blake2.Hash('blake2b', { digestLength: 16 });
+			const hash = new blake2.Hash('blake2b', {digestLength: 16});
 			hash.update(new Buffer('test'));
 			assert.equal(hash.digest('hex'), BLAKE2B_TEST_DIGEST_16_HEX);
 		});
@@ -167,21 +167,21 @@ describe('blake2', function() {
 		});
 		it('throws Error if called with a non-numeric digestLength', function() {
 			assert.throws(function() {
-				new blake2.Hash('blake2bp', { digestLength: 'not a number' });
+				new blake2.Hash('blake2bp', {digestLength: 'not a number'});
 			}, /must be a number/);
 		});
 		it('throws Error if called with a too large digestLength', function() {
 			assert.throws(function() {
-				new blake2.Hash('blake2bp', { digestLength: 65 });
+				new blake2.Hash('blake2bp', {digestLength: 65});
 			}, /must be between 1 and 64/);
 		});
 		it('throws Error if called with a too small digestLength', function() {
 			assert.throws(function() {
-				new blake2.Hash('blake2bp', { digestLength: 0 });
+				new blake2.Hash('blake2bp', {digestLength: 0});
 			}, /must be between 1 and 64/);
 		});
 		it('returns the correct hash for a 16 byte digestLength', function() {
-			const hash = new blake2.Hash('blake2bp', { digestLength: 16 });
+			const hash = new blake2.Hash('blake2bp', {digestLength: 16});
 			hash.update(new Buffer('test'));
 			assert.equal(hash.digest('hex'), BLAKE2BP_TEST_DIGEST_16_HEX);
 		});
@@ -195,21 +195,21 @@ describe('blake2', function() {
 		});
 		it('throws Error if called with a non-numeric digestLength', function() {
 			assert.throws(function() {
-				new blake2.Hash('blake2s', { digestLength: 'not a number' });
+				new blake2.Hash('blake2s', {digestLength: 'not a number'});
 			}, /must be a number/);
 		});
 		it('throws Error if called with a too large digestLength', function() {
 			assert.throws(function() {
-				new blake2.Hash('blake2s', { digestLength: 33});
+				new blake2.Hash('blake2s', {digestLength: 33});
 			}, /must be between 1 and 32/);
 		});
 		it('throws Error if called with a too small digestLength', function() {
 			assert.throws(function() {
-				new blake2.Hash('blake2s', { digestLength: 0 });
+				new blake2.Hash('blake2s', {digestLength: 0});
 			}, /must be between 1 and 32/);
 		});
 		it('returns the correct hash for a 16 byte digestLength', function() {
-			const hash = new blake2.Hash('blake2s', { digestLength: 16 });
+			const hash = new blake2.Hash('blake2s', {digestLength: 16});
 			hash.update(new Buffer('test'));
 			assert.equal(hash.digest('hex'), BLAKE2S_TEST_DIGEST_16_HEX);
 		});
@@ -223,21 +223,21 @@ describe('blake2', function() {
 		});
 		it('throws Error if called with a non-numeric digestLength', function() {
 			assert.throws(function() {
-				new blake2.Hash('blake2sp', { digestLength: 'not a number' });
+				new blake2.Hash('blake2sp', {digestLength: 'not a number'});
 			}, /must be a number/);
 		});
 		it('throws Error if called with a too large digestLength', function() {
 			assert.throws(function() {
-				new blake2.Hash('blake2sp', { digestLength: 33});
+				new blake2.Hash('blake2sp', {digestLength: 33});
 			}, /must be between 1 and 32/);
 		});
 		it('throws Error if called with a too small digestLength', function() {
 			assert.throws(function() {
-				new blake2.Hash('blake2sp', { digestLength: 0 });
+				new blake2.Hash('blake2sp', {digestLength: 0});
 			}, /must be between 1 and 32/);
 		});
 		it('returns the correct hash for a 16 byte digestLength', function() {
-			const hash = new blake2.Hash('blake2sp', { digestLength: 16 });
+			const hash = new blake2.Hash('blake2sp', {digestLength: 16});
 			hash.update(new Buffer('test'));
 			assert.equal(hash.digest('hex'), BLAKE2SP_TEST_DIGEST_16_HEX);
 		});
