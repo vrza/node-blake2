@@ -66,10 +66,12 @@ public:
 				key_length = node::Buffer::Length(info[1]);
 			}
 
-			if (!info[2]->IsNumber()) {
-				return Nan::ThrowError(v8::Exception::TypeError(Nan::New<v8::String>("digestLength must be a number").ToLocalChecked()));
+			if (info.Length() >= 3) {
+				if (!info[2]->IsNumber()) {
+					return Nan::ThrowError(v8::Exception::TypeError(Nan::New<v8::String>("digestLength must be a number").ToLocalChecked()));
+				}
+				digest_length = info[2]->IntegerValue();
 			}
-			digest_length = info[2]->IntegerValue();
 		}
 
 		if (algo == "bypass") {
