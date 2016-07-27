@@ -16,16 +16,16 @@ union any_blake2_state {
 };
 
 #define BLAKE_FN_CAST(fn) \
-	reinterpret_cast<int (*)(void*, const uint8_t*, uint64_t)>(fn)
+	reinterpret_cast<uintptr_t (*)(void*, const uint8_t*, uint64_t)>(fn)
 
 static Nan::Persistent<v8::FunctionTemplate> hash_constructor;
 
 class Hash: public Nan::ObjectWrap {
 protected:
 	bool initialized_;
-	int (*any_blake2_update)(void*, const uint8_t*, uint64_t);
-	int (*any_blake2_final)(void*, const uint8_t*, uint64_t);
-	int outbytes;
+	uintptr_t (*any_blake2_update)(void*, const uint8_t*, uint64_t);
+	uintptr_t (*any_blake2_final)(void*, const uint8_t*, uint64_t);
+	uint8_t outbytes;
 	any_blake2_state state;
 
 public:
@@ -43,94 +43,128 @@ public:
 
 	static
 	NAN_METHOD(New) {
-		if(!info.IsConstructCall()) {
+		if (!info.IsConstructCall()) {
 			return Nan::ThrowError("Constructor must be called with new");
 		}
 
 		Hash *obj = new Hash();
 		obj->Wrap(info.This());
-		if(info.Length() < 1 || !info[0]->IsString()) {
+		if (info.Length() < 1 || !info[0]->IsString()) {
 			return Nan::ThrowError(v8::Exception::TypeError(Nan::New<v8::String>("First argument must be a string with algorithm name").ToLocalChecked()));
 		}
 		std::string algo = std::string(*v8::String::Utf8Value(info[0]->ToString()));
 
 		const char *key_data = nullptr;
 		size_t key_length;
-		if(algo != "bypass" && info.Length() >= 2) {
-			if(!node::Buffer::HasInstance(info[1])) {
-				return Nan::ThrowError(v8::Exception::TypeError(Nan::New<v8::String>("If key argument is given, it must be a Buffer").ToLocalChecked()));
+		int8_t digest_length = -1;
+		if (algo != "bypass" && info.Length() >= 2) {
+			if (!info[1]->IsNull()) {
+				if (!node::Buffer::HasInstance(info[1])) {
+					return Nan::ThrowError(v8::Exception::TypeError(Nan::New<v8::String>("If key argument is given, it must be a Buffer").ToLocalChecked()));
+				}
+				key_data = node::Buffer::Data(info[1]);
+				key_length = node::Buffer::Length(info[1]);
 			}
-			key_data = node::Buffer::Data(info[1]);
-			key_length = node::Buffer::Length(info[1]);
+
+			if (info.Length() >= 3) {
+				if (!info[2]->IsNumber()) {
+					return Nan::ThrowError(v8::Exception::TypeError(Nan::New<v8::String>("digestLength must be a number").ToLocalChecked()));
+				}
+				digest_length = info[2]->IntegerValue();
+			}
 		}
 
-		if(algo == "bypass") {
+		if (algo == "bypass") {
 			// Initialize nothing - .copy() will set up all the state
-		} else if(algo == "blake2b") {
-			if(!key_data) {
-				if(blake2b_init(reinterpret_cast<blake2b_state*>(&obj->state), BLAKE2B_OUTBYTES) != 0) {
+		} else if (algo == "blake2b") {
+			if (digest_length == -1) {
+				digest_length = BLAKE2B_OUTBYTES;
+			} else if (digest_length < 1 || digest_length > BLAKE2B_OUTBYTES) {
+				return Nan::ThrowError("digestLength must be between 1 and 64");
+			}
+
+			if (!key_data) {
+				if (blake2b_init(reinterpret_cast<blake2b_state*>(&obj->state), digest_length) != 0) {
 					return Nan::ThrowError("blake2b_init failure");
 				}
 			} else {
-				if(key_length > BLAKE2B_KEYBYTES) {
+				if (key_length > BLAKE2B_KEYBYTES) {
 					return Nan::ThrowError("Key must be 64 bytes or smaller");
 				}
-				if(blake2b_init_key(reinterpret_cast<blake2b_state*>(&obj->state), BLAKE2B_OUTBYTES, key_data, key_length) != 0) {
+				if (blake2b_init_key(reinterpret_cast<blake2b_state*>(&obj->state), digest_length, key_data, key_length) != 0) {
 					return Nan::ThrowError("blake2b_init_key failure");
 				}
 			}
-			obj->outbytes = 512 / 8;
+			obj->outbytes = digest_length;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2b_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2b_final);
 			obj->initialized_ = true;
-		} else if(algo == "blake2bp") {
-			if(!key_data) {
-				if(blake2bp_init(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES) != 0) {
+		} else if (algo == "blake2bp") {
+			if (digest_length == -1) {
+				digest_length = BLAKE2B_OUTBYTES;
+			} else if (digest_length < 1 || digest_length > BLAKE2B_OUTBYTES) {
+				return Nan::ThrowError("digestLength must be between 1 and 64");
+			}
+
+			if (!key_data) {
+				if (blake2bp_init(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES) != 0) {
 					return Nan::ThrowError("blake2bp_init failure");
 				}
 			} else {
-				if(key_length > BLAKE2B_KEYBYTES) {
+				if (key_length > BLAKE2B_KEYBYTES) {
 					return Nan::ThrowError("Key must be 64 bytes or smaller");
 				}
-				if(blake2bp_init_key(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES, key_data, key_length) != 0) {
+				if (blake2bp_init_key(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES, key_data, key_length) != 0) {
 					return Nan::ThrowError("blake2bp_init_key failure");
 				}
 			}
-			obj->outbytes = 512 / 8;
+			obj->outbytes = digest_length;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2bp_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2bp_final);
 			obj->initialized_ = true;
-		} else if(algo == "blake2s") {
-			if(!key_data) {
-				if(blake2s_init(reinterpret_cast<blake2s_state*>(&obj->state), BLAKE2S_OUTBYTES) != 0) {
+		} else if (algo == "blake2s") {
+			if (digest_length == -1) {
+				digest_length = BLAKE2S_OUTBYTES;
+			} else if (digest_length < 1 || digest_length > BLAKE2S_OUTBYTES) {
+				return Nan::ThrowError("digestLength must be between 1 and 32");
+			}
+
+			if (!key_data) {
+				if (blake2s_init(reinterpret_cast<blake2s_state*>(&obj->state), digest_length) != 0) {
 					return Nan::ThrowError("blake2bs_init failure");
 				}
 			} else {
-				if(key_length > BLAKE2S_KEYBYTES) {
+				if (key_length > BLAKE2S_KEYBYTES) {
 					return Nan::ThrowError("Key must be 32 bytes or smaller");
 				}
-				if(blake2s_init_key(reinterpret_cast<blake2s_state*>(&obj->state), BLAKE2S_OUTBYTES, key_data, key_length) != 0) {
+				if (blake2s_init_key(reinterpret_cast<blake2s_state*>(&obj->state), digest_length, key_data, key_length) != 0) {
 					return Nan::ThrowError("blake2s_init_key failure");
 				}
 			}
-			obj->outbytes = 256 / 8;
+			obj->outbytes = digest_length;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2s_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2s_final);
 			obj->initialized_ = true;
-		} else if(algo == "blake2sp") {
-			if(!key_data) {
-				if(blake2sp_init(reinterpret_cast<blake2sp_state*>(&obj->state), BLAKE2S_OUTBYTES) != 0) {
+		} else if (algo == "blake2sp") {
+			if (digest_length == -1) {
+				digest_length = BLAKE2S_OUTBYTES;
+			} else if (digest_length < 1 || digest_length > BLAKE2S_OUTBYTES) {
+				return Nan::ThrowError("digestLength must be between 1 and 32");
+			}
+
+			if (!key_data) {
+				if (blake2sp_init(reinterpret_cast<blake2sp_state*>(&obj->state), digest_length) != 0) {
 					return Nan::ThrowError("blake2sp_init failure");
 				}
 			} else {
-				if(key_length > BLAKE2S_KEYBYTES) {
+				if (key_length > BLAKE2S_KEYBYTES) {
 					return Nan::ThrowError("Key must be 32 bytes or smaller");
 				}
-				if(blake2sp_init_key(reinterpret_cast<blake2sp_state*>(&obj->state), BLAKE2S_OUTBYTES, key_data, key_length) != 0) {
+				if (blake2sp_init_key(reinterpret_cast<blake2sp_state*>(&obj->state), digest_length, key_data, key_length) != 0) {
 					return Nan::ThrowError("blake2sp_init_key failure");
 				}
 			}
-			obj->outbytes = 256 / 8;
+			obj->outbytes = digest_length;
 			obj->any_blake2_update = BLAKE_FN_CAST(blake2sp_update);
 			obj->any_blake2_final = BLAKE_FN_CAST(blake2sp_final);
 			obj->initialized_ = true;
@@ -144,12 +178,12 @@ public:
 	NAN_METHOD(Update) {
 		Hash *obj = Nan::ObjectWrap::Unwrap<Hash>(info.This());
 
-		if(!obj->initialized_) {
+		if (!obj->initialized_) {
 			v8::Local<v8::Value> exception = v8::Exception::Error(Nan::New<v8::String>("Not initialized").ToLocalChecked());
 			return Nan::ThrowError(exception);
 		}
 
-		if(info.Length() < 1 || !node::Buffer::HasInstance(info[0])) {
+		if (info.Length() < 1 || !node::Buffer::HasInstance(info[0])) {
 			return Nan::ThrowError(v8::Exception::TypeError(Nan::New<v8::String>("Bad argument; need a Buffer").ToLocalChecked()));
 		}
 
@@ -170,13 +204,13 @@ public:
 		Hash *obj = Nan::ObjectWrap::Unwrap<Hash>(info.This());
 		unsigned char digest[512 / 8];
 
-		if(!obj->initialized_) {
+		if (!obj->initialized_) {
 			v8::Local<v8::Value> exception = v8::Exception::Error(Nan::New<v8::String>("Not initialized").ToLocalChecked());
 			return Nan::ThrowError(exception);
 		}
 
 		obj->initialized_ = false;
-		if(obj->any_blake2_final(reinterpret_cast<void*>(&obj->state), digest, obj->outbytes) != 0) {
+		if (obj->any_blake2_final(reinterpret_cast<void*>(&obj->state), digest, obj->outbytes) != 0) {
 			return Nan::ThrowError("blake2*_final failure");
 		}
 
@@ -200,7 +234,7 @@ public:
 		v8::Local<v8::Object> inst = construct->GetFunction()->NewInstance(argc, argv);
 		// Construction may fail with a JS exception, in which case we just need
 		// to return.
-		if(inst.IsEmpty()) {
+		if (inst.IsEmpty()) {
 			return;
 		}
 		Hash *dest = new Hash();

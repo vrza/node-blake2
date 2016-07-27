@@ -1,22 +1,25 @@
 /*
    BLAKE2 reference source code package - optimized C implementations
-
-   Written in 2012 by Samuel Neves <sneves@dei.uc.pt>
-
-   To the extent possible under law, the author(s) have dedicated all copyright
-   and related and neighboring rights to this software to the public domain
-   worldwide. This software is distributed without any warranty.
-
-   You should have received a copy of the CC0 Public Domain Dedication along with
-   this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+  
+   Copyright 2012, Samuel Neves <sneves@dei.uc.pt>.  You may use this under the
+   terms of the CC0, the OpenSSL Licence, or the Apache Public License 2.0, at
+   your option.  The terms of these licenses can be found at:
+  
+   - CC0 1.0 Universal : http://creativecommons.org/publicdomain/zero/1.0
+   - OpenSSL license   : https://www.openssl.org/source/license.html
+   - Apache 2.0        : http://www.apache.org/licenses/LICENSE-2.0
+  
+   More information about the BLAKE2 hash function can be found at
+   https://blake2.net.
 */
 #pragma once
 #ifndef __BLAKE2_IMPL_H__
 #define __BLAKE2_IMPL_H__
 
 #include <stdint.h>
+#include <string.h>
 
-static __inline uint32_t load32( const void *src )
+BLAKE2_LOCAL_INLINE(uint32_t) load32( const void *src )
 {
 #if defined(NATIVE_LITTLE_ENDIAN)
   uint32_t w;
@@ -32,7 +35,7 @@ static __inline uint32_t load32( const void *src )
 #endif
 }
 
-static __inline uint64_t load64( const void *src )
+BLAKE2_LOCAL_INLINE(uint64_t) load64( const void *src )
 {
 #if defined(NATIVE_LITTLE_ENDIAN)
   uint64_t w;
@@ -52,7 +55,7 @@ static __inline uint64_t load64( const void *src )
 #endif
 }
 
-static __inline void store32( void *dst, uint32_t w )
+BLAKE2_LOCAL_INLINE(void) store32( void *dst, uint32_t w )
 {
 #if defined(NATIVE_LITTLE_ENDIAN)
   memcpy(dst, &w, sizeof w);
@@ -65,7 +68,7 @@ static __inline void store32( void *dst, uint32_t w )
 #endif
 }
 
-static __inline void store64( void *dst, uint64_t w )
+BLAKE2_LOCAL_INLINE(void) store64( void *dst, uint64_t w )
 {
 #if defined(NATIVE_LITTLE_ENDIAN)
   memcpy(dst, &w, sizeof w);
@@ -82,7 +85,7 @@ static __inline void store64( void *dst, uint64_t w )
 #endif
 }
 
-static __inline uint64_t load48( const void *src )
+BLAKE2_LOCAL_INLINE(uint64_t) load48( const void *src )
 {
   const uint8_t *p = ( const uint8_t * )src;
   uint64_t w = *p++;
@@ -94,7 +97,7 @@ static __inline uint64_t load48( const void *src )
   return w;
 }
 
-static __inline void store48( void *dst, uint64_t w )
+BLAKE2_LOCAL_INLINE(void) store48( void *dst, uint64_t w )
 {
   uint8_t *p = ( uint8_t * )dst;
   *p++ = ( uint8_t )w; w >>= 8;
@@ -105,31 +108,31 @@ static __inline void store48( void *dst, uint64_t w )
   *p++ = ( uint8_t )w;
 }
 
-static __inline uint32_t rotl32( const uint32_t w, const unsigned c )
+BLAKE2_LOCAL_INLINE(uint32_t) rotl32( const uint32_t w, const unsigned c )
 {
   return ( w << c ) | ( w >> ( 32 - c ) );
 }
 
-static __inline uint64_t rotl64( const uint64_t w, const unsigned c )
+BLAKE2_LOCAL_INLINE(uint64_t) rotl64( const uint64_t w, const unsigned c )
 {
   return ( w << c ) | ( w >> ( 64 - c ) );
 }
 
-static __inline uint32_t rotr32( const uint32_t w, const unsigned c )
+BLAKE2_LOCAL_INLINE(uint32_t) rotr32( const uint32_t w, const unsigned c )
 {
   return ( w >> c ) | ( w << ( 32 - c ) );
 }
 
-static __inline uint64_t rotr64( const uint64_t w, const unsigned c )
+BLAKE2_LOCAL_INLINE(uint64_t) rotr64( const uint64_t w, const unsigned c )
 {
   return ( w >> c ) | ( w << ( 64 - c ) );
 }
 
 /* prevents compiler optimizing out memset() */
-static __inline void secure_zero_memory( void *v, size_t n )
+BLAKE2_LOCAL_INLINE(void) secure_zero_memory(void *v, size_t n)
 {
-  volatile uint8_t *p = ( volatile uint8_t * )v;
-  while( n-- ) *p++ = 0;
+  static void *(*const volatile memset_v)(void *, int, size_t) = &memset;
+  memset_v(v, 0, n);
 }
 
 #endif

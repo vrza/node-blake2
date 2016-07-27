@@ -1,7 +1,7 @@
 {
   "name": "blake2",
-  "version": "1.2.3",
-  "description": "All four BLAKE2 variants (blake2b, blake2bp, blake2s, blake2sp) for io.js/node 4+ with stream support",
+  "version": "1.3.0",
+  "description": "All four BLAKE2 variants (blake2b, blake2bp, blake2s, blake2sp) for node 4+ with stream support",
   "homepage": "https://github.com/ludios/node-blake2",
   "issues": "https://github.com/ludios/node-blake2/issues",
   "keywords": [
@@ -30,7 +30,6 @@
   "license": "ISC",
   "repository": "ludios/node-blake2",
   "engines": {
-    "iojs": ">= 2.0.0",
     "node": ">= 4.0.0"
   }
 }
