@@ -25,7 +25,7 @@ protected:
 	bool initialized_;
 	int (*any_blake2_update)(void*, const uint8_t*, uint64_t);
 	int (*any_blake2_final)(void*, const uint8_t*, uint64_t);
-	int outbytes;
+	uint8_t outbytes;
 	any_blake2_state state;
 
 public:
@@ -56,7 +56,7 @@ public:
 
 		const char *key_data = nullptr;
 		size_t key_length;
-		int digest_length = -1;
+		int8_t digest_length = -1;
 		if (algo != "bypass" && info.Length() >= 2) {
 			if (!info[1]->IsNull()) {
 				if (!node::Buffer::HasInstance(info[1])) {
