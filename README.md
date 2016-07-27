@@ -78,25 +78,6 @@ Although it is not an HMAC, a keyed hash serves the same purpose.
 
 This works exactly like it does with [`crypto.Hash`](https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm).  See [b2sum.js](https://github.com/ludios/node-blake2/blob/master/b2sum.js).
 
-### Copying a hash object
-
-You can call `.copy()` on a `Hash` or `KeyedHash`, which will return a new object with all of the internal BLAKE2 state copied from the source object.
-
-```js
-var blake2 = require('blake2');
-var h = blake2.createHash('blake2b');
-h.update(new Buffer("test"));
-
-// Call .copy() before .digest(), because .digest() finalizes internal state
-var j = h.copy();
-
-// h is unaffected by updates to j
-j.update(new Buffer("more"));
-
-console.log(h.digest());
-console.log(j.digest());
-```
-
 ### Custom digest length
 
 BLAKE2 can generate digests between 1-64 bytes for BLAKE2b and 1-32 bytes for
@@ -121,6 +102,25 @@ h.digest(); // Returns a Buffer with 16 bytes
 
 Note that BLAKE2 will generate completely different digests for shorter digest
 lengths; they are not simply a slice of the default digest.
+
+### Copying a hash object
+
+You can call `.copy()` on a `Hash` or `KeyedHash`, which will return a new object with all of the internal BLAKE2 state copied from the source object.
+
+```js
+var blake2 = require('blake2');
+var h = blake2.createHash('blake2b');
+h.update(new Buffer("test"));
+
+// Call .copy() before .digest(), because .digest() finalizes internal state
+var j = h.copy();
+
+// h is unaffected by updates to j
+j.update(new Buffer("more"));
+
+console.log(h.digest());
+console.log(j.digest());
+```
 
 Known issues
 ---
