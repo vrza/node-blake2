@@ -16,15 +16,15 @@ union any_blake2_state {
 };
 
 #define BLAKE_FN_CAST(fn) \
-	reinterpret_cast<int (*)(void*, const uint8_t*, uint64_t)>(fn)
+	reinterpret_cast<uintptr_t (*)(void*, const uint8_t*, uint64_t)>(fn)
 
 static Nan::Persistent<v8::FunctionTemplate> hash_constructor;
 
 class Hash: public Nan::ObjectWrap {
 protected:
 	bool initialized_;
-	int (*any_blake2_update)(void*, const uint8_t*, uint64_t);
-	int (*any_blake2_final)(void*, const uint8_t*, uint64_t);
+	uintptr_t (*any_blake2_update)(void*, const uint8_t*, uint64_t);
+	uintptr_t (*any_blake2_final)(void*, const uint8_t*, uint64_t);
 	uint8_t outbytes;
 	any_blake2_state state;
 
