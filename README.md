@@ -10,7 +10,7 @@ SHA-1, MD5, and SHA-512 are susceptible to length-extension".
 [https://blake2.net/](https://blake2.net/)
 
 node-blake2 provides a [stream](https://nodejs.org/api/stream.html)-compatible
-blake2b, blake2bp, blake2s, and blake2sp `Hash` and `KeyedHash` for node 4+.
+blake2b, blake2bp, blake2s, and blake2sp `Hash` and `KeyedHash` for node 6+.
 
 node-blake2 was tested to work on
 -	Ubuntu 14.04 (g++ 4.8.2)
