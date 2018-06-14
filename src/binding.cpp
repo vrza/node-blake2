@@ -230,8 +230,8 @@ public:
 		const unsigned argc = 1;
 		v8::Local<v8::Value> argv[argc] = { Nan::New<v8::String>("bypass").ToLocalChecked() };
 
-		v8::Local<v8::FunctionTemplate> construct = Nan::New<v8::FunctionTemplate>(hash_constructor);
-		v8::Local<v8::Object> inst = construct->GetFunction()->NewInstance(argc, argv);
+		v8::Local<v8::Function> construct = Nan::New<v8::FunctionTemplate>(hash_constructor)->GetFunction();
+		v8::Local<v8::Object> inst = Nan::NewInstance(construct, argc, argv).ToLocalChecked();
 		// Construction may fail with a JS exception, in which case we just need
 		// to return.
 		if (inst.IsEmpty()) {
