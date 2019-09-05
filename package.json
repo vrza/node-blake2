@@ -20,7 +20,7 @@
     "test-strong-mode": "node --strong-mode ./node_modules/.bin/_mocha tests/*.js"
   },
   "dependencies": {
-    "nan": "^2.0.0"
+    "nan": "^2.14.0"
   },
   "devDependencies": {
     "eslint": "^1.0.0",
