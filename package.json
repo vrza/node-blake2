@@ -1,9 +1,7 @@
 {
   "name": "blake2",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "All four BLAKE2 variants (blake2b, blake2bp, blake2s, blake2sp) for node, with stream support",
-  "homepage": "https://github.com/ludios/node-blake2",
-  "issues": "https://github.com/ludios/node-blake2/issues",
   "keywords": [
     "crypto",
     "hash",
@@ -14,6 +12,12 @@
     "blake2s",
     "blake2sp"
   ],
+  "homepage": "https://github.com/vrza/node-blake2",
+  "bugs": "https://github.com/vrza/node-blake2/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vrza/node-blake2.git"
+  },
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha tests/*.js && ./node_modules/.bin/eslint .",
@@ -23,12 +27,11 @@
     "nan": "^2.14.0"
   },
   "devDependencies": {
-    "eslint": "^1.0.0",
-    "mocha": "^2.2.5"
+    "eslint": "^5.16.0",
+    "mocha": "^6.2.0"
   },
   "author": "Ivan Kozik",
   "license": "ISC",
-  "repository": "ludios/node-blake2",
   "engines": {
     "node": ">= 6.0.0"
   }
