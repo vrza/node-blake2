@@ -1,6 +1,6 @@
 {
   "name": "blake2",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "description": "All four BLAKE2 variants (blake2b, blake2bp, blake2s, blake2sp) for node, with stream support",
   "keywords": [
     "crypto",
@@ -27,12 +27,17 @@
     "nan": "^2.14.0"
   },
   "devDependencies": {
-    "eslint": "^5.16.0",
+    "eslint": "^6.3.0",
     "mocha": "^6.2.0"
   },
-  "author": "Ivan Kozik",
+  "contributors": [
+    "Ivan Kozik <ivan@ludios.org> (https://github.com/ivan)",
+    "James Bowes <jbowes@repl.ca> (https://github.com/jbowes)",
+    "Kannan Goundan <kannan@cakoose.com> (https://github.com/cakoose)",
+    "Vladimir Vrzić <vvrzic@gmail.com> (https://github.com/vrza)"
+  ],
   "license": "ISC",
   "engines": {
-    "node": ">= 6.0.0"
+    "node": ">= 8.0.0"
   }
 }

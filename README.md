@@ -10,20 +10,18 @@ SHA-1, MD5, and SHA-512 are susceptible to length-extension".
 [https://blake2.net/](https://blake2.net/)
 
 node-blake2 provides a [stream](https://nodejs.org/api/stream.html)-compatible
-blake2b, blake2bp, blake2s, and blake2sp `Hash` and `KeyedHash` for node 6+.
+blake2b, blake2bp, blake2s, and blake2sp `Hash` and `KeyedHash` for node 8+.
 
 node-blake2 was tested to work on
--	Ubuntu 14.04 (g++ 4.8.2)
--	Ubuntu 14.04 (clang++ 3.6.2-svn238746-1~exp1)
--	Ubuntu 15.04 (g++ 4.9.2)
+-	GNU/Linux Ubuntu 16.04 (g++ 5.4.0)
+-	macOS 10.13 (Apple LLVM 9.1.0)
 -	Windows 8.1 x64 (VS2013)
--	OS X 10.10 (Apple LLVM 6.1.0)
 
 
 Install
 ---
 
-On Windows, first install [Python 2.7.13](https://www.python.org/downloads/release/python-2713/) so that node-gyp works.
+On Windows, first install [Python 2.7.16](https://www.python.org/downloads/release/python-2716/) so that node-gyp works.
 
 In your project, run:
 
@@ -34,7 +32,7 @@ npm install blake2 --save
 or install from the GitHub repo:
 
 ```
-npm install ludios/node-blake2 --save
+npm install vrza/node-blake2 --save
 ```
 
 
@@ -51,7 +49,7 @@ console.log(h.digest("hex"));
 ```
 
 `blake2.createHash` works like node's
-[`crypto.createHash`](https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm).
+[`crypto.createHash`](https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm_options).
 
 ### Keyed BLAKE2b
 
@@ -63,7 +61,7 @@ console.log(h.digest("hex"));
 ```
 
 `blake2.createKeyedHash` takes a key argument like
-[`crypto.createHmac`](https://nodejs.org/api/crypto.html#crypto_crypto_createhmac_algorithm_key).
+[`crypto.createHmac`](https://nodejs.org/api/crypto.html#crypto_crypto_createhmac_algorithm_key_options).
 Although it is not an HMAC, a keyed hash serves the same purpose.
 
 ### Important notes
@@ -76,7 +74,7 @@ Although it is not an HMAC, a keyed hash serves the same purpose.
 
 ### With streams
 
-This works exactly like it does with [`crypto.Hash`](https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm).  See [b2sum.js](https://github.com/ludios/node-blake2/blob/master/b2sum.js).
+This works exactly like it does with [`crypto.Hash`](https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm_options).  See [b2sum.js](https://github.com/vrza/node-blake2/blob/master/b2sum.js).
 
 ### Custom digest length
 
@@ -130,5 +128,5 @@ Known issues
 
 [npm-image]: https://img.shields.io/npm/v/blake2.svg
 [npm-url]: https://npmjs.org/package/blake2
-[travis-image]: https://img.shields.io/travis/ludios/node-blake2.svg
-[travis-url]: https://travis-ci.org/ludios/node-blake2
+[travis-image]: https://img.shields.io/travis/vrza/node-blake2.svg
+[travis-url]: https://travis-ci.org/vrza/node-blake2
