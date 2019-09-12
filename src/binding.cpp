@@ -232,14 +232,14 @@ public:
 
 		v8::Local<v8::FunctionTemplate> tmpl = Nan::New<v8::FunctionTemplate>(hash_constructor);
 		Nan::MaybeLocal<v8::Function> construct = Nan::GetFunction(tmpl);
-		Nan::MaybeLocal<v8::Object> inst = Nan::NewInstance(construct.ToLocalChecked(), argc, argv).ToLocalChecked();
+		v8::Local<v8::Object> inst = Nan::NewInstance(construct.ToLocalChecked(), argc, argv).ToLocalChecked();
 		// Construction may fail with a JS exception, in which case we just need
 		// to return.
 		if (inst.IsEmpty()) {
 			return;
 		}
 		Hash *dest = new Hash();
-		dest->Wrap(inst.ToLocalChecked());
+		dest->Wrap(inst);
 
 		dest->initialized_ = src->initialized_;
 		dest->any_blake2_update = src->any_blake2_update;
@@ -247,7 +247,7 @@ public:
 		dest->outbytes = src->outbytes;
 		dest->state = src->state;
 
-		info.GetReturnValue().Set(inst.ToLocalChecked());
+		info.GetReturnValue().Set(inst);
 	}
 };
 
