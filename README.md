@@ -14,6 +14,7 @@ blake2b, blake2bp, blake2s, and blake2sp `Hash` and `KeyedHash` for node 8+.
 
 node-blake2 was tested to work on
 -	GNU/Linux Ubuntu 16.04 (g++ 5.4.0)
+-	GNU/Linux Gentoo (g++ 8.3.0)
 -	macOS 10.13 (Apple LLVM 9.1.0)
 -	Windows 8.1 x64 (VS2013)
 
@@ -44,7 +45,7 @@ Examples
 ```js
 var blake2 = require('blake2');
 var h = blake2.createHash('blake2b');
-h.update(new Buffer("test"));
+h.update(Buffer.from("test"));
 console.log(h.digest("hex"));
 ```
 
@@ -55,8 +56,8 @@ console.log(h.digest("hex"));
 
 ```js
 var blake2 = require('blake2');
-var h = blake2.createKeyedHash('blake2b', new Buffer('key - up to 64 bytes for blake2b, 32 for blake2s'));
-h.update(new Buffer("test"));
+var h = blake2.createKeyedHash('blake2b', Buffer.from('key - up to 64 bytes for blake2b, 32 for blake2s'));
+h.update(Buffer.from("test"));
 console.log(h.digest("hex"));
 ```
 
@@ -85,7 +86,7 @@ default (maximum length):
 ```js
 var blake2 = require('blake2');
 var h = blake2.createHash('blake2b', {digestLength: 16});
-h.update(new Buffer("test"));
+h.update(Buffer.from("test"));
 h.digest(); // Returns a Buffer with 16 bytes
 ```
 
@@ -93,8 +94,8 @@ or with a key:
 
 ```js
 var blake2 = require('blake2');
-var h = blake2.createKeyedHash('blake2b', new Buffer('my key'), {digestLength: 16});
-h.update(new Buffer("test"));
+var h = blake2.createKeyedHash('blake2b', Buffer.from('my key'), {digestLength: 16});
+h.update(Buffer.from("test"));
 h.digest(); // Returns a Buffer with 16 bytes
 ```
 
@@ -108,13 +109,13 @@ You can call `.copy()` on a `Hash` or `KeyedHash`, which will return a new objec
 ```js
 var blake2 = require('blake2');
 var h = blake2.createHash('blake2b');
-h.update(new Buffer("test"));
+h.update(Buffer.from("test"));
 
 // Call .copy() before .digest(), because .digest() finalizes internal state
 var j = h.copy();
 
 // h is unaffected by updates to j
-j.update(new Buffer("more"));
+j.update(Buffer.from("more"));
 
 console.log(h.digest());
 console.log(j.digest());

@@ -15,21 +15,21 @@ function randomElement(arr) {
 
 const algos = ['blake2b', 'blake2s', 'blake2bp', 'blake2sp'];
 const encodings = [undefined, 'hex', 'base64', 'binary'];
-let input = new Buffer(String(Math.random()));
+let input = Buffer.from(String(Math.random()));
 while(1) {
 	let hash = new blake2.Hash(randomElement(algos));
 	hash.update(input);
 	input = hash.digest(randomElement(encodings));
 	hash = hash.copy(); // Exercise copy as well
 	if(typeof input === 'string') {
-		input = new Buffer(input.substr(0, 16));
+		input = Buffer.from(input.substr(0, 16));
 	}
 
-	hash = new blake2.KeyedHash(randomElement(algos), new Buffer(String(Math.random())));
+	hash = new blake2.KeyedHash(randomElement(algos), Buffer.from(String(Math.random())));
 	hash.update(input);
 	hash = hash.copy(); // Exercise copy as well
 	input = hash.digest(randomElement(encodings));
 	if(typeof input === 'string') {
-		input = new Buffer(input.substr(0, 16));
+		input = Buffer.from(input.substr(0, 16));
 	}
 }
