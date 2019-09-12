@@ -107,14 +107,14 @@ public:
 			}
 
 			if (!key_data) {
-				if (blake2bp_init(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES) != 0) {
+				if (blake2bp_init(reinterpret_cast<blake2bp_state*>(&obj->state), digest_length) != 0) {
 					return Nan::ThrowError("blake2bp_init failure");
 				}
 			} else {
 				if (key_length > BLAKE2B_KEYBYTES) {
 					return Nan::ThrowError("Key must be 64 bytes or smaller");
 				}
-				if (blake2bp_init_key(reinterpret_cast<blake2bp_state*>(&obj->state), BLAKE2B_OUTBYTES, key_data, key_length) != 0) {
+				if (blake2bp_init_key(reinterpret_cast<blake2bp_state*>(&obj->state), digest_length, key_data, key_length) != 0) {
 					return Nan::ThrowError("blake2bp_init_key failure");
 				}
 			}
