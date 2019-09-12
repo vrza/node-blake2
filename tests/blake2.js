@@ -7,12 +7,12 @@ const fs = require('fs');
 const os = require('os');
 
 const BLAKE2B_EMPTY_DIGEST_HEX = '786a02f742015903c6c6fd852552d272912f4740e15847618a86e217f71f5419d25e1031afee585313896444934eb04b903a685b1448b755d56f701afe9be2ce';
-const BLAKE2B_EMPTY_DIGEST_BASE64 = new Buffer(BLAKE2B_EMPTY_DIGEST_HEX, 'hex').toString('base64');
-const BLAKE2B_EMPTY_DIGEST_BINARY = new Buffer(BLAKE2B_EMPTY_DIGEST_HEX, 'hex').toString('binary');
+const BLAKE2B_EMPTY_DIGEST_BASE64 = Buffer.from(BLAKE2B_EMPTY_DIGEST_HEX, 'hex').toString('base64');
+const BLAKE2B_EMPTY_DIGEST_BINARY = Buffer.from(BLAKE2B_EMPTY_DIGEST_HEX, 'hex').toString('binary');
 
 const BLAKE2S_EMPTY_DIGEST_HEX = '69217a3079908094e11121d042354a7c1f55b6482ca1a51e1b250dfd1ed0eef9';
-const BLAKE2S_EMPTY_DIGEST_BASE64 = new Buffer(BLAKE2S_EMPTY_DIGEST_HEX, 'hex').toString('base64');
-const BLAKE2S_EMPTY_DIGEST_BINARY = new Buffer(BLAKE2S_EMPTY_DIGEST_HEX, 'hex').toString('binary');
+const BLAKE2S_EMPTY_DIGEST_BASE64 = Buffer.from(BLAKE2S_EMPTY_DIGEST_HEX, 'hex').toString('base64');
+const BLAKE2S_EMPTY_DIGEST_BINARY = Buffer.from(BLAKE2S_EMPTY_DIGEST_HEX, 'hex').toString('binary');
 
 const BLAKE2B_TEST_DIGEST_16_HEX = '44a8995dd50b6657a037a7839304535b';
 const BLAKE2BP_TEST_DIGEST_16_HEX = 'ec93bfef647e0f82f040b4e81d4d7491';
@@ -30,14 +30,14 @@ function* getTestVectors(file) {
 	let parts = content.split('\n\n');
 	for(const part of parts) {
 		let lines = part.split('\n');
-		let input = new Buffer(lines[0].replace(/^in:\s+/, ""), "hex");
+		let input = Buffer.from(lines[0].replace(/^in:\s+/, ""), "hex");
 		let key, hash;
 		if(lines.length === 3) {
-			key = new Buffer(lines[1].replace(/^key:\s+/, ""), "hex");
+			key = Buffer.from(lines[1].replace(/^key:\s+/, ""), "hex");
 			assert(key.length === 64 || key.length === 32, key.length);
-			hash = new Buffer(lines[2].replace(/^hash:\s+/, ""), "hex");
+			hash = Buffer.from(lines[2].replace(/^hash:\s+/, ""), "hex");
 		} else {
-			hash = new Buffer(lines[1].replace(/^hash:\s+/, ""), "hex");
+			hash = Buffer.from(lines[1].replace(/^hash:\s+/, ""), "hex");
 		}
 		assert(hash.length === 64 || hash.length === 32, hash.length);
 		yield {input, key, hash};
@@ -67,7 +67,7 @@ describe('blake2', function() {
 
 	it('returns a Buffer when digest() is called without args', function() {
 		const hash = new blake2.Hash('blake2b');
-		assert.deepEqual(hash.digest(), new Buffer(BLAKE2B_EMPTY_DIGEST_HEX, 'hex'));
+		assert.deepEqual(hash.digest(), Buffer.from(BLAKE2B_EMPTY_DIGEST_HEX, 'hex'));
 	});
 
 	it('returns a base64 string when digest("base64") is called', function() {
@@ -90,8 +90,8 @@ describe('blake2', function() {
 	it('throws Error if update(...) is called after digest()', function() {
 		const hash = new blake2.Hash('blake2b');
 		assert.equal(hash.digest('hex'), BLAKE2B_EMPTY_DIGEST_HEX);
-		assert.throws(function() { hash.update(new Buffer('hi')); }, /Not initialized/);
-		assert.throws(function() { hash.update(new Buffer('hi')); }, /Not initialized/);
+		assert.throws(function() { hash.update(Buffer.from('hi')); }, /Not initialized/);
+		assert.throws(function() { hash.update(Buffer.from('hi')); }, /Not initialized/);
 	});
 
 	it('throws Error if update(...) is called with a non-Buffer', function() {
@@ -144,7 +144,7 @@ describe('blake2', function() {
 	describe('blake2b', function() {
 		it('throws Error if called with too-long key', function() {
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2b', new Buffer('x'.repeat(64 + 1), "ascii"));
+				new blake2.KeyedHash('blake2b', Buffer.from('x'.repeat(64 + 1), "ascii"));
 			}, /must be 64 bytes or smaller/);
 		});
 		it('throws Error if called with a non-numeric digestLength', function() {
@@ -152,7 +152,7 @@ describe('blake2', function() {
 				new blake2.Hash('blake2b', {digestLength: 'not a number'});
 			}, /must be a number/);
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2b', new Buffer('key'), {digestLength: 'not a number'});
+				new blake2.KeyedHash('blake2b', Buffer.from('key'), {digestLength: 'not a number'});
 			}, /must be a number/);
 		});
 		it('throws Error if called with a too large digestLength', function() {
@@ -160,7 +160,7 @@ describe('blake2', function() {
 				new blake2.Hash('blake2b', {digestLength: 65});
 			}, /must be between 1 and 64/);
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2b', new Buffer('key'), {digestLength: 65});
+				new blake2.KeyedHash('blake2b', Buffer.from('key'), {digestLength: 65});
 			}, /must be between 1 and 64/);
 		});
 		it('throws Error if called with a too small digestLength', function() {
@@ -168,22 +168,22 @@ describe('blake2', function() {
 				new blake2.Hash('blake2b', {digestLength: 0});
 			}, /must be between 1 and 64/);
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2b', new Buffer('key'), {digestLength: 0});
+				new blake2.KeyedHash('blake2b', Buffer.from('key'), {digestLength: 0});
 			}, /must be between 1 and 64/);
 		});
 		it('returns the correct hash for a 16 byte digestLength', function() {
 			const hash = new blake2.Hash('blake2b', {digestLength: 16});
-			hash.update(new Buffer('test'));
+			hash.update(Buffer.from('test'));
 			assert.equal(hash.digest('hex'), BLAKE2B_TEST_DIGEST_16_HEX);
 		});
 		it('returns the correct hash for a 1 byte digestLength', function() {
 			const hash = new blake2.Hash('blake2b', {digestLength: 1});
-			hash.update(new Buffer('test'));
+			hash.update(Buffer.from('test'));
 			assert.equal(hash.digest('hex'), 'f7');
 		});
 		it('returns the correct hash for a 1 byte digestLength after being copied', function() {
 			const hash = new blake2.Hash('blake2b', {digestLength: 1});
-			hash.update(new Buffer('test'));
+			hash.update(Buffer.from('test'));
 			const hashCopy = hash.copy();
 			assert.equal(hashCopy.digest('hex'), 'f7');
 		});
@@ -192,7 +192,7 @@ describe('blake2', function() {
 	describe('blake2bp', function() {
 		it('throws Error if called with too-long key', function() {
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2bp', new Buffer('x'.repeat(64 + 1), "ascii"));
+				new blake2.KeyedHash('blake2bp', Buffer.from('x'.repeat(64 + 1), "ascii"));
 			}, /must be 64 bytes or smaller/);
 		});
 		it('throws Error if called with a non-numeric digestLength', function() {
@@ -200,7 +200,7 @@ describe('blake2', function() {
 				new blake2.Hash('blake2bp', {digestLength: 'not a number'});
 			}, /must be a number/);
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2bp', new Buffer('key'), {digestLength: 'not a number'});
+				new blake2.KeyedHash('blake2bp', Buffer.from('key'), {digestLength: 'not a number'});
 			}, /must be a number/);
 		});
 		it('throws Error if called with a too large digestLength', function() {
@@ -208,7 +208,7 @@ describe('blake2', function() {
 				new blake2.Hash('blake2bp', {digestLength: 65});
 			}, /must be between 1 and 64/);
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2bp', new Buffer('key'), {digestLength: 65});
+				new blake2.KeyedHash('blake2bp', Buffer.from('key'), {digestLength: 65});
 			}, /must be between 1 and 64/);
 		});
 		it('throws Error if called with a too small digestLength', function() {
@@ -216,12 +216,12 @@ describe('blake2', function() {
 				new blake2.Hash('blake2bp', {digestLength: 0});
 			}, /must be between 1 and 64/);
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2bp', new Buffer('key'), {digestLength: 0});
+				new blake2.KeyedHash('blake2bp', Buffer.from('key'), {digestLength: 0});
 			}, /must be between 1 and 64/);
 		});
 		it('returns the correct hash for a 16 byte digestLength', function() {
 			const hash = new blake2.Hash('blake2bp', {digestLength: 16});
-			hash.update(new Buffer('test'));
+			hash.update(Buffer.from('test'));
 			assert.equal(hash.digest('hex'), BLAKE2BP_TEST_DIGEST_16_HEX);
 		});
 	});
@@ -229,7 +229,7 @@ describe('blake2', function() {
 	describe('blake2s', function() {
 		it('throws Error if called with too-long key', function() {
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2s', new Buffer('x'.repeat(32 + 1), "ascii"));
+				new blake2.KeyedHash('blake2s', Buffer.from('x'.repeat(32 + 1), "ascii"));
 			}, /must be 32 bytes or smaller/);
 		});
 		it('throws Error if called with a non-numeric digestLength', function() {
@@ -237,7 +237,7 @@ describe('blake2', function() {
 				new blake2.Hash('blake2s', {digestLength: 'not a number'});
 			}, /must be a number/);
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2s', new Buffer('key'), {digestLength: 'not a number'});
+				new blake2.KeyedHash('blake2s', Buffer.from('key'), {digestLength: 'not a number'});
 			}, /must be a number/);
 		});
 		it('throws Error if called with a too large digestLength', function() {
@@ -245,7 +245,7 @@ describe('blake2', function() {
 				new blake2.Hash('blake2s', {digestLength: 33});
 			}, /must be between 1 and 32/);
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2s', new Buffer('key'), {digestLength: 33});
+				new blake2.KeyedHash('blake2s', Buffer.from('key'), {digestLength: 33});
 			}, /must be between 1 and 32/);
 		});
 		it('throws Error if called with a too small digestLength', function() {
@@ -253,12 +253,12 @@ describe('blake2', function() {
 				new blake2.Hash('blake2s', {digestLength: 0});
 			}, /must be between 1 and 32/);
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2s', new Buffer('key'), {digestLength: 0});
+				new blake2.KeyedHash('blake2s', Buffer.from('key'), {digestLength: 0});
 			}, /must be between 1 and 32/);
 		});
 		it('returns the correct hash for a 16 byte digestLength', function() {
 			const hash = new blake2.Hash('blake2s', {digestLength: 16});
-			hash.update(new Buffer('test'));
+			hash.update(Buffer.from('test'));
 			assert.equal(hash.digest('hex'), BLAKE2S_TEST_DIGEST_16_HEX);
 		});
 	});
@@ -266,7 +266,7 @@ describe('blake2', function() {
 	describe('blake2sp', function() {
 		it('throws Error if called with too-long key', function() {
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2sp', new Buffer('x'.repeat(32 + 1), "ascii"));
+				new blake2.KeyedHash('blake2sp', Buffer.from('x'.repeat(32 + 1), "ascii"));
 			}, /must be 32 bytes or smaller/);
 		});
 		it('throws Error if called with a non-numeric digestLength', function() {
@@ -274,7 +274,7 @@ describe('blake2', function() {
 				new blake2.Hash('blake2sp', {digestLength: 'not a number'});
 			}, /must be a number/);
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2sp', new Buffer('key'), {digestLength: 'not a number'});
+				new blake2.KeyedHash('blake2sp', Buffer.from('key'), {digestLength: 'not a number'});
 			}, /must be a number/);
 		});
 		it('throws Error if called with a too large digestLength', function() {
@@ -282,7 +282,7 @@ describe('blake2', function() {
 				new blake2.Hash('blake2sp', {digestLength: 33});
 			}, /must be between 1 and 32/);
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2sp', new Buffer('key'), {digestLength: 33});
+				new blake2.KeyedHash('blake2sp', Buffer.from('key'), {digestLength: 33});
 			}, /must be between 1 and 32/);
 		});
 		it('throws Error if called with a too small digestLength', function() {
@@ -290,12 +290,12 @@ describe('blake2', function() {
 				new blake2.Hash('blake2sp', {digestLength: 0});
 			}, /must be between 1 and 32/);
 			assert.throws(function() {
-				new blake2.KeyedHash('blake2sp', new Buffer('key'), {digestLength: 0});
+				new blake2.KeyedHash('blake2sp', Buffer.from('key'), {digestLength: 0});
 			}, /must be between 1 and 32/);
 		});
 		it('returns the correct hash for a 16 byte digestLength', function() {
 			const hash = new blake2.Hash('blake2sp', {digestLength: 16});
-			hash.update(new Buffer('test'));
+			hash.update(Buffer.from('test'));
 			assert.equal(hash.digest('hex'), BLAKE2SP_TEST_DIGEST_16_HEX);
 		});
 	});
@@ -334,8 +334,8 @@ describe('blake2', function() {
 				hashCopy.update(v.input);
 
 				// hashCopy is unaffected by these updates
-				hash.update(new Buffer("noise"));
-				hash.update(new Buffer("noise"));
+				hash.update(Buffer.from("noise"));
+				hash.update(Buffer.from("noise"));
 
 				const hashCopyCopy = hashCopy.copy();
 				assert(hashCopyCopy instanceof blake2.KeyedHash, ".copy() should return a KeyedHash");
@@ -356,8 +356,8 @@ describe('blake2', function() {
 				hashCopy.update(v.input);
 
 				// hashCopy is unaffected by these updates
-				hash.update(new Buffer("noise"));
-				hash.update(new Buffer("noise"));
+				hash.update(Buffer.from("noise"));
+				hash.update(Buffer.from("noise"));
 
 				const hashCopyCopy = hashCopy.copy();
 				assert(hashCopyCopy instanceof blake2.Hash, ".copy() should return a Hash");
