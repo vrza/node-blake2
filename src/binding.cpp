@@ -38,7 +38,7 @@ public:
 		Nan::SetPrototypeMethod(tpl, "update", Update);
 		Nan::SetPrototypeMethod(tpl, "digest", Digest);
 		Nan::SetPrototypeMethod(tpl, "copy", Copy);
-		target->Set(Nan::New("Hash").ToLocalChecked(), tpl->GetFunction());
+		target->Set(Nan::New("Hash").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
 	}
 
 	static
@@ -52,7 +52,7 @@ public:
 		if (info.Length() < 1 || !info[0]->IsString()) {
 			return Nan::ThrowError(v8::Exception::TypeError(Nan::New<v8::String>("First argument must be a string with algorithm name").ToLocalChecked()));
 		}
-		std::string algo = std::string(*v8::String::Utf8Value(info[0]->ToString()));
+		std::string algo = std::string(*v8::String::Utf8Value(v8::Isolate::GetCurrent(), info[0]->ToString(Nan::GetCurrentContext()).FromMaybe(v8::Local<v8::String>())));
 
 		const char *key_data = nullptr;
 		size_t key_length;
@@ -70,7 +70,7 @@ public:
 				if (!info[2]->IsNumber()) {
 					return Nan::ThrowError(v8::Exception::TypeError(Nan::New<v8::String>("digestLength must be a number").ToLocalChecked()));
 				}
-				digest_length = info[2]->IntegerValue();
+				digest_length = info[2]->IntegerValue(Nan::GetCurrentContext()).ToChecked();
 			}
 		}
 
@@ -187,7 +187,7 @@ public:
 			return Nan::ThrowError(v8::Exception::TypeError(Nan::New<v8::String>("Bad argument; need a Buffer").ToLocalChecked()));
 		}
 
-		v8::Local<v8::Object> buffer_obj = info[0]->ToObject();
+		v8::Local<v8::Object> buffer_obj = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
 		const char *buffer_data = node::Buffer::Data(buffer_obj);
 		size_t buffer_length = node::Buffer::Length(buffer_obj);
 		obj->any_blake2_update(
@@ -230,15 +230,16 @@ public:
 		const unsigned argc = 1;
 		v8::Local<v8::Value> argv[argc] = { Nan::New<v8::String>("bypass").ToLocalChecked() };
 
-		v8::Local<v8::Function> construct = Nan::New<v8::FunctionTemplate>(hash_constructor)->GetFunction();
-		v8::Local<v8::Object> inst = Nan::NewInstance(construct, argc, argv).ToLocalChecked();
+		v8::Local<v8::FunctionTemplate> tmpl = Nan::New<v8::FunctionTemplate>(hash_constructor);
+		Nan::MaybeLocal<v8::Function> construct = Nan::GetFunction(tmpl);
+		Nan::MaybeLocal<v8::Object> inst = Nan::NewInstance(construct.ToLocalChecked(), argc, argv).ToLocalChecked();
 		// Construction may fail with a JS exception, in which case we just need
 		// to return.
 		if (inst.IsEmpty()) {
 			return;
 		}
 		Hash *dest = new Hash();
-		dest->Wrap(inst);
+		dest->Wrap(inst.ToLocalChecked());
 
 		dest->initialized_ = src->initialized_;
 		dest->any_blake2_update = src->any_blake2_update;
@@ -246,7 +247,7 @@ public:
 		dest->outbytes = src->outbytes;
 		dest->state = src->state;
 
-		info.GetReturnValue().Set(inst);
+		info.GetReturnValue().Set(inst.ToLocalChecked());
 	}
 };
 
