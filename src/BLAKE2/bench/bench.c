@@ -1,14 +1,14 @@
 /*
    BLAKE2 reference source code package - benchmark tool
-  
+
    Copyright 2012, Samuel Neves <sneves@dei.uc.pt>.  You may use this under the
    terms of the CC0, the OpenSSL Licence, or the Apache Public License 2.0, at
    your option.  The terms of these licenses can be found at:
-  
+
    - CC0 1.0 Universal : http://creativecommons.org/publicdomain/zero/1.0
    - OpenSSL license   : https://www.openssl.org/source/license.html
    - Apache 2.0        : http://www.apache.org/licenses/LICENSE-2.0
-  
+
    More information about the BLAKE2 hash function can be found at
    https://blake2.net.
 */
@@ -26,7 +26,31 @@ static int bench_cmp( const void *x, const void *y )
   return *ix - *iy;
 }
 
-unsigned long long cpucycles( void );
+#if defined(__amd64__) || defined(__x86_64__)
+static unsigned long long cpucycles( void ) {
+  unsigned long long result;
+  __asm__ __volatile__(
+    ".byte 15;.byte 49\n"
+    "shlq $32,%%rdx\n"
+    "orq %%rdx,%%rax\n"
+    : "=a" ( result ) ::  "%rdx"
+  );
+  return result;
+}
+#elif defined(__i386__)
+static unsigned long long cpucycles( void ) {
+  unsigned long long result;
+  __asm__ __volatile__( ".byte 15;.byte 49;" : "=A" ( result ) );
+  return result;
+}
+#elif defined(_MSC_VER)
+#include <intrin.h>
+static unsigned long long cpucycles( void ) {
+  return __rdtsc();
+}
+#else
+#error "Don't know how to count cycles on this platform!"
+#endif
 
 void bench()
 {
