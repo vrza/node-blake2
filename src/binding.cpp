@@ -38,7 +38,7 @@ public:
 		Nan::SetPrototypeMethod(tpl, "update", Update);
 		Nan::SetPrototypeMethod(tpl, "digest", Digest);
 		Nan::SetPrototypeMethod(tpl, "copy", Copy);
-		target->Set(Nan::New("Hash").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
+		target->Set(Nan::GetCurrentContext(), Nan::New("Hash").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
 	}
 
 	static
