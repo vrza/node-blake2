@@ -16,13 +16,20 @@ node-blake2 was tested to work on
 -	GNU/Linux Ubuntu 16.04 (g++ 5.4.0)
 -	GNU/Linux Gentoo (g++ 8.3.0)
 -	macOS 10.13 (Apple LLVM 9.1.0)
--	Windows 8.1 x64 (VS2013)
+-	Windows 10 x64 (VS2015)
 
 
-Install
+Prerequisites for building on Windows
 ---
 
 On Windows, first install [Python 2.7.16](https://www.python.org/downloads/release/python-2716/) so that node-gyp works.
+
+You will also need [build tools from Visual Studio 2015](https://github.com/felixrieseberg/windows-build-tools).
+
+Starting with node 12, Windows installer can automatically install Python and Visual Studio build tools.
+
+Install
+---
 
 In your project, run:
 
@@ -124,8 +131,7 @@ console.log(j.digest());
 Known issues
 ---
 
--	On Windows, node-blake2 requires AVX instructions due to some SSE2 build
-	problems.  This shouldn't be too hard to fix.
+-	On Windows, node-blake2 requires enabling AVX instructions as a workaround for the way upstream build preprocessor detects support for SSE2.
 
 [npm-image]: https://img.shields.io/npm/v/blake2.svg
 [npm-url]: https://npmjs.org/package/blake2
