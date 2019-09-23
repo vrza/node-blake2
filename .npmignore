@@ -5,6 +5,6 @@
 /*.tgz
 /*.sh
 /src/BLAKE2/b2sum
-/src/BLAKE2/csharp
 /src/BLAKE2/bench
-/src/BLAKE2/README
+/src/BLAKE2/csharp
+/src/BLAKE2/neon
