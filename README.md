@@ -22,7 +22,7 @@ node-blake2 was tested to work on
 Prerequisites for building on Windows
 ---
 
-On Windows, first install [Python 2.7.16](https://www.python.org/downloads/release/python-2716/) so that node-gyp works.
+Python is required by [node-gyp](https://github.com/nodejs/node-gyp).
 
 You will also need [build tools from Visual Studio 2015](https://github.com/felixrieseberg/windows-build-tools).
 
