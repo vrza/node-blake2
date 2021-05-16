@@ -12,11 +12,12 @@ SHA-1, MD5, and SHA-512 are susceptible to length-extension".
 node-blake2 provides a [stream](https://nodejs.org/api/stream.html)-compatible
 blake2b, blake2bp, blake2s, and blake2sp `Hash` and `KeyedHash` for node 8+.
 
-node-blake2 was tested to work on
--	GNU/Linux Ubuntu 16.04 (g++ 5.4.0)
--	GNU/Linux Gentoo (g++ 8.3.0)
--	macOS 10.13 (Apple LLVM 9.1.0)
--	Windows 10 x64 (VS2015)
+node-blake2 was tested to work with the following compilers and platforms:
+- GCC g++ 8.3.0, 10.2.0 (Gentoo GNU/Linux)
+- GCC g++ 5.4.0 (Ubuntu 16.04 GNU/Linux)
+- LLVM clang++ 11.1.0 (Gentoo GNU/Linux)
+- Apple LLVM clang++ 9.1.0 (macOS 10.13)
+- Visual Studio 2015 (Windows 10 x64)
 
 
 Prerequisites for building on Windows
