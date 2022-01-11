@@ -5,22 +5,21 @@
 			"win_delay_load_hook": "true",
 			"sources": [
 				"src/binding.cpp",
-				"src/BLAKE2/ref/blake2b-ref.c",
-				"src/BLAKE2/ref/blake2bp-ref.c",
-				"src/BLAKE2/ref/blake2s-ref.c",
-				"src/BLAKE2/ref/blake2sp-ref.c"
+				"src/BLAKE2/neon/blake2b-neon.c",
+				"src/BLAKE2/neon/blake2bp.c",
+				"src/BLAKE2/neon/blake2s-neon.c",
+				"src/BLAKE2/neon/blake2sp.c"
 			],
 			"include_dirs": [
 				"<!(node -e \"require('nan')\")",
-				"src/BLAKE2/ref"
+				"src/BLAKE2/neon"
 			],
 			"cflags_c": [
 				"-std=c99",
 				"-Wstrict-aliasing",
 				"-Wextra",
 				"-Wno-unused-function",
-				"-Wno-unused-const-variable",
-				"-Wno-unused-parameter"
+				"-Wno-unused-const-variable"
 			],
 			"cflags_cc": [
 				"-Wstrict-aliasing",
@@ -40,7 +39,7 @@
 			},
 			"msvs_settings": {
 				"VCCLCompilerTool": {
-					"AdditionalOptions": ["/arch:AVX2"]
+					"AdditionalOptions": ["/arch:AVX"]
 				}
 			}
 		}
