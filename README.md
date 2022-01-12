@@ -2,7 +2,7 @@ node-blake2
 ===
 
 [![NPM version][npm-image]][npm-url]
-[![Build status][travis-image]][travis-url]
+[![Build status][github-actions-image]][github-actions-url]
 
 Why BLAKE2 for hashing?  Because "BLAKE2 outperforms MD5, SHA-1, SHA-2,
 and SHA-3 on recent Intel CPUs" and has "no known security issues, whereas
@@ -10,24 +10,29 @@ SHA-1, MD5, and SHA-512 are susceptible to length-extension".
 [https://blake2.net/](https://blake2.net/)
 
 node-blake2 provides a [stream](https://nodejs.org/api/stream.html)-compatible
-blake2b, blake2bp, blake2s, and blake2sp `Hash` and `KeyedHash` for node 8+.
+blake2b, blake2bp, blake2s, and blake2sp `Hash` and `KeyedHash` for Node.js.
 
 node-blake2 was tested to work with the following compilers and platforms:
-- GCC g++ 8.3.0, 10.2.0 (Gentoo GNU/Linux)
-- GCC g++ 5.4.0 (Ubuntu 16.04 GNU/Linux)
-- LLVM clang++ 11.1.0 (Gentoo GNU/Linux)
-- Apple LLVM clang++ 9.1.0 (macOS 10.13)
-- Visual Studio 2015 (Windows 10 x64)
 
+| Compiler                  | Operating System       | Architecture       |
+|---------------------------|------------------------|--------------------|
+| GCC 8.3.0 10.2.0, 11.2.0  | GNU/Linux Gentoo       | x86_64             |
+| LLVM clang 11.1.0, 13.0.0 | GNU/Linux Gentoo       | x86_64             |
+| GCC 5.4.0                 | GNU/Linux Ubuntu 16.04 | x86_64             |
+| Apple LLVM clang 9.1.0    | macOS 10.13            | x86_64             |
+| Visual Studio 2019        | Windows 11             | x86_64             |
+| Visual Studio 2015        | Windows 10             | x86_64             |
+| GCC 10.2.1                | GNU/Linux Debian 11.2  | aarch64 Cortex-A57 |
+| Apple LLVM clang 12.0.5   | macOS 12               | aarch64 Apple M1   |
 
 Prerequisites for building on Windows
 ---
 
+[Visual Studio Build Tools](https://github.com/felixrieseberg/windows-build-tools).
+
 Python is required by [node-gyp](https://github.com/nodejs/node-gyp).
 
-You will also need [build tools from Visual Studio 2015](https://github.com/felixrieseberg/windows-build-tools).
-
-Starting with node 12, Windows installer can automatically install Python and Visual Studio build tools.
+Starting with Node.js 12, Windows installer can automatically install Python and Visual Studio build tools.
 
 Install
 ---
@@ -136,5 +141,5 @@ Known issues
 
 [npm-image]: https://img.shields.io/npm/v/blake2.svg
 [npm-url]: https://npmjs.org/package/blake2
-[travis-image]: https://img.shields.io/travis/vrza/node-blake2.svg
-[travis-url]: https://travis-ci.org/vrza/node-blake2
+[github-actions-image]: https://github.com/vrza/node-blake2/actions/workflows/build.yml/badge.svg
+[github-actions-url]: https://github.com/vrza/node-blake2/actions
