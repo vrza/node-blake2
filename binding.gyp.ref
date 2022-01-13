@@ -37,11 +37,6 @@
 					"-Wno-unused-const-variable",
 					"-Wno-unused-parameter"
 				]
-			},
-			"msvs_settings": {
-				"VCCLCompilerTool": {
-					"AdditionalOptions": ["/arch:AVX2"]
-				}
 			}
 		}
 	]
