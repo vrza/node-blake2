@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         virtual-environment: ['ubuntu-latest', 'macos-latest', 'windows-2019']
-        node: [8, 10, 12, 14, 16, 17, 18]
+        node: [8, 10, 12, 14, 16, 18]
 
     runs-on: ${{ matrix.virtual-environment }}
 
