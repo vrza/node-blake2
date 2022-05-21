@@ -3,15 +3,12 @@
 [![NPM version][npm-image]][npm-url]
 [![Build status][github-actions-image]][github-actions-url]
 
-Why BLAKE2 for hashing?  Because "BLAKE2 outperforms MD5, SHA-1, SHA-2,
-and SHA-3 on recent Intel CPUs" and has "no known security issues, whereas
-SHA-1, MD5, and SHA-512 are susceptible to length-extension".
-[https://blake2.net/](https://blake2.net/)
+Why BLAKE2 for hashing? "BLAKE2 is a cryptographic hash function **faster than MD5, SHA-1, SHA-2, and SHA-3**, yet is at least as secure as the latest standard SHA-3. BLAKE2 has been [adopted](https://www.blake2.net/#us) by many projects due to its high speed, security, and simplicity." [https://blake2.net/](https://blake2.net/)
 
 node-blake2 provides a [stream](https://nodejs.org/api/stream.html)-compatible
 blake2b, blake2bp, blake2s, and blake2sp `Hash` and `KeyedHash` for Node.js.
 
-node-blake2 was tested to work with the following compilers and platforms:
+node-blake2 has been tested to work with the following compilers and platforms:
 
 | Compiler                  | Operating System            | Architecture             |
 |---------------------------|-----------------------------|--------------------------|
