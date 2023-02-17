@@ -256,4 +256,4 @@ init(v8::Local<v8::Object> target) {
 	Hash::Init(target);
 }
 
-NODE_MODULE_WORKER_ENABLED(binding, init)
+NAN_MODULE_WORKER_ENABLED(binding, init)
