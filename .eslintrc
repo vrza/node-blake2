@@ -49,5 +49,8 @@
 	"globals": {
 		"it": true,
 		"describe": true,
+	},
+	"parserOptions": {
+	  "ecmaVersion": 8
 	}
 }
