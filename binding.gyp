@@ -1,12 +1,12 @@
 {
 	"targets": [
 		{
-			"target_name": "binding",
+			"target_name": "blake2",
 			"win_delay_load_hook": "true",
 			"conditions": [
 				["target_arch == 'x64' or target_arch == 'ia32'", {
 					"sources": [
-						"src/binding.cpp",
+						"src/blake2.cpp",
 						"src/BLAKE2/sse/blake2b.c",
 						"src/BLAKE2/sse/blake2bp.c",
 						"src/BLAKE2/sse/blake2s.c",
@@ -19,7 +19,7 @@
 				}],
 				["target_arch == 'arm64'", {
 					"sources": [
-						"src/binding.cpp",
+						"src/blake2.cpp",
 						"src/BLAKE2/neon/blake2b-neon.c",
 						"src/BLAKE2/neon/blake2bp.c",
 						"src/BLAKE2/neon/blake2s-neon.c",
@@ -32,7 +32,7 @@
 				}],
 				["target_arch != 'x64' and target_arch != 'ia32' and target_arch != 'arm64'", {
 					"sources": [
-						"src/binding.cpp",
+						"src/blake2.cpp",
 						"src/BLAKE2/ref/blake2b-ref.c",
 						"src/BLAKE2/ref/blake2bp-ref.c",
 						"src/BLAKE2/ref/blake2s-ref.c",

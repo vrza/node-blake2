@@ -6,7 +6,7 @@
 "use strict";
 
 const stream = require('stream');
-const binding = require('./build/Release/binding');
+const binding = require('./build/Release/blake2');
 
 class LazyTransform extends stream.Transform {
 	constructor(options) {
