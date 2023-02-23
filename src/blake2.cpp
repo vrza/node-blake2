@@ -2,6 +2,7 @@
 #include <node_buffer.h>
 #include <v8.h>
 #include <nan.h>
+
 #include <cstddef>
 #include <cassert>
 #include <cstring>
@@ -29,22 +30,20 @@ class Hash: public Nan::ObjectWrap {
 		return tpl;
 	}
 
-protected:
+ protected:
 	bool initialized_;
 	uintptr_t (*any_blake2_update)(void*, const uint8_t*, uint64_t);
 	uintptr_t (*any_blake2_final)(void*, const uint8_t*, uint64_t);
 	uint8_t outbytes;
 	any_blake2_state state;
 
-public:
-	static void
-	Init(v8::Local<v8::Object> target) {
+ public:
+	static void Init(v8::Local<v8::Object> target) {
 		v8::Local<v8::FunctionTemplate> tpl = CreateTemplate();
 		target->Set(Nan::GetCurrentContext(), Nan::New("Hash").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
 	}
 
-	static
-	NAN_METHOD(New) {
+	static NAN_METHOD(New) {
 		if (!info.IsConstructCall()) {
 			return Nan::ThrowError("Constructor must be called with new");
 		}
@@ -176,8 +175,7 @@ public:
 		info.GetReturnValue().Set(info.This());
 	}
 
-	static
-	NAN_METHOD(Update) {
+	static NAN_METHOD(Update) {
 		Hash *obj = Nan::ObjectWrap::Unwrap<Hash>(info.This());
 
 		if (!obj->initialized_) {
@@ -201,8 +199,7 @@ public:
 		info.GetReturnValue().Set(info.This());
 	}
 
-	static
-	NAN_METHOD(Digest) {
+	static NAN_METHOD(Digest) {
 		Hash *obj = Nan::ObjectWrap::Unwrap<Hash>(info.This());
 		unsigned char digest[512 / 8];
 
@@ -225,10 +222,7 @@ public:
 		info.GetReturnValue().Set(rc);
 	}
 
-	static
-	NAN_METHOD(Copy) {
-		Hash *src = Nan::ObjectWrap::Unwrap<Hash>(info.This());
-
+	static NAN_METHOD(Copy) {
 		const unsigned argc = 1;
 		v8::Local<v8::Value> argv[argc] = { Nan::New<v8::String>("bypass").ToLocalChecked() };
 
@@ -239,6 +233,8 @@ public:
 		if (inst.IsEmpty()) {
 			return;
 		}
+
+		Hash *src = Nan::ObjectWrap::Unwrap<Hash>(info.This());
 		Hash *dest = new Hash();
 		dest->Wrap(inst);
 
@@ -252,8 +248,7 @@ public:
 	}
 };
 
-static void
-init(v8::Local<v8::Object> target) {
+static void init(v8::Local<v8::Object> target) {
 	Hash::Init(target);
 }
 
