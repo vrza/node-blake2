@@ -27,10 +27,10 @@ function* getTestVectors(file) {
 	// The official BLAKE2 test vector files strangely end with "ok"
 	assert(content.endsWith("ok\n"));
 	content = content.replace(/ok\n$/, "");
-	let parts = content.split('\n\n');
+	const parts = content.split('\n\n');
 	for (const part of parts) {
-		let lines = part.split('\n');
-		let input = Buffer.from(lines[0].replace(/^in:\s+/, ""), "hex");
+		const lines = part.split('\n');
+		const input = Buffer.from(lines[0].replace(/^in:\s+/, ""), "hex");
 		let key, hash;
 		if (lines.length === 3) {
 			key = Buffer.from(lines[1].replace(/^key:\s+/, ""), "hex");
@@ -306,9 +306,9 @@ describe('blake2', function() {
 		for (const algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
 			const vectors = getTestVectors(`${__dirname}/test-vectors/keyed/${algo}-test.txt`);
 			for (const v of vectors) {
-				let hash = blake2.createKeyedHash(algo, v.key);
+				const hash = blake2.createKeyedHash(algo, v.key);
 				hash.update(v.input);
-				let digest = hash.digest();
+				const digest = hash.digest();
 				assert.deepEqual(digest, v.hash);
 			}
 		}
@@ -318,9 +318,9 @@ describe('blake2', function() {
 		for (const algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
 			const vectors = getTestVectors(`${__dirname}/test-vectors/unkeyed/${algo}-test.txt`);
 			for (const v of vectors) {
-				let hash = blake2.createHash(algo);
+				const hash = blake2.createHash(algo);
 				hash.update(v.input);
-				let digest = hash.digest();
+				const digest = hash.digest();
 				assert.deepEqual(digest, v.hash);
 			}
 		}
@@ -330,8 +330,8 @@ describe('blake2', function() {
 		for(const algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
 			const vectors = getTestVectors(`${__dirname}/test-vectors/keyed/${algo}-test.txt`);
 			for(const v of vectors) {
-				let hash = blake2.createKeyedHash(algo, v.key);
-				let hashCopy = hash.copy();
+				const hash = blake2.createKeyedHash(algo, v.key);
+				const hashCopy = hash.copy();
 				assert(hashCopy instanceof blake2.KeyedHash, ".copy() should return a KeyedHash");
 				hashCopy.update(v.input);
 
@@ -352,8 +352,8 @@ describe('blake2', function() {
 		for (const algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
 			const vectors = getTestVectors(`${__dirname}/test-vectors/unkeyed/${algo}-test.txt`);
 			for (const v of vectors) {
-				let hash = blake2.createHash(algo);
-				let hashCopy = hash.copy();
+				const hash = blake2.createHash(algo);
+				const hashCopy = hash.copy();
 				assert(hashCopy instanceof blake2.Hash, ".copy() should return a Hash");
 				hashCopy.update(v.input);
 
