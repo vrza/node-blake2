@@ -10,19 +10,19 @@ blake2b, blake2bp, blake2s, and blake2sp `Hash` and `KeyedHash` for Node.js.
 
 node-blake2 has been tested to work with the following compilers and platforms:
 
-| Compiler                  | Operating System            | Architecture             |
-|---------------------------|-----------------------------|--------------------------|
-| GCC 8.3.0 10.2.0, 11.2.0  | GNU/Linux Gentoo            | x86_64                   |
-| LLVM clang 11.1.0, 13.0.0 | GNU/Linux Gentoo            | x86_64                   |
-| GCC 5.4.0                 | GNU/Linux Ubuntu 16.04      | x86_64                   |
-| LLVM clang 11.1.0         | OpenBSD 7.0                 | x86_64                   |
-| Apple LLVM clang 9.1.0    | macOS 10.13                 | x86_64                   |
-| Visual Studio 2019        | Windows 11                  | x86_64                   |
-| Visual Studio 2015        | Windows 10                  | x86_64                   |
-| GCC 10.2.1                | GNU/Linux RPi OS 2021-10-30 | armv7l Cortex-A53 RPi 3  |
-| GCC 10.2.1                | GNU/Linux Debian 11.2       | aarch64 Cortex-A57 QEMU  |
-| GCC 9.3.0                 | GNU/Linux Ubuntu 20.04      | aarch64 Cortex-A72 RPi 4 |
-| Apple LLVM clang 12.0.5   | macOS 12                    | aarch64 Apple M1         |
+| Compiler                          | Operating System            | Architecture             |
+|-----------------------------------|-----------------------------|--------------------------|
+| GCC 8.3.0, 10.2.0, 11.2.0, 12.2.1 | GNU/Linux Gentoo            | x86_64                   |
+| LLVM clang 11.1.0, 13.0.0         | GNU/Linux Gentoo            | x86_64                   |
+| GCC 5.4.0                         | GNU/Linux Ubuntu 16.04      | x86_64                   |
+| LLVM clang 11.1.0                 | OpenBSD 7.0                 | x86_64                   |
+| Apple LLVM clang 9.1.0            | macOS 10.13                 | x86_64                   |
+| Visual Studio 2019                | Windows 11                  | x86_64                   |
+| Visual Studio 2015                | Windows 10                  | x86_64                   |
+| GCC 10.2.1                        | GNU/Linux RPi OS 2021-10-30 | armv7l Cortex-A53 RPi 3  |
+| GCC 10.2.1                        | GNU/Linux Debian 11.2       | aarch64 Cortex-A57 QEMU  |
+| GCC 9.3.0                         | GNU/Linux Ubuntu 20.04      | aarch64 Cortex-A72 RPi 4 |
+| Apple LLVM clang 12.0.5           | macOS 12                    | aarch64 Apple M1         |
 
 ## Prerequisites for building on Windows
 
@@ -30,7 +30,7 @@ node-blake2 has been tested to work with the following compilers and platforms:
 
 Python is required by [node-gyp](https://github.com/nodejs/node-gyp).
 
-Starting with Node.js 12, Windows installer can automatically install Python and Visual Studio build tools.
+The Node.js Windows installer can automatically install Python and Visual Studio build tools.
 
 ## Install
 
@@ -130,7 +130,7 @@ console.log(j.digest());
 
 ## Known issues
 
-- On Windows, node-blake2 requires enabling AVX instructions as a workaround for the way upstream build preprocessor detects support for SSE2.
+- On Windows, node-blake2 requires enabling AVX instructions as a workaround for the way the upstream build preprocessor detects support for SSE2.
 
 [npm-image]: https://img.shields.io/npm/v/blake2.svg
 [npm-url]: https://npmjs.org/package/blake2
