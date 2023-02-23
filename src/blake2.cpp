@@ -132,7 +132,7 @@ class Hash: public Nan::ObjectWrap {
 
 			if (!key_data) {
 				if (blake2s_init(reinterpret_cast<blake2s_state*>(&obj->state), digest_length) != 0) {
-					return Nan::ThrowError("blake2bs_init failure");
+					return Nan::ThrowError("blake2s_init failure");
 				}
 			} else {
 				if (key_length > BLAKE2S_KEYBYTES) {
