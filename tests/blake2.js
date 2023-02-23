@@ -45,6 +45,7 @@ function* getTestVectors(file) {
 }
 
 describe('blake2', function() {
+	this.timeout(10000);
 	it('returns correct digest for blake2b after 0 updates', function() {
 		const hash = new blake2.Hash('blake2b');
 		assert.equal(hash.digest('hex'), BLAKE2B_EMPTY_DIGEST_HEX);

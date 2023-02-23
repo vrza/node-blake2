@@ -18,8 +18,6 @@ union any_blake2_state {
 #define BLAKE_FN_CAST(fn) \
 	reinterpret_cast<uintptr_t (*)(void*, const uint8_t*, uint64_t)>(fn)
 
-static Nan::Persistent<v8::FunctionTemplate> hash_constructor;
-
 class Hash: public Nan::ObjectWrap {
 protected:
 	bool initialized_;
@@ -31,6 +29,7 @@ protected:
 public:
 	static void
 	Init(v8::Local<v8::Object> target) {
+		Nan::Persistent<v8::FunctionTemplate> hash_constructor;
 		v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
 		hash_constructor.Reset(tpl);
 		tpl->SetClassName(Nan::New<v8::String>("Hash").ToLocalChecked());
@@ -230,7 +229,13 @@ public:
 		const unsigned argc = 1;
 		v8::Local<v8::Value> argv[argc] = { Nan::New<v8::String>("bypass").ToLocalChecked() };
 
-		v8::Local<v8::FunctionTemplate> tmpl = Nan::New<v8::FunctionTemplate>(hash_constructor);
+		Nan::Persistent<v8::FunctionTemplate> hash_constructor;
+		v8::Local<v8::FunctionTemplate> tmpl = Nan::New<v8::FunctionTemplate>(New);
+		tmpl->InstanceTemplate()->SetInternalFieldCount(1);
+		Nan::SetPrototypeMethod(tmpl, "update", Update);
+		Nan::SetPrototypeMethod(tmpl, "digest", Digest);
+		Nan::SetPrototypeMethod(tmpl, "copy", Copy);
+
 		Nan::MaybeLocal<v8::Function> construct = Nan::GetFunction(tmpl);
 		v8::Local<v8::Object> inst = Nan::NewInstance(construct.ToLocalChecked(), argc, argv).ToLocalChecked();
 		// Construction may fail with a JS exception, in which case we just need
@@ -256,4 +261,4 @@ init(v8::Local<v8::Object> target) {
 	Hash::Init(target);
 }
 
-NODE_MODULE(binding, init)
+NAN_MODULE_WORKER_ENABLED(NODE_GYP_MODULE_NAME, init)
