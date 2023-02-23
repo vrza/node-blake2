@@ -1,10 +1,10 @@
 {
 	"targets": [
 		{
-			"target_name": "binding",
+			"target_name": "blake2",
 			"win_delay_load_hook": "true",
 			"sources": [
-				"src/binding.cpp",
+				"src/blake2.cpp",
 				"src/BLAKE2/ref/blake2b-ref.c",
 				"src/BLAKE2/ref/blake2bp-ref.c",
 				"src/BLAKE2/ref/blake2s-ref.c",
