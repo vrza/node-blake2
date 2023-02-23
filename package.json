@@ -1,6 +1,6 @@
 {
   "name": "blake2",
-  "version": "4.1.1",
+  "version": "5.0.0",
   "description": "All four BLAKE2 variants (blake2b, blake2bp, blake2s, blake2sp) for node, with stream support",
   "keywords": [
     "crypto",
@@ -37,6 +37,6 @@
   ],
   "license": "ISC",
   "engines": {
-    "node": ">= 8.0.0"
+    "node": ">= 10.0.0"
   }
 }

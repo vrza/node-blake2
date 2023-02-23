@@ -10,13 +10,6 @@ jobs:
       matrix:
         virtual-environment: ['ubuntu-latest', 'macos-latest', 'windows-2019']
         node: [10, 12, 14, 16, 18, 19]
-        include:
-          - node: 8
-            virtual-environment: 'ubuntu-20.04'
-          - node: 8
-            virtual-environment: 'macos-11'
-          - node: 8
-            virtual-environment: 'windows-2019'
 
     runs-on: ${{ matrix.virtual-environment }}
 
