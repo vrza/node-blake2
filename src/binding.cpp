@@ -19,6 +19,16 @@ union any_blake2_state {
 	reinterpret_cast<uintptr_t (*)(void*, const uint8_t*, uint64_t)>(fn)
 
 class Hash: public Nan::ObjectWrap {
+	static v8::Local<v8::FunctionTemplate> CreateTemplate() {
+		v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
+		tpl->SetClassName(Nan::New("Hash").ToLocalChecked());
+		tpl->InstanceTemplate()->SetInternalFieldCount(1);
+		Nan::SetPrototypeMethod(tpl, "update", Update);
+		Nan::SetPrototypeMethod(tpl, "digest", Digest);
+		Nan::SetPrototypeMethod(tpl, "copy", Copy);
+		return tpl;
+	}
+
 protected:
 	bool initialized_;
 	uintptr_t (*any_blake2_update)(void*, const uint8_t*, uint64_t);
@@ -29,14 +39,7 @@ protected:
 public:
 	static void
 	Init(v8::Local<v8::Object> target) {
-		Nan::Persistent<v8::FunctionTemplate> hash_constructor;
-		v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
-		hash_constructor.Reset(tpl);
-		tpl->SetClassName(Nan::New<v8::String>("Hash").ToLocalChecked());
-		tpl->InstanceTemplate()->SetInternalFieldCount(1);
-		Nan::SetPrototypeMethod(tpl, "update", Update);
-		Nan::SetPrototypeMethod(tpl, "digest", Digest);
-		Nan::SetPrototypeMethod(tpl, "copy", Copy);
+		v8::Local<v8::FunctionTemplate> tpl = CreateTemplate();
 		target->Set(Nan::GetCurrentContext(), Nan::New("Hash").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
 	}
 
@@ -229,17 +232,10 @@ public:
 		const unsigned argc = 1;
 		v8::Local<v8::Value> argv[argc] = { Nan::New<v8::String>("bypass").ToLocalChecked() };
 
-		Nan::Persistent<v8::FunctionTemplate> hash_constructor;
-		v8::Local<v8::FunctionTemplate> tmpl = Nan::New<v8::FunctionTemplate>(New);
-		tmpl->InstanceTemplate()->SetInternalFieldCount(1);
-		Nan::SetPrototypeMethod(tmpl, "update", Update);
-		Nan::SetPrototypeMethod(tmpl, "digest", Digest);
-		Nan::SetPrototypeMethod(tmpl, "copy", Copy);
-
-		Nan::MaybeLocal<v8::Function> construct = Nan::GetFunction(tmpl);
+		v8::Local<v8::FunctionTemplate> tpl = CreateTemplate();
+		Nan::MaybeLocal<v8::Function> construct = Nan::GetFunction(tpl);
 		v8::Local<v8::Object> inst = Nan::NewInstance(construct.ToLocalChecked(), argc, argv).ToLocalChecked();
-		// Construction may fail with a JS exception, in which case we just need
-		// to return.
+		// Construction may fail with a JS exception, in which case we just need to return.
 		if (inst.IsEmpty()) {
 			return;
 		}
