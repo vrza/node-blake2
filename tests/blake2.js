@@ -28,11 +28,11 @@ function* getTestVectors(file) {
 	assert(content.endsWith("ok\n"));
 	content = content.replace(/ok\n$/, "");
 	let parts = content.split('\n\n');
-	for(const part of parts) {
+	for (const part of parts) {
 		let lines = part.split('\n');
 		let input = Buffer.from(lines[0].replace(/^in:\s+/, ""), "hex");
 		let key, hash;
-		if(lines.length === 3) {
+		if (lines.length === 3) {
 			key = Buffer.from(lines[1].replace(/^key:\s+/, ""), "hex");
 			assert(key.length === 64 || key.length === 32, key.length);
 			hash = Buffer.from(lines[2].replace(/^hash:\s+/, ""), "hex");
@@ -104,7 +104,7 @@ describe('blake2', function() {
 	});
 
 	it('works with .pipe()', function(done) {
-		const tempfname = `${os.tmpdir()}/temp1mb`;
+		const tempfname = `${os.tmpdir()}/blake2-1mb-zeroes`;
 		const f = fs.openSync(tempfname, 'w');
 		fs.writeSync(f, '\x00'.repeat(1024*1024));
 		fs.closeSync(f);
@@ -117,6 +117,7 @@ describe('blake2', function() {
 			hash.end();
 			const digest = hash.read();
 			assert.equal(digest, 'a834b19291e54808ba8367ca60e6abd9c744138541284b12bb6caa532fae419b063c26022121148fef68a7d8dc0fa83eb2f00454138c1c54753f7148f6911e0d');
+			fs.unlink(tempfname, (err => { if (err) console.log(err); }));
 			done();
 		});
 
@@ -302,9 +303,9 @@ describe('blake2', function() {
 	});
 
 	it('returns the correct result for all keyed test vectors', function() {
-		for(const algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
+		for (const algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
 			const vectors = getTestVectors(`${__dirname}/test-vectors/keyed/${algo}-test.txt`);
-			for(const v of vectors) {
+			for (const v of vectors) {
 				let hash = blake2.createKeyedHash(algo, v.key);
 				hash.update(v.input);
 				let digest = hash.digest();
@@ -314,9 +315,9 @@ describe('blake2', function() {
 	});
 
 	it('returns the correct result for all unkeyed test vectors', function() {
-		for(const algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
+		for (const algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
 			const vectors = getTestVectors(`${__dirname}/test-vectors/unkeyed/${algo}-test.txt`);
-			for(const v of vectors) {
+			for (const v of vectors) {
 				let hash = blake2.createHash(algo);
 				hash.update(v.input);
 				let digest = hash.digest();
@@ -348,9 +349,9 @@ describe('blake2', function() {
 	});
 
 	it('returns correct results when unkeyed hashes are copied', function() {
-		for(const algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
+		for (const algo of ['blake2b', 'blake2s', 'blake2bp', 'blake2sp']) {
 			const vectors = getTestVectors(`${__dirname}/test-vectors/unkeyed/${algo}-test.txt`);
-			for(const v of vectors) {
+			for (const v of vectors) {
 				let hash = blake2.createHash(algo);
 				let hashCopy = hash.copy();
 				assert(hashCopy instanceof blake2.Hash, ".copy() should return a Hash");
