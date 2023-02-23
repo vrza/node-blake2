@@ -50,7 +50,7 @@
 		"it": true,
 		"describe": true,
 	},
-  "parserOptions": {
-    "ecmaVersion": 8
-  }
+	"parserOptions": {
+		"ecmaVersion": 8
+	}
 }
