@@ -4,7 +4,7 @@ const assert = require('assert');
 const {Worker} = require('worker_threads');
 const blake2 = require('../index');
 
-const MAX_WORKERS = 2;
+const MAX_WORKERS = 100;
 
 function newWorker (data) {
 	return new Promise((resolve, reject) => {

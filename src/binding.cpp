@@ -18,7 +18,7 @@ union any_blake2_state {
 #define BLAKE_FN_CAST(fn) \
 	reinterpret_cast<uintptr_t (*)(void*, const uint8_t*, uint64_t)>(fn)
 
-static Nan::Persistent<v8::FunctionTemplate> hash_constructor;
+// static Nan::Persistent<v8::FunctionTemplate> hash_constructor;
 
 class Hash: public Nan::ObjectWrap {
 protected:
@@ -32,12 +32,12 @@ public:
 	static void
 	Init(v8::Local<v8::Object> target) {
 		v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
-		hash_constructor.Reset(tpl);
+		// hash_constructor.Reset(tpl);
 		tpl->SetClassName(Nan::New<v8::String>("Hash").ToLocalChecked());
 		tpl->InstanceTemplate()->SetInternalFieldCount(1);
 		Nan::SetPrototypeMethod(tpl, "update", Update);
 		Nan::SetPrototypeMethod(tpl, "digest", Digest);
-		Nan::SetPrototypeMethod(tpl, "copy", Copy);
+		// Nan::SetPrototypeMethod(tpl, "copy", Copy);
 		target->Set(Nan::GetCurrentContext(), Nan::New("Hash").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
 	}
 
@@ -223,32 +223,32 @@ public:
 		info.GetReturnValue().Set(rc);
 	}
 
-	static
-	NAN_METHOD(Copy) {
-		Hash *src = Nan::ObjectWrap::Unwrap<Hash>(info.This());
+	// static
+	// NAN_METHOD(Copy) {
+	// 	Hash *src = Nan::ObjectWrap::Unwrap<Hash>(info.This());
 
-		const unsigned argc = 1;
-		v8::Local<v8::Value> argv[argc] = { Nan::New<v8::String>("bypass").ToLocalChecked() };
+	// 	const unsigned argc = 1;
+	// 	v8::Local<v8::Value> argv[argc] = { Nan::New<v8::String>("bypass").ToLocalChecked() };
 
-		v8::Local<v8::FunctionTemplate> tmpl = Nan::New<v8::FunctionTemplate>(hash_constructor);
-		Nan::MaybeLocal<v8::Function> construct = Nan::GetFunction(tmpl);
-		v8::Local<v8::Object> inst = Nan::NewInstance(construct.ToLocalChecked(), argc, argv).ToLocalChecked();
-		// Construction may fail with a JS exception, in which case we just need
-		// to return.
-		if (inst.IsEmpty()) {
-			return;
-		}
-		Hash *dest = new Hash();
-		dest->Wrap(inst);
+	// 	v8::Local<v8::FunctionTemplate> tmpl = Nan::New<v8::FunctionTemplate>(hash_constructor);
+	// 	Nan::MaybeLocal<v8::Function> construct = Nan::GetFunction(tmpl);
+	// 	v8::Local<v8::Object> inst = Nan::NewInstance(construct.ToLocalChecked(), argc, argv).ToLocalChecked();
+	// 	// Construction may fail with a JS exception, in which case we just need
+	// 	// to return.
+	// 	if (inst.IsEmpty()) {
+	// 		return;
+	// 	}
+	// 	Hash *dest = new Hash();
+	// 	dest->Wrap(inst);
 
-		dest->initialized_ = src->initialized_;
-		dest->any_blake2_update = src->any_blake2_update;
-		dest->any_blake2_final = src->any_blake2_final;
-		dest->outbytes = src->outbytes;
-		dest->state = src->state;
+	// 	dest->initialized_ = src->initialized_;
+	// 	dest->any_blake2_update = src->any_blake2_update;
+	// 	dest->any_blake2_final = src->any_blake2_final;
+	// 	dest->outbytes = src->outbytes;
+	// 	dest->state = src->state;
 
-		info.GetReturnValue().Set(inst);
-	}
+	// 	info.GetReturnValue().Set(inst);
+	// }
 };
 
 static void
