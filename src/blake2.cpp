@@ -17,7 +17,7 @@ union any_blake2_state {
 };
 
 #define BLAKE_FN_CAST(fn) \
-	reinterpret_cast<uintptr_t (*)(void*, const uint8_t*, uint64_t)>(fn)
+	reinterpret_cast<int (*)(void*, const void*, size_t)>(fn)
 
 class Hash: public Nan::ObjectWrap {
 	static v8::Local<v8::FunctionTemplate> CreateTemplate() {
@@ -32,15 +32,15 @@ class Hash: public Nan::ObjectWrap {
 
  protected:
 	bool initialized_;
-	uintptr_t (*any_blake2_update)(void*, const uint8_t*, uint64_t);
-	uintptr_t (*any_blake2_final)(void*, const uint8_t*, uint64_t);
+	int (*any_blake2_update)(void*, const void*, size_t);
+	int (*any_blake2_final)(void*, const void*, size_t);
 	uint8_t outbytes;
 	any_blake2_state state;
 
  public:
-	static void Init(v8::Local<v8::Object> target) {
+	static v8::Maybe<bool> Init(v8::Local<v8::Object> target) {
 		v8::Local<v8::FunctionTemplate> tpl = CreateTemplate();
-		target->Set(Nan::GetCurrentContext(), Nan::New("Hash").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
+		return target->Set(Nan::GetCurrentContext(), Nan::New("Hash").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
 	}
 
 	static NAN_METHOD(New) {
@@ -56,7 +56,7 @@ class Hash: public Nan::ObjectWrap {
 		std::string algo = std::string(*v8::String::Utf8Value(v8::Isolate::GetCurrent(), info[0]->ToString(Nan::GetCurrentContext()).FromMaybe(v8::Local<v8::String>())));
 
 		const char *key_data = nullptr;
-		size_t key_length;
+		size_t key_length = 0;
 		int8_t digest_length = -1;
 		if (algo != "bypass" && info.Length() >= 2) {
 			if (!info[1]->IsNull()) {
@@ -248,8 +248,5 @@ class Hash: public Nan::ObjectWrap {
 	}
 };
 
-static void init(v8::Local<v8::Object> target) {
-	Hash::Init(target);
-}
 
-NAN_MODULE_WORKER_ENABLED(NODE_GYP_MODULE_NAME, init)
+NAN_MODULE_WORKER_ENABLED(NODE_GYP_MODULE_NAME, Hash::Init)
