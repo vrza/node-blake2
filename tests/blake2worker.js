@@ -12,13 +12,13 @@ function newWorker (data) {
 			workerData: {
 				data: data
 			},
-	  });
-	  worker.on('message', (hash) => {
+		});
+		worker.on('message', (hash) => {
 			resolve(hash);
-	  });
-	  worker.on('error', (msg) => {
+		});
+		worker.on('error', (msg) => {
 			reject(msg);
-	  });
+		});
 	});
 }
 
