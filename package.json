@@ -1,7 +1,7 @@
 {
   "name": "blake2",
   "version": "5.0.0",
-  "description": "All four BLAKE2 variants (blake2b, blake2bp, blake2s, blake2sp) for node, with stream support",
+  "description": "All four BLAKE2 variants (blake2b, blake2bp, blake2s, blake2sp) for Node.js, with stream support",
   "keywords": [
     "crypto",
     "hash",
@@ -30,10 +30,11 @@
     "mocha": "^10.2.0"
   },
   "contributors": [
+    "Vladimir Vrzić <vvrzic@gmail.com> (https://github.com/vrza)",
     "Ivan Kozik <ivan@ludios.org> (https://github.com/ivan)",
     "James Bowes <jbowes@repl.ca> (https://github.com/jbowes)",
     "Kannan Goundan <kannan@cakoose.com> (https://github.com/cakoose)",
-    "Vladimir Vrzić <vvrzic@gmail.com> (https://github.com/vrza)"
+    "coranos (https://github.com/coranos)"
   ],
   "license": "ISC",
   "engines": {
