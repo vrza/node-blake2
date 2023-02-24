@@ -248,5 +248,4 @@ class Hash: public Nan::ObjectWrap {
 	}
 };
 
-
 NAN_MODULE_WORKER_ENABLED(NODE_GYP_MODULE_NAME, Hash::Init)

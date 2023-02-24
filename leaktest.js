@@ -16,12 +16,12 @@ function randomElement(arr) {
 const algos = ['blake2b', 'blake2s', 'blake2bp', 'blake2sp'];
 const encodings = [undefined, 'hex', 'base64', 'binary'];
 let input = Buffer.from(String(Math.random()));
-while(1) {
+while (1) {
 	let hash = new blake2.Hash(randomElement(algos));
 	hash.update(input);
 	input = hash.digest(randomElement(encodings));
 	hash = hash.copy(); // Exercise copy as well
-	if(typeof input === 'string') {
+	if (typeof input === 'string') {
 		input = Buffer.from(input.substr(0, 16));
 	}
 
@@ -29,7 +29,7 @@ while(1) {
 	hash.update(input);
 	hash = hash.copy(); // Exercise copy as well
 	input = hash.digest(randomElement(encodings));
-	if(typeof input === 'string') {
+	if (typeof input === 'string') {
 		input = Buffer.from(input.substr(0, 16));
 	}
 }
