@@ -23,6 +23,7 @@ jobs:
 
     - name: Setup Node.js ${{ matrix.node }}
       uses: actions/setup-node@v4
+      uses: actions/setup-python@v5
       with:
         node-version: ${{ matrix.node }}
 
