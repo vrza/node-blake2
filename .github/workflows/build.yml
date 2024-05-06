@@ -23,6 +23,8 @@ jobs:
 
     - name: Setup Python
       uses: actions/setup-python@v5 
+
+    - name: Install setupools
       run: pip install setuptools
 
     - name: Setup Node.js ${{ matrix.node }}
