@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        virtual-environment: ['ubuntu-latest', 'windows-2019', 'ubuntu-24.04-arm']
+        virtual-environment: ['ubuntu-latest', 'windows-2025', 'ubuntu-24.04-arm']
         node: [16, 18, 20, 22, 24]
         include:
           - virtual-environment: 'macos-latest'
@@ -24,7 +24,7 @@ jobs:
 
     steps:
     - name: Configure git (Windows specific)
-      if: matrix.virtual-environment == 'windows-2019'
+      if: matrix.virtual-environment == 'windows-2025'
       run: git config --global core.autocrlf false
 
     - name: Checkout
