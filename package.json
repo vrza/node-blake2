@@ -23,11 +23,11 @@
     "test": "node node_modules/eslint/bin/eslint . && node node_modules/mocha/bin/mocha tests"
   },
   "dependencies": {
-    "nan": "^2.22.0"
+    "nan": "^2.23.0"
   },
   "devDependencies": {
     "eslint": "^8.57.1",
-    "mocha": "^10.7.3"
+    "mocha": "^10.8.2"
   },
   "contributors": [
     "Vladimir Vrzić <vvrzic@gmail.com> (https://github.com/vrza)",
