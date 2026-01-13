@@ -3,7 +3,6 @@
 /src/BLAKE2/bench/
 /src/BLAKE2/csharp/
 /.github/
-/.travis.yml
 /build/
 /*.tgz
 
