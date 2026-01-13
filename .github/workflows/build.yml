@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         virtual-environment: ['ubuntu-latest', 'windows-2025', 'ubuntu-24.04-arm']
-        node: [16, 18, 20, 22, 24]
+        node: [16, 18, 20, 22, 24, 25]
         include:
           - virtual-environment: 'macos-latest'
             node: 18
@@ -19,6 +19,8 @@ jobs:
             node: 22
           - virtual-environment: 'macos-latest'
             node: 24
+          - virtual-environment: 'macos-latest'
+            node: 25
 
     runs-on: ${{ matrix.virtual-environment }}
 
