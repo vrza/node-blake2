@@ -12,8 +12,8 @@ node-blake2 has been tested to work with the following compilers and platforms:
 
 | Compiler                          | Operating System            | Architecture             |
 |-----------------------------------|-----------------------------|--------------------------|
-| GCC 8.3.0, 10.2.0, 11.2.0, 12.2.1 | GNU/Linux Gentoo            | x86_64                   |
-| LLVM clang 11.1.0, 13.0.0, 15.0.7 | GNU/Linux Gentoo            | x86_64                   |
+| GCC 8.3.0, 11.2.0, 12.2.1, 15.2.1 | GNU/Linux Gentoo            | x86_64                   |
+| LLVM clang 11.1.0, 15.0.7, 21.1.8 | GNU/Linux Gentoo            | x86_64                   |
 | GCC 5.4.0                         | GNU/Linux Ubuntu 16.04      | x86_64                   |
 | LLVM clang 11.1.0                 | OpenBSD 7.0                 | x86_64                   |
 | Apple LLVM clang 9.1.0            | macOS 10.13                 | x86_64                   |

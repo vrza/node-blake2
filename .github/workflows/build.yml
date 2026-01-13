@@ -1,6 +1,10 @@
 name: build
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 5 * * 1"  # Every Monday at 5:00 UTC
 
 jobs:
 
@@ -8,18 +12,19 @@ jobs:
 
     strategy:
       matrix:
-        virtual-environment: ['ubuntu-latest', 'windows-2025', 'ubuntu-24.04-arm']
-        node: [16, 18, 20, 22, 24, 25]
+        virtual-environment: [ubuntu-latest, windows-2025, ubuntu-24.04-arm]
+        node: [16, 18, 20, 22, 24, latest]
+        nan-version: [nan-earliest, nan-latest]
         include:
-          - virtual-environment: 'macos-latest'
+          - virtual-environment: macos-latest
             node: 18
-          - virtual-environment: 'macos-latest'
+          - virtual-environment: macos-latest
             node: 20
-          - virtual-environment: 'macos-latest'
+          - virtual-environment: macos-latest
             node: 22
-          - virtual-environment: 'macos-latest'
+          - virtual-environment: macos-latest
             node: 24
-          - virtual-environment: 'macos-latest'
+          - virtual-environment: macos-latest
             node: 25
 
     runs-on: ${{ matrix.virtual-environment }}
@@ -37,8 +42,18 @@ jobs:
       with:
         node-version: ${{ matrix.node }}
 
+    - name: Install earliest nan dependency
+      shell: bash
+      if: matrix.nan-version == 'nan-earliest'
+      run: |
+        earliest_nan_version="$(npm pkg get dependencies | jq -r '.[] | ltrimstr("^")')"
+        echo "Installing nan version $earliest_nan_version"
+        npm install nan@"$earliest_nan_version"
+
     - name: Install dependencies and build
-      run: npm install
+      run: |
+        npm install
+        npm explain nan
 
     - name: Run linter
       run: node node_modules/eslint/bin/eslint .
