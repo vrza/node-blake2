@@ -13,19 +13,8 @@ jobs:
     strategy:
       matrix:
         virtual-environment: [ubuntu-latest, windows-2025, ubuntu-24.04-arm]
-        node: [16, 18, 20, 22, 24, latest]
+        node: [18, 20, 22, 24, latest]
         nan-version: [nan-earliest, nan-latest]
-        include:
-          - virtual-environment: macos-latest
-            node: 18
-          - virtual-environment: macos-latest
-            node: 20
-          - virtual-environment: macos-latest
-            node: 22
-          - virtual-environment: macos-latest
-            node: 24
-          - virtual-environment: macos-latest
-            node: latest
 
     runs-on: ${{ matrix.virtual-environment }}
 
@@ -59,5 +48,4 @@ jobs:
       run: node node_modules/eslint/bin/eslint .
 
     - name: Run test suite
-      shell: bash
       run: node node_modules/mocha/bin/mocha tests
