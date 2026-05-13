@@ -23,7 +23,7 @@
     "test": "node node_modules/eslint/bin/eslint . && node node_modules/mocha/bin/mocha tests"
   },
   "dependencies": {
-    "nan": "^2.26.1"
+    "nan": "^2.27.0"
   },
   "devDependencies": {
     "eslint": "^10.3.0",
