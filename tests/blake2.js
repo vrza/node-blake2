@@ -374,9 +374,7 @@ describe('blake2', function() {
 describe('binding', function() {
 	it('throws Error if called without "new"', function() {
 		assert.throws(function() {
-			/* eslint-disable new-cap */
 			binding.Hash('blake2b');
-			/* eslint-enable new-cap */
 		}, /must be called with new/);
 	});
 });
