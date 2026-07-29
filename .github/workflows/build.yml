@@ -15,7 +15,7 @@ jobs:
         virtual-environment: [ubuntu-latest, windows-2025, ubuntu-24.04-arm]
         node: [18, 20, 22, 24, 26, latest]
         nan-version: [nan-earliest, nan-latest]
-		exclude:
+        exclude:
           - virtual-environment: windows-2025
             node: 18
           - virtual-environment: windows-2025
