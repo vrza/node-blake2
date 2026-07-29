@@ -12,13 +12,13 @@ jobs:
 
     strategy:
       matrix:
-        virtual-environment: [ubuntu-latest, windows-2025, ubuntu-24.04-arm]
+        virtual-environment: [ubuntu-latest, windows-2022, ubuntu-24.04-arm]
         node: [18, 20, 22, 24, 26, latest]
         nan-version: [nan-earliest, nan-latest]
         exclude:
-          - virtual-environment: windows-2025
+          - virtual-environment: windows-2022
             node: 18
-          - virtual-environment: windows-2025
+          - virtual-environment: windows-2022
             node: 20
 
     runs-on: ${{ matrix.virtual-environment }}
