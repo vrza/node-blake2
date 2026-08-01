@@ -25,7 +25,7 @@ jobs:
 
     steps:
     - name: Configure git (Windows specific)
-      if: matrix.virtual-environment == 'windows-2025'
+      if: matrix.virtual-environment == 'windows-2022'
       run: git config --global core.autocrlf false
 
     - name: Checkout
