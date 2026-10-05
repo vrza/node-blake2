@@ -5,6 +5,7 @@ on:
   pull_request:
   schedule:
     - cron: "0 5 * * 1"  # Every Monday at 5:00 UTC
+  workflow_dispatch:
 
 jobs:
 
